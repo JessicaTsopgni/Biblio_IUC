@@ -1,0 +1,27 @@
+﻿ <!-- Bootstrap core JavaScript-->
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script src="~/vendor/jquery/popper.min.js"></script>
+<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="~/vendor/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="~/js/sb-admin-2.js"></script>
+<script src="~/js/notifications.js"></script>
+<script>
+		function callNotitication(type, color, appName, title, message, icon) {
+            //$('#notify' + type).html(message);
+            showNotification(type, color, appName, title, message, icon, 'top', 'center', '', '');
+        }
+
+        @if(TempData["MessageType"] != null && (MessageOptions)TempData["MessageType"] != (short)MessageOptions.None)
+        {
+            @:var type = '@(((MessageOptions)TempData["MessageType"]).ToString().ToLower())';
+            @:var icon = type === 'danger' ? 'fas fa-exclamation-circle' : (type === 'warning' ? 'fas fa-exclamation-triangle' : (type === 'info' ? 'fas fa-info-circle' : 'fas fa-thumbs-up'));
+            @:var text_color = ['danger', 'success', 'info'].indexOf(type) !== -1 ? 'text-white' : 'text-dark';
+			@:callNotitication(type, text_color, '@HttpUtility.JavaScriptStringEncode(ViewBag.AppName)', '@HttpUtility.JavaScriptStringEncode(Text.ResourceManager.GetString(TempData["MessageType"].ToString()))', '@HttpUtility.JavaScriptStringEncode(TempData["Message"].ToString())', icon);
+		}
+
+</script>

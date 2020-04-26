@@ -1,0 +1,20 @@
+﻿@model PageListModel<DocumentModel>
+@{
+    ViewBag.Title = Text.The_documents;
+}
+
+<!--Page Heading -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <a asp-action="Index" asp-controller="Document" asp-route-Id="@null" class=" text-gray-800">
+            @ViewBag.Title
+        </a>
+    </h1>
+    @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())
+    {
+        <a asp-action="Create" asp-controller="Document" asp-route-returnUrl="@ViewBag.Url" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> @Text.Create_a_document</a>
+        <a asp-action="Create" asp-controller="Document" asp-route-returnUrl="@ViewBag.Url" class="d-block d-sm-none btn btn-success btn-circle shadow-sm">
+            <i class="fas fa-plus"></i>
+        </a>
+    }
+</div>

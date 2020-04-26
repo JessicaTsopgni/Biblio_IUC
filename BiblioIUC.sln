@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiblioIUC", "BiblioIUC\BiblioIUC.csproj", "{6ADBD281-FB9B-4C0F-AC26-7B493C2055CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Db", "Db", "{8A90427C-FFE9-4413-8916-D76B4C6ED49C}"
+	ProjectSection(SolutionItems) = preProject
+		Db\biblio_iuc_db.sql = Db\biblio_iuc_db.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{C56B904D-312D-44C4-9340-B7C0895A333A}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\README.md = Docs\README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6ADBD281-FB9B-4C0F-AC26-7B493C2055CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADBD281-FB9B-4C0F-AC26-7B493C2055CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ADBD281-FB9B-4C0F-AC26-7B493C2055CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADBD281-FB9B-4C0F-AC26-7B493C2055CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {509187F4-4E79-4527-8A03-F7D879E91941}
+	EndGlobalSection
+EndGlobal

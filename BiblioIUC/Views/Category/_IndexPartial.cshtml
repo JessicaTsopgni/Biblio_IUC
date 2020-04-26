@@ -1,0 +1,120 @@
+﻿@model IEnumerable<CategoryModel>
+@{
+    List<string> colors = new List<string>{ "success", "danger", "primary", "warning", "info" };
+    Random randNum = new Random();
+    colors = colors.OrderBy(i => randNum.Next()).ToList();
+    colors.Add("dark");
+    int j = 0;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var category in Model)
+    {
+        if (j >= colors.Count - 1)
+        {
+            j = 0;
+        }
+        if(!category.State)
+        {
+            j = colors.Count - 1;
+        }
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-@colors[j] shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-10">
+                            <div class="text-xs font-weight-bold text-@colors[j] text-uppercase mb-2 truncate">
+                                @if (category.NumberOfSubCategories > 0)
+                                {
+                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'Id':'@category.Id'})" class="text-@colors[j]">
+                                        @category.Name
+                                    </a>
+                                }
+                                else
+                                {
+                                    @category.Name
+                                }
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" style="line-height: 0.6" title="@Text.Documents">
+                                @category.NumberOfDocumentsFormated 
+                                <span style="font-size: 0.7rem">@(category.NumberOfDocuments > 0 ? Text.Documents : Text.Document)</span>
+                            </div>
+                            <div class="truncate mt-1">
+                                @if (category.CategoryParentId != null)
+                                {
+                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'CategoryParentId':'@category.CategoryParentId'})" class="text-gray-800">
+                                        <small>@category.CategoryParentName</small>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <small><i>@Text.No_parent</i></small>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-2 text-right">
+                            @if (!string.IsNullOrEmpty(category.ImageLink))
+                            {
+                                <img src="@Url.Content(category.ImageLink)" class="rounded-circle" style="width:50px" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-layer-group fa-2x text-gray-300"></i>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer border-@colors[j]" style="background-color:transparent">
+                    <div class="row">
+                        <div class="col-10 text-@colors[j]" title="@Text.Sub_categories">
+                            @if (category.NumberOfSubCategories > 0)
+                            {
+                                <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'id':'@category.Id'})" class="text-@colors[j]">
+                                    <i class="fas fa-sitemap" style="font-size:100%;"></i> @category.NumberOfSubCategoriesFormated @*@Text.Sub_category*@
+                                </a>
+                            }
+                            else
+                            {
+                                <i class="fas fa-sitemap" style="font-size:100%;"></i> @category.NumberOfSubCategoriesFormated @*@Text.Sub_category*@
+                            }
+                        </div>
+                        <div class="col-2 text-danger">
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink@(category.Id)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink@(category.Id)">
+                                    @if (category.NumberOfDocuments > 0)
+                                    {
+                                        <a class="dropdown-item" href="#"><i class="fas fa-book"></i> &nbsp;@Text.View_documents</a>
+                                    }
+                                    @if (category.NumberOfSubCategories > 0)
+                                    {
+                                        <a class="dropdown-item" href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'id':'@category.Id'})">
+                                            <i class="fas fa-sitemap" style="font-size:95%"></i> @Text.View_sub_categories
+                                        </a>
+                                    }
+                                    @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())
+                                    {
+                                        if (category.NumberOfDocuments > 0 || category.NumberOfSubCategories > 0)
+                                        {
+                                            <div class="dropdown-divider"></div>
+                                        }
+                                        <a class="dropdown-item text-primary"href="javascript:;" onclick="goto('@Url.Action("Edit", "Category")', {'id':'@category.Id'})">
+                                            <i class="fas fa-edit"></i> @Text.Edit
+                                        </a>
+                                        <a class="dropdown-item text-danger" href="javascript:;" onclick="init_model('@Text.Warning', '@HttpUtility.JavaScriptStringEncode(string.Format(Text.Do_you_really_want_to_delete_x, "[ " +category.Name+" ]"))', 'bg-warning', 'text-dark',
+                                            '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "Category", new { id = category.Id, returnUrl = ViewBag.Url })')">
+                                            <i class="fas fa-trash"></i> &nbsp;@Text.Delete
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        j++;
+    }
+}

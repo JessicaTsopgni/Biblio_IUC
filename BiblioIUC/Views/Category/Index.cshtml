@@ -1,0 +1,109 @@
+﻿@model PageListModel<CategoryModel>
+@{
+    ViewBag.Title = Text.Document_categories;
+}
+
+<!--Page Heading -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <a asp-action="Index" asp-controller="Category" asp-route-Id="@null" class=" text-gray-800">
+            @ViewBag.Title
+        </a>
+    </h1>
+    @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())
+    {
+        <a href="javascript:;" onclick="goto('@Url.Action("Create", "Category")')" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> @Text.Create_a_category</a>
+        <a href="javascript:;" onclick="goto('@Url.Action("Create", "Category")')" class="d-block d-sm-none btn btn-success btn-circle shadow-sm">
+            <i class="fas fa-plus"></i>
+        </a>
+    }
+</div>
+<div class="row" id="data_loaded">
+    @if (Model != null && Model.DataModels != null && Model.DataModels.Count() > 0)
+    {
+        <partial name="_IndexPartial" model="Model.DataModels" />
+    }
+    else
+    {
+        <div class="col-md-12 mx-auto text-center">
+            <i class="fas fa-info-circle"></i> <i>@Text.Category_not_found</i>
+        </div>
+    }
+</div>
+<div class="row d-none" id="loader">
+    <div class="col-md-12 mx-auto text-center">
+        <div class="spinner-border text-success" role="status">
+            <span class="sr-only">@Text.Loading</span>
+        </div>
+    </div>
+</div>
+<partial name="_Modal" />
+@section scripts{
+    <script>
+        var pageIndex = 1;
+        var scrollLoad = true;
+        $(window).scroll(function () {
+            if (scrollLoad && ($(document).height() - $(this).height() - 100) < $(this).scrollTop()) {
+                scrollLoad = false;
+                loadData();
+            }
+        });
+
+        function hasScroll() {
+            return $(document).height() > $(window).height();
+        }
+
+        function loadData() {
+            pageIndex++;
+            $.ajax({
+                type: 'GET',
+                url: @Html.Raw(ViewBag.InfiniteScrollUrl.ToString().Contains("?") ? "'" + ViewBag.InfiniteScrollUrl + "&PageIndex=' + pageIndex" : "'" + ViewBag.InfiniteScrollUrl + "?PageIndex=' + pageIndex"),
+                beforeSend: function () {
+                    $('#loader').removeClass('d-none');
+                },
+                success: function (msg) {
+                    scrollLoad = false;
+                    if (msg) {
+                        $("#data_loaded").append(msg);
+                        if (!hasScroll())
+                            loadData();
+                        scrollLoad = true;
+                    }
+                },
+                error: function (req, status, error) {
+                    $("#data_loaded").append(
+                        '<div class="col-md-12 mx-auto text-center text-danger"><i class="fas fa-exclamation-circle"></i> @Text.An_error_occured</div>'
+                    );
+                },
+                        complete: function () {
+                            $('#loader').addClass('d-none');
+                }
+            });
+        }
+
+        loadData();
+
+        function init_model(title, message, bg_class, text_class,
+            cancel_btn_text, cancel_btn_class, success_btn_text, success_btn_class, success_btn_link) {
+            $('#myModalContent').addClass(bg_class);
+            $('#myModalContent').addClass(text_class);
+
+            $('#myModalTitle').html(title);
+            $('#myModalMessage').html(message);
+
+            if (!cancel_btn_text)
+                $('#myModalCancelBtn').hide();
+            else
+                $('#myModalCancelBtn').html(cancel_btn_text);
+            $('#myModalCancelBtn').addClass(cancel_btn_class);
+
+            if (!success_btn_text)
+                $('#myModalOkBtn').hide();
+            else
+                $('#myModalOkBtn').html(success_btn_text);
+            $('#myModalOkBtn').attr('href', success_btn_link);
+            $('#myModalOkBtn').addClass(success_btn_class);
+            $('#myModal').modal('show');
+        }
+    </script>   
+}

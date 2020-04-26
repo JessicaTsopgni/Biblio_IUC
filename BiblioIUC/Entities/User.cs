@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace BiblioIUC.Entities
+{
+    public partial class User
+    {
+        public int Id { get; set; }
+        public string Account { get; set; }
+        public string Password { get; set; }
+        public string FullName { get; set; }
+        public short Role { get; set; }
+        public string Image { get; set; }
+        public short Status { get; set; }
+    }
+}

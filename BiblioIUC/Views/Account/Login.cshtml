@@ -1,0 +1,71 @@
+﻿@model PageModel<LoginModel>
+@{
+    Layout = null;
+    ViewBag.Title = Text.Sign_in;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   <partial name="_Head"/>
+</head>
+<body class="bg-gradient-success">
+
+    <div class="container">
+
+        <!-- Outer Row -->
+        <div class="row justify-content-center my-5">
+
+            <div class="col-xl-10 col-lg-12 col-md-9">
+
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">@ViewBag.Title</h1>
+                                    </div>
+                                    <form asp-action="Login" asp-controller="Account" method="post" class="user">
+                                        <div class="form-group">
+                                            <input type="text" asp-for="DataModel.Account" class="form-control form-control-user"  placeholder="@Text.Your_account">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" asp-for="DataModel.Password" value="@Model?.DataModel.Password" class="form-control form-control-user"  placeholder="@Text.Your_password">
+                                        </div>
+                                        <input type="hidden" asp-for="ReturnUrl"/>
+                                        <button type="submit" href="#" class="btn btn-success btn-user btn-block">
+                                            @Text.Login
+                                        </button>
+                                        @*<hr>
+                                        <a href="#" class="btn btn-google btn-user btn-block">
+                                            <i class="fab fa-google fa-fw"></i> Login with Google
+                                        </a>
+                                        <a href="#" class="btn btn-facebook btn-user btn-block">
+                                            <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
+                                        </a>*@
+                                    </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <a class="small" href="#">@Text.Forgotten_password</a>
+                                    </div>
+                                    @*<div class="text-center">
+                                        <a class="small" href="#">Create an Account!</a>
+                                    </div>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+   <partial name="_Scripts"/>
+</body>
+</html>

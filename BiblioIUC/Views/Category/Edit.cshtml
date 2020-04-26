@@ -1,0 +1,188 @@
+﻿@model PageModel<CategoryModel>
+@{
+    ViewBag.Title = (Model?.DataModel?.Id ?? 0) == 0 ? Text.Create_a_category : Text.Edit_a_category;
+}
+<!--Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@ViewBag.Title</h1>
+</div>
+
+<form method="post" asp-action="Edit" asp-controller="Category" enctype="multipart/form-data">
+    <partial name="_LayoutInput" model="Model"/>
+    <input type="hidden" asp-for="DataModel.Id" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DataModel.Name"></label>
+                <input asp-for="DataModel.Name" type="text" class="form-control" placeholder="@Text.Category_name" />
+                <span class="text-danger" asp-validation-for="DataModel.Name"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Description"></label>
+                <textarea asp-for="DataModel.Description" class="form-control" placeholder="@Text.Category_description"></textarea>
+                <span class="text-danger" asp-validation-for="DataModel.Description"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.CategoryParentId"></label>
+                <select class="custom-select" asp-for="DataModel.CategoryParentId" asp-items="@Model.DataModel.CategoryParentModels">
+                    <option value="">(@Text.None)</option>
+                </select>
+                <span class="text-danger" asp-validation-for="DataModel.CategoryParentId"></span>
+            </div>
+            <div class="form-group">
+                <label>@Text.Status</label>
+                <input hidden asp-for="DataModel.Status" />
+                <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
+                    <input type="checkbox" onchange="$('#@Html.IdFor(x=> x.DataModel.Status)').val($(this).is(':checked') ? 1 : 0);$('#state_label').html($(this).is(':checked') ? '@Text.Actived' : '@Text.Disabled')" class="custom-control-input" asp-for="DataModel.State">
+                    <label class="custom-control-label" id="state_label" asp-for="DataModel.State">@Model.DataModel.StatusName</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-7">
+                        <label>@Text.Illustrative_image <i>(max. : 2Mo)</i></label>
+                    </div>
+                    <div id="cropper_btn" class="col-md-5 justify-content-end d-flex" style="display:none !important">
+                        <button type="button" onclick="cropper_rotate_left()" class="btn btn-outline-primary btn-circle-mini">
+                            <i class="fas fa-undo-alt"></i>
+                        </button>
+                        <button type="button" onclick="cropper_rotate_right()" class="btn btn-outline-primary btn-circle-mini ml-1">
+                            <i class="fas fa-redo-alt"></i>
+                        </button>
+                        <button type="button" onclick="cropper_reset()" class="btn btn-outline-info btn-circle-mini ml-1">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" onclick="cropper_done()" class="btn btn-outline-success btn-circle-mini ml-1">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="preview" class="card justify-content-center align-items-center"
+                     style="height: 310px;background-color: transparent;">
+                    @if (!string.IsNullOrEmpty(Model?.DataModel.ImageLink))
+                    {
+                        <img id="@Html.IdFor(x=> x.DataModel.ImageLink)" src="@Url.Content(Model.DataModel.ImageLink)" class="img-fluid rounded" />
+                    }
+                    else
+                    {
+                        <i class="fas fa-image" style="font-size: 1000%;"></i>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        @if (!string.IsNullOrEmpty(Model?.DataModel.ImageLink))
+                        {
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" asp-for="DataModel.DeletePhoto">
+                                <label class="custom-control-label" asp-for="DataModel.DeletePhoto"></label>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-4 justify-content-end d-flex">
+                        <a href="#" onclick="$('#photo_input').click()">@Text.Browser</a>
+                    </div>
+                </div>
+                <input type="file" accept="image/*" id="photo_input" style="display: none;" onchange="readURL(this, $('#preview'), 2 * 1024, $('#preview').width(), $('#preview').height(), custum_cropper)" />
+            </div>
+        </div>
+    </div>
+    <div class="row flex-row-reverse">
+        <div class="col-md-6 mb-4">
+            <button type="submit" class="btn btn-success btn-block">
+                <i class="fas fa-check"></i>
+                @Text.Save
+            </button>
+        </div>
+        <div class="col-md-6">
+            <a href="@Model.ReturnUrl" class="btn btn-secondary btn-block">
+                <i class="fas fa-undo"></i>
+                @Text.Cancel
+            </a>
+            <small><i>* @Text.Required_fields</i></small>
+        </div>
+    </div>
+</form>
+@section css{
+    <link rel="stylesheet" href="~/vendor/cropperjs/cropper.min.css" />
+}
+@section scripts{
+    <script src="~/vendor/jquery/jquery.validate.min.js"></script>
+    <script src="~/vendor/jquery/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/vendor/cropperjs/cropper.min.js"></script>
+    <script>
+        var cropper = null;
+        var defaut_preview = null;
+        var preview_img = null;
+        function custum_cropper(img, default_content) {
+            defaut_preview = default_content;
+            preview_img = img;
+            cropper = new Cropper(
+                img,
+                {
+                    aspectRatio: 1/1
+                }
+            );
+            cropper.crop();
+            $('#cropper_btn').removeAttr('style');
+            $('button[type="submit"]').prop('disabled', true);
+        }
+        function cropper_rotate_left() {
+            cropper.rotate(-45);
+        }
+        function cropper_rotate_right() {
+            cropper.rotate(45);
+        }
+        function cropper_reset() {
+            cropper.reset();
+            $('#cropper_btn').attr('style', 'display:none!important');
+            $('#preview').html(default_content);
+            $('#photo_input').val(null);
+            $('#@Html.IdFor(x=>x.DataModel.ImageUploaded)').val(null);
+            $('button[type="submit"]').prop('disabled', false);
+        }
+        var _blob, filename, file_type;
+        function cropper_done() {
+            cropper.getCroppedCanvas().toBlob(function (blob) {
+                _blob = blob;
+                filename = $('#photo_input')[0].files[0].name;
+                file_type = $('#photo_input')[0].files[0].type;
+                var url = window.URL || window.webkitURL;
+                var objectURL = url.createObjectURL(blob);
+                preview_img.src = objectURL;
+                $(preview_img).removeAttr('style');
+                $(preview_img).attr('style', 'max-width:' + ($('#preview').width() - 5) + 'px;max-height:' + ($('#preview').height() - 5) + 'px');
+                $('#cropper_btn').attr('style', 'display:none!important');
+                $('#photo_input').val(null);
+                $('button[type="submit"]').prop('disabled', false);
+            });
+            cropper.destroy();
+        }
+        $('form').submit(function (e) {
+            e.preventDefault();
+            if (!$(this).valid())
+                return;
+
+            if (_blob) {
+                var file = new File([_blob], filename, { type: file_type })
+                var input = document.createElement('input')
+
+                input.type = 'file'
+                // input.multiple = true
+                input.files = createFileList(file)
+                input.name = '@Html.NameFor(x=>x.DataModel.ImageUploaded)'
+                input.hidden = true
+                this.appendChild(input)
+            }
+            this.submit();
+        });
+        function createFileList(a) {
+            a = [].slice.call(Array.isArray(a) ? a : arguments)
+            for (var c, b = c = a.length, d = !0; b-- && d;) d = a[b] instanceof File
+            if (!d) throw new TypeError('expected argument to FileList is File or array of File objects')
+            for (b = (new ClipboardEvent('')).clipboardData || new DataTransfer; c--;) b.items.add(a[c])
+            return b.files
+        }
+    </script>
+}

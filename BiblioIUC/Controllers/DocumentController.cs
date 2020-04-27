@@ -38,10 +38,15 @@ namespace BiblioIUC.Controllers
         public string Test()
         {
             var mediaBasePath = Path.Combine(env.WebRootPath, configuration["MediaFolderPath"].Replace("~/", string.Empty));
+            var libGostScriptPath = Path.Combine(env.WebRootPath, configuration["LibGostScriptPath"].Replace("~/", string.Empty));
+            BiblioIUC.Logics.Tools.OssFile.ConvertPdfToImage
             (
+                libGostScriptPath,
                 Path.Combine(mediaBasePath, "cSharp.pdf"),
+                1,
                 Path.Combine(mediaBasePath, "thumb.png"),
-                1
+                400,
+                600
             );
             return Path.Combine(mediaBasePath, "thumb.png");
         }

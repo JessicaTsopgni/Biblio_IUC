@@ -1,22 +1,21 @@
 ##Pour VS:
 - Démarrer en tant admin l'IDE.
-	- Menu Tools -> Command Line -> Developer command line
-	- > cd BiblioIUC
-	- > dotnet watch run
-	
-	- Scaffolding en cas de modification de la DB
-		- Menu Tools -> Nuget package manager -> Package manager console 
+- Menu Tools -> Command Line -> Developer command line
+- > cd BiblioIUC
+- > dotnet watch run
+- Scaffolding en cas de modification de la DB
+	- Menu Tools -> Nuget package manager -> Package manager console 
 		> Scaffold-DbContext -connection name=MySql -provider Pomelo.EntityFrameworkCore.MySql -context BiblioEntities -o Entities -f
-	**NB: Le projet doit être compilable *(pas de bug)***
+**NB: Le projet doit être compilable *(pas de bug)***
 	
 	
 ##VS Code: 
-	- Démarrer en tant admin l'IDE.
-	- Fermer le dossier en cours si existe.
-	- Glisser-déposer le repertoire ./BiblioIUC/BiblioIUC dans l'IDE
-	- Menu Terminal -> New terminal
-	- > dotnet watch run
-	- Scaffolding en cas de modification de la DB : *Pas encore de solution*
+- Démarrer en tant admin l'IDE.
+- Fermer le dossier en cours si existe.
+- Glisser-déposer le repertoire ./BiblioIUC/BiblioIUC dans l'IDE
+- Menu Terminal -> New terminal
+- > dotnet watch run
+- Scaffolding en cas de modification de la DB : *Pas encore de solution*
 
 ##Notes importantes pour votre rapport:
 	- La base de données est dans le repertoire ./Db/biblio_iuc_sql.

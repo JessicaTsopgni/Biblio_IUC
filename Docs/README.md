@@ -1,4 +1,4 @@
-##Pour VS:##
+#Pour VS:
 - Démarrer en tant admin l'IDE.
 - Menu Tools -> Command Line -> Developer command line
 - > cd BiblioIUC

@@ -1,23 +1,23 @@
-#Pour VS:
+## Pour VS:
 - Démarrer en tant admin l'IDE.
 - Menu Tools -> Command Line -> Developer command line
-- > cd BiblioIUC
-- > dotnet watch run
+- > >cd BiblioIUC
+- > >dotnet watch run
 - Scaffolding en cas de modification de la DB
 	- Menu Tools -> Nuget package manager -> Package manager console 
 		> Scaffold-DbContext -connection name=MySql -provider Pomelo.EntityFrameworkCore.MySql -context BiblioEntities -o Entities -f
 **NB: Le projet doit être compilable *(pas de bug)***
 	
 	
-##VS Code:## 
+## VS Code:
 - Démarrer en tant admin l'IDE.
 - Fermer le dossier en cours si existe.
 - Glisser-déposer le repertoire ./BiblioIUC/BiblioIUC dans l'IDE
 - Menu Terminal -> New terminal
-- > dotnet watch run
+- > >dotnet watch run
 - Scaffolding en cas de modification de la DB : *Pas encore de solution*
 
-##Notes importantes pour votre rapport:##
+## Notes importantes pour votre rapport:
 - La base de données est dans le repertoire ./Db/biblio_iuc_sql.
 - La chaine de connexion se trouve dans le fichier ./appsettings.Development.json.
 - Il faudra privilégier le terme document, plus générique *(livre, rapport/memoire, cours,..., qui sont des catégories de document)* , à celui de livre.
@@ -27,5 +27,5 @@
 - Vérifier aussi que les comptes etudiants et enseignants sont véritablement restreints. 
 - Le nombre de document affiché pour les catégories est fictif pour l'instant.
 	
-##Références utiles##
+## Références utiles:
 - [Métadonnées du livre et informations sur le livre](https://support.google.com/books/partner/answer/3237055?hl=fr)

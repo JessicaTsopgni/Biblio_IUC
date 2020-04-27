@@ -49,6 +49,10 @@
               "target": "Package",
               "version": "[1.0.0, )"
             },
+            "GhostScript.NetCore": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Microsoft.AspNetCore.Http.Extensions": {
               "target": "Package",
               "version": "[2.2.0, )"

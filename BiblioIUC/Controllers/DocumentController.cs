@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,9 +11,11 @@ using BiblioIUC.Logics.Interfaces;
 using BiblioIUC.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Ghostscript.NET;
 
 namespace BiblioIUC.Controllers
 {
@@ -21,18 +24,33 @@ namespace BiblioIUC.Controllers
     {
         private readonly IDocumentLogic documentLogic;
         private readonly ICategoryLogic categoryLogic;
+        private readonly IWebHostEnvironment env;
 
         public DocumentController(IDocumentLogic documentLogic, ICategoryLogic categoryLogic,
-            IConfiguration configuration, ILoggerFactory loggerFactory) : base(configuration, loggerFactory)
+            IConfiguration configuration, ILoggerFactory loggerFactory, IWebHostEnvironment env) : base(configuration, loggerFactory)
         {
             this.documentLogic = documentLogic;
             this.categoryLogic = categoryLogic;
+            this.env = env;
+        }
+
+        [AllowAnonymous]
+        public string Test()
+        {
+            var mediaBasePath = Path.Combine(env.WebRootPath, configuration["MediaFolderPath"].Replace("~/", string.Empty));
+            (
+                Path.Combine(mediaBasePath, "cSharp.pdf"),
+                Path.Combine(mediaBasePath, "thumb.png"),
+                1
+            );
+            return Path.Combine(mediaBasePath, "thumb.png");
         }
 
         public async Task<IActionResult> Index(LayoutModel layoutModel)
         {
             try
             {
+                
                 var documentModels = await documentLogic.FindAsync
                 (
                     value: layoutModel.SearchValue,

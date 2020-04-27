@@ -289,12 +289,8 @@ C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\bin\Debug\netcoreapp
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.csprojAssemblyReference.cache
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.Localize.Text.resources
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.csproj.GenerateResource.cache
-C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.csproj.CoreCompileInputs.cache
-C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.RazorAssemblyInfo.cache
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.RazorAssemblyInfo.cs
-C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\EFCorePluralizer.cs
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.AssemblyInfoInputs.cache
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.AssemblyInfo.cs
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.TagHelpers.input.cache
@@ -324,3 +320,8 @@ C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.dll
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.pdb
 C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.genruntimeconfig.cache
+C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.csproj.CoreCompileInputs.cache
+C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\BiblioIUC.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\obj\Debug\netcoreapp3.1\EFCorePluralizer.cs
+C:\Users\LENOVO\source\repos\BiblioIUC\Biblio_IUC\BiblioIUC\bin\Debug\netcoreapp3.1\GhostScript.Net.Core.dll

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Ghostscript.NET;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,23 @@ namespace BiblioIUC.Logics.Tools
 {
     public static class OssFile
     {
+        public static void ConvertPdfToImage(string libPath, string inputPDFFilePath, int pageNumber, string outputFilePath, int width, int height)
+        {
+            GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(libPath);
+
+            GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.Png256);
+            dev.GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
+            dev.TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
+            dev.ResolutionXY = new GhostscriptImageDeviceResolution(290, 290);
+            dev.InputFiles.Add(inputPDFFilePath);
+            dev.Pdf.FirstPage = pageNumber;
+            dev.Pdf.LastPage = pageNumber;
+            dev.CustomSwitches.Add("-dDOINTERPOLATE");
+            dev.OutputPath = outputFilePath;
+            dev.Process(gvi, true, null);
+
+        }
+
         public static void DeleteFile(string filename, string mediaBasePath)
         {
             if (!string.IsNullOrEmpty(filename))

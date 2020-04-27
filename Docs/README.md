@@ -1,5 +1,5 @@
 ##Pour VS:
-	- Démarrer en tant admin l'IDE.
+- Démarrer en tant admin l'IDE.
 	- Menu Tools -> Command Line -> Developer command line
 	- > cd BiblioIUC
 	- > dotnet watch run

@@ -1,8 +1,8 @@
 ## Pour VS:
 - Démarrer en tant admin l'IDE.
 - Menu Tools -> Command Line -> Developer command line
-- > >>cd BiblioIUC
-- > >dotnet watch run
+- > cd BiblioIUC
+- > dotnet watch run
 - Scaffolding en cas de modification de la DB
 	- Menu Tools -> Nuget package manager -> Package manager console 
 		> Scaffold-DbContext -connection name=MySql -provider Pomelo.EntityFrameworkCore.MySql -context BiblioEntities -o Entities -f

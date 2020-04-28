@@ -50,30 +50,30 @@
                     <span>@Text.Documents</span>
                 </a>
                 @*<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Components:</h6>
-                        <a class="collapse-item" href="#">Buttons</a>
-                        <a class="collapse-item" href="#">Cards</a>
-                    </div>
-                </div>*@
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Custom Components:</h6>
+                    <a class="collapse-item" href="#">Buttons</a>
+                    <a class="collapse-item" href="#">Cards</a>
+                </div>
+            </div>*@
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link"  asp-action="Index" asp-controller="Category" asp-route-Id="@null">
+                <a class="nav-link" asp-action="Index" asp-controller="Category" asp-route-Id="@null">
                     <i class="fas fa-layer-group"></i>
                     <span>@Text.Categories</span>
                 </a>
                 @*<div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="#">Colors</a>
-                        <a class="collapse-item" href="#">Borders</a>
-                        <a class="collapse-item" href="#">Animations</a>
-                        <a class="collapse-item" href="#">Other</a>
-                    </div>
-                </div>*@
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Custom Utilities:</h6>
+                    <a class="collapse-item" href="#">Colors</a>
+                    <a class="collapse-item" href="#">Borders</a>
+                    <a class="collapse-item" href="#">Animations</a>
+                    <a class="collapse-item" href="#">Other</a>
+                </div>
+            </div>*@
             </li>
 
             <!-- Divider -->
@@ -84,45 +84,45 @@
                 @Text.Settings
             </div>
 
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                   aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="#">Login</a>
-                        <a class="collapse-item" href="#">Register</a>
-                        <a class=" collapse-item" href="#">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="#">404 Page</a>
-                        <a class="collapse-item" href="#">Blank Page</a>
-                    </div>
+            @*<!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+               aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Pages</span>
+            </a>
+            <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Login Screens:</h6>
+                    <a class="collapse-item" href="#">Login</a>
+                    <a class="collapse-item" href="#">Register</a>
+                    <a class=" collapse-item" href="#">Forgot Password</a>
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Other Pages:</h6>
+                    <a class="collapse-item" href="#">404 Page</a>
+                    <a class="collapse-item" href="#">Blank Page</a>
                 </div>
-            </li>
+            </div>
+        </li>
 
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span>
-                </a>
-            </li>
+        <!-- Nav Item - Charts -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Charts</span>
+            </a>
+        </li>
 
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span>
-                </a>
-            </li>
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Tables</span>
+            </a>
+        </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block" />
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block" />*@
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
@@ -171,16 +171,17 @@
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                                  aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
+                                <form method="get" action="@Url.Action(Model.SearchAction, Model.SearchController)" class="form-inline mr-auto w-100 navbar-search">
                                     <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                               placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                        <input type="text" asp-for="SearchValue" class="form-control bg-light border-0 small"
+                                               placeholder="@Model.SearchPlaceHolder" aria-label="Search" aria-describedby="basic-addon2">
                                         <div class="input-group-append">
                                             <button class="btn btn-success" type="button">
                                                 <i class="fas fa-search fa-sm"></i>
                                             </button>
                                         </div>
                                     </div>
+                                    <partial name="_LayoutInput" model="Model" />
                                 </form>
                             </div>
                         </li>

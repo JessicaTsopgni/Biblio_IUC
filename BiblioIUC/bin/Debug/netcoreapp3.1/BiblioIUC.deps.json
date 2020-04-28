@@ -25,6 +25,7 @@
       "BiblioIUC/1.0.0": {
         "dependencies": {
           "Bricelam.EntityFrameworkCore.Pluralizer": "1.0.0",
+          "GhostScript.NetCore": "1.0.1",
           "Microsoft.AspNetCore.Http.Extensions": "2.2.0",
           "Microsoft.AspNetCore.Session": "2.2.0",
           "Microsoft.EntityFrameworkCore.Design": "3.1.3",
@@ -335,6 +336,21 @@
         },
         "compile": {
           "lib/netstandard2.0/Dapper.dll": {}
+        }
+      },
+      "GhostScript.NetCore/1.0.1": {
+        "dependencies": {
+          "Microsoft.Win32.Registry": "4.7.0",
+          "System.Drawing.Common": "4.7.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/GhostScript.Net.Core.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/GhostScript.Net.Core.dll": {}
         }
       },
       "Microsoft.AspNetCore.Cryptography.Internal/2.2.0": {},
@@ -3941,6 +3957,13 @@
       "sha512": "sha512-nL0VEpvunjIQ3jTI1x27b7BS3BnRnn5b2vhxsU2pWEd9SljF5WUQLoV/83qXTm0yaHmejRV/ndI3EApGlrgPqw==",
       "path": "dapper/2.0.30",
       "hashPath": "dapper.2.0.30.nupkg.sha512"
+    },
+    "GhostScript.NetCore/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FwTUxgIyBzNaQpuC9cij1/oEPmayu+BUQnE6zrbbNiW23/Ts07yUqpk8ePxUMKZjF+VHrFjzYF0lmCC4q33GSQ==",
+      "path": "ghostscript.netcore/1.0.1",
+      "hashPath": "ghostscript.netcore.1.0.1.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/2.2.0": {
       "type": "package",

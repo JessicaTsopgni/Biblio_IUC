@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "5Zb24iwcycA6PNrUR/B9bcxfqfCVGURFN6NfHuALf+WDx9Dc9m/8VnXExDMy06FgfxvcGL5xzS6Iq3JOM0IpcQ==",
+  "dgSpecHash": "uRvcXVzXwd1Q34whQ1gC/JsHJzSIZPPZQf+PCXesjrj2g3LabrcaVddAsCFvx9MRndi9zeenVF5577JGn1fl+A==",
   "success": true,
   "projectFilePath": "C:\\Users\\LENOVO\\source\\repos\\BiblioIUC\\Biblio_IUC\\BiblioIUC\\BiblioIUC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LENOVO\\.nuget\\packages\\bricelam.entityframeworkcore.pluralizer\\1.0.0\\bricelam.entityframeworkcore.pluralizer.1.0.0.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\dapper\\2.0.30\\dapper.2.0.30.nupkg.sha512",
+    "C:\\Users\\LENOVO\\.nuget\\packages\\ghostscript.netcore\\1.0.1\\ghostscript.netcore.1.0.1.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.cryptography.internal\\2.2.0\\microsoft.aspnetcore.cryptography.internal.2.2.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.dataprotection\\2.2.0\\microsoft.aspnetcore.dataprotection.2.2.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.dataprotection.abstractions\\2.2.0\\microsoft.aspnetcore.dataprotection.abstractions.2.2.0.nupkg.sha512",

@@ -51,10 +51,17 @@ namespace BiblioIUC.Logics
             {
                 query = query.Where(x => x.CategoryParentId == id);
             }
-            else
-            if (categoryParentId > 0)
+            else if (categoryParentId > 0)
             {
-                query = query.Where(x => x.InverseCategoryParent.Any(y=> y.CategoryParentId == categoryParentId));
+                var categoryOfParentParentId = (await biblioEntities.Categories.FindAsync(categoryParentId))?.CategoryParentId;
+                 query = query.Where(x => x.CategoryParentId == categoryOfParentParentId);
+            }
+            else if(string.IsNullOrWhiteSpace(value))
+            {
+                query = query.Where
+                (
+                    x => x.CategoryParentId == null
+                );
             }
             else
             {

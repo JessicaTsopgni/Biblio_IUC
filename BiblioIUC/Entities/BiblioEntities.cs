@@ -84,8 +84,8 @@ namespace BiblioIUC.Entities
                 entity.HasIndex(e => e.CategoryId)
                     .HasName("fk_document_category");
 
-                entity.HasIndex(e => e.Isbn)
-                    .HasName("ix_isbn")
+                entity.HasIndex(e => e.Code)
+                    .HasName("ix_code")
                     .IsUnique();
 
                 entity.Property(e => e.Id)
@@ -123,9 +123,9 @@ namespace BiblioIUC.Entities
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                entity.Property(e => e.Isbn)
+                entity.Property(e => e.Code)
                     .IsRequired()
-                    .HasColumnName("isbn")
+                    .HasColumnName("code")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");

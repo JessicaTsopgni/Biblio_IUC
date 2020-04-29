@@ -113,7 +113,7 @@ $('input, textarea, select').not('input[type="hidden"], input[type="checkbox"]')
     var req = $(this).attr('data-val-required');
     var disabled = $(this).attr('disabled');
     if (undefined !== req && disabled === undefined) {
-        var label = $('label[for="' + $(this).attr('id') + '"]');
+        var label = $('label[for="' + $(this).attr('id') + '"]').not('label[data-asterix="false"]');
         var text = label.text();
         var html = label.html();
         var asterix = '<span style="color:red"> *</span>';

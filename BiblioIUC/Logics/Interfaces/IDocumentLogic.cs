@@ -15,7 +15,7 @@ namespace BiblioIUC.Logics.Interfaces
         Task<DocumentModel> GetAsync(int id, string mediaFolderPath);
         Task<DocumentModel> SetAsync(DocumentModel documentModel, 
             string mediaFolderPath, string PrefixDocumentImageName, string PrefixDocumentFileName);
-        Task<bool> IsbnAlreadyExistsAsync(string name, int id);
+        Task<bool> CodeAlreadyExistsAsync(string name, int id);
         Task<DocumentModel> AddAsync(DocumentModel documentModel, 
             string mediaFolderPath, string PrefixDocumentImageName, string PrefixDocumentFileName);
         Task RemoveAsync(int id, string mediaFolderPath);

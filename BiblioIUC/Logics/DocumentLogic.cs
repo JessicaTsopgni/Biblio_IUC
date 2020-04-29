@@ -75,6 +75,7 @@ namespace BiblioIUC.Logics
             return document != null ? new DocumentModel
             (
                 document,
+                mediaFolderPath,
                 mediaFolderPath
             ) : null;
         }
@@ -104,14 +105,14 @@ namespace BiblioIUC.Logics
             }
         }
 
-        public async Task<bool> IsbnAlreadyExistsAsync(string name, int id)
+        public async Task<bool> CodeAlreadyExistsAsync(string name, int id)
         {
             try
             {
                 return await biblioEntities.Documents.SingleOrDefaultAsync
                 (
                     x =>
-                    x.Isbn.Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                    x.Code.Equals(name, StringComparison.OrdinalIgnoreCase) &&
                     x.Id != id
                 ) != null;
             }
@@ -134,7 +135,7 @@ namespace BiblioIUC.Logics
 
                 if (Tools.OssFile.HasImage(documentModel.ImageUploaded))
                 {
-                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 200 * 1024, PrefixDocumentImageName, mediaBasePath); ;
+                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, PrefixDocumentImageName, mediaBasePath); ;
                 }
 
                 if (Tools.OssFile.HasFile(documentModel.FileUploaded))
@@ -145,9 +146,10 @@ namespace BiblioIUC.Logics
                 Document newDocument = new Document
                 (
                     documentModel.Id,
-                    documentModel.Isbn,
+                    documentModel.Code,
                     documentModel.Title,
                     documentModel.Subtitle,
+                    documentModel.Author,
                     documentModel.Description,
                     documentModel.Language,
                     documentModel.PublishDate,
@@ -163,7 +165,7 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Documents.Add(newDocument);
                 await biblioEntities.SaveChangesAsync();
-                return new DocumentModel(newDocument, mediaFolderPath);
+                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath);
             }
             catch (Exception ex)
             {
@@ -193,10 +195,10 @@ namespace BiblioIUC.Logics
 
                 if (Tools.OssFile.HasImage(documentModel.ImageUploaded))
                 {
-                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 200 * 1024, PrefixDocumentImageName, mediaBasePath); ;
+                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, PrefixDocumentImageName, mediaBasePath); ;
                     Tools.OssFile.DeleteFile(currentDocument.Image, mediaBasePath);
                 }
-                else if (!string.IsNullOrEmpty(currentDocument.Image) && documentModel.DeletePhoto)
+                else if (!string.IsNullOrEmpty(currentDocument.Image) && documentModel.DeleteImage)
                 {
                     Tools.OssFile.DeleteFile(currentDocument.Image, mediaBasePath);
                 }
@@ -220,9 +222,10 @@ namespace BiblioIUC.Logics
                 Document newDocument = new Document
                (
                    documentModel.Id,
-                   documentModel.Isbn,
+                   documentModel.Code,
                    documentModel.Title,
                    documentModel.Subtitle,
+                   documentModel.Author,
                    documentModel.Description,
                    documentModel.Language,
                    documentModel.PublishDate,
@@ -238,7 +241,7 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Entry(currentDocument).CurrentValues.SetValues(newDocument);
                 await biblioEntities.SaveChangesAsync();
-                return new DocumentModel(newDocument, mediaFolderPath);
+                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath);
             }
             catch (Exception ex)
             {

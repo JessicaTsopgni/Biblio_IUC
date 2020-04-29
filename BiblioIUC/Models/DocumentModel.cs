@@ -14,11 +14,11 @@ namespace BiblioIUC.Models
     public class DocumentModel:BaseModel
     {
 
-        [Display(Name = "ISBN", ResourceType = typeof(Text))]
+        [Display(Name = "Code", ResourceType = typeof(Text))]
         [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
         [MaxLength(50, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
-        [Remote("IsbnExists", "Document", AdditionalFields = "Id", ErrorMessageResourceName = "x_already_existant", ErrorMessageResourceType = typeof(Text))]
-        public string Isbn { get; set; }
+        [Remote("CodeExists", "Document", AdditionalFields = "Id", ErrorMessageResourceName = "x_already_existant", ErrorMessageResourceType = typeof(Text))]
+        public string Code { get; set; }
 
         [Display(Name = "Title", ResourceType = typeof(Text))]
         [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
@@ -30,8 +30,13 @@ namespace BiblioIUC.Models
         [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         public string Subtitle { get; set; }
 
-        [Display(Name = "Description", ResourceType = typeof(Text))]
+
+        [Display(Name = "Author", ResourceType = typeof(Text))]
+        [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
+        public string Author { get; set; }
+
+        [Display(Name = "Description", ResourceType = typeof(Text))]
         [MaxLength(500, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         public string Description { get; set; }
 
@@ -41,14 +46,14 @@ namespace BiblioIUC.Models
         public string Language { get; set; }
 
         [Display(Name = "Publish_date", ResourceType = typeof(Text))]
-        public DateTime PublishDate { get; set; }
+        public DateTime? PublishDate { get; set; }
 
         [Display(Name = "Publisher", ResourceType = typeof(Text))]
-        [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
         [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         public string Publisher { get; set; }
 
         [Display(Name = "Number_of_pages", ResourceType = typeof(Text))]
+        [Range(1, int.MaxValue, ErrorMessageResourceName = "x_minimum_value_is_y", ErrorMessageResourceType = typeof(Text))]
         public int NumberOfPages { get; set; }
 
         [Display(Name = "Contributors", ResourceType = typeof(Text))]
@@ -59,12 +64,14 @@ namespace BiblioIUC.Models
         [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
         public IFormFile FileUploaded { get; set; }
 
-
         [Display(Name = "Category", ResourceType = typeof(Text))]
         public int CategoryId { get; set; }
 
         [Display(Name = "Category", ResourceType = typeof(Text))]
         public string CategoryName { get; }
+
+        [Display(Name = "The_document", ResourceType = typeof(Text))]
+        public string FileLink { get; protected set; }
 
         public IEnumerable<SelectListItem> CategoryModels { get; set; }
 
@@ -78,11 +85,33 @@ namespace BiblioIUC.Models
         {
         }
 
-        public DocumentModel(Document document, string imageLinkBaseUrl)
+
+        private DocumentModel(int id, string code, string title, string subtitle, string author,
+            string description, string language, DateTime? publishDate, string publisher,
+            int numberOfPages, string contributors, int categoryId, 
+            StatusOptions status):this(id, status)
+        {
+            Code = code;
+            Title = title;
+            Subtitle = subtitle;
+            Author = author;
+            Description = description;
+            Language = language;
+            PublishDate = publishDate;
+            Publisher = publisher;
+            NumberOfPages = numberOfPages;
+            Contributors = contributors;
+            CategoryId = categoryId;
+        }
+
+
+        public DocumentModel(Document document, string imageLinkBaseUrl, string fileLinkBaseUrl)
           : this(document?.Id ?? 0, 
                 (StatusOptions)(document?.Status ?? 0))
         {
+            CategoryName = document?.Category?.Name;
             ImageLink = !string.IsNullOrEmpty(document?.Image) ? $"{imageLinkBaseUrl}/{document?.Image}" : null;
+            FileLink = !string.IsNullOrEmpty(document?.File) ? $"{fileLinkBaseUrl}/{document?.File}" : null;
         }
 
         public DocumentModel(IEnumerable<CategoryModel> categories, int? categoryId,

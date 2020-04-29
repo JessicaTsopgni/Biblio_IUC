@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  Dim 26 avr. 2020 à 19:16
+-- Généré le :  lun. 27 avr. 2020 à 22:20
 -- Version du serveur :  5.7.23
 -- Version de PHP :  7.2.10
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `category` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_name` (`name`),
   KEY `fk_category_category` (`category_parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `category`
@@ -53,7 +53,9 @@ INSERT INTO `category` (`id`, `name`, `description`, `category_parent_id`, `imag
 (34, 'sdb', 'bdS', NULL, NULL, 1),
 (35, 'jon snow', NULL, 1, NULL, 1),
 (37, 'test', NULL, 1, 'cat_0a425f0d-ec0b-441a-9ac7-f6b16826c3b3.webp', 1),
-(39, 'test 2', NULL, NULL, NULL, 1);
+(39, 'test 2', NULL, NULL, NULL, 1),
+(40, 'Amour', 'Aimer c\'est souffrir', NULL, 'cat_45f3f5ed-e575-49ac-8700-8f746db91042.png', 1),
+(41, 'Amour passionnel', NULL, 40, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -64,21 +66,22 @@ INSERT INTO `category` (`id`, `name`, `description`, `category_parent_id`, `imag
 DROP TABLE IF EXISTS `document`;
 CREATE TABLE IF NOT EXISTS `document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `isbn` varchar(50) NOT NULL,
+  `code` varchar(50) NOT NULL,
   `title` varchar(100) NOT NULL,
   `subtitle` varchar(100) DEFAULT NULL,
-  `description` varchar(500) NOT NULL,
+  `author` varchar(100) NOT NULL,
+  `description` varchar(500) DEFAULT NULL,
   `language` varchar(50) NOT NULL,
-  `publish_date` date NOT NULL,
-  `publisher` varchar(100) NOT NULL,
+  `publish_date` date DEFAULT NULL,
+  `publisher` varchar(100) DEFAULT NULL,
   `number_of_pages` int(11) NOT NULL,
-  `contributors` varchar(300) NOT NULL,
+  `contributors` varchar(300) DEFAULT NULL,
   `category_id` int(11) NOT NULL,
   `image` varchar(50) DEFAULT NULL,
   `file` varchar(500) NOT NULL,
   `status` smallint(6) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ix_isbn` (`isbn`),
+  UNIQUE KEY `ix_code` (`code`) USING BTREE,
   KEY `fk_document_category` (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -99,14 +102,16 @@ CREATE TABLE IF NOT EXISTS `user` (
   `status` smallint(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_unq_account` (`account`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `user`
 --
 
 INSERT INTO `user` (`id`, `account`, `password`, `full_name`, `role`, `image`, `status`) VALUES
-(1, 'admin', 'admin12345', 'Administrator', 0, 'pp_3bcd4182-b72a-49eb-a6c1-b48beeb3f6bd.png', 1);
+(1, 'admin', 'admin12345', 'Administrator', 0, 'pp_3bcd4182-b72a-49eb-a6c1-b48beeb3f6bd.png', 1),
+(2, 'etudiant', '123456789', 'Toto jean de Dieu', 1, NULL, 1),
+(3, 'enseignant', '123456789', 'Kankan Michel', 2, NULL, 1);
 
 --
 -- Contraintes pour les tables déchargées
@@ -116,13 +121,13 @@ INSERT INTO `user` (`id`, `account`, `password`, `full_name`, `role`, `image`, `
 -- Contraintes pour la table `category`
 --
 ALTER TABLE `category`
-  ADD CONSTRAINT `fk_category_category` FOREIGN KEY (`category_parent_id`) REFERENCES `category` (`id`);
+  ADD CONSTRAINT `fk_category_category` FOREIGN KEY (`category_parent_id`) REFERENCES `category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `document`
 --
 ALTER TABLE `document`
-  ADD CONSTRAINT `fk_document_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
+  ADD CONSTRAINT `fk_document_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

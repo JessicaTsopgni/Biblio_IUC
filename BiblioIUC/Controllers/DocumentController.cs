@@ -254,9 +254,9 @@ namespace BiblioIUC.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<JsonResult> IsbnExists(string name, int id)
+        public async Task<JsonResult> CodeExists(string name, int id)
         {
-            bool b = await documentLogic.IsbnAlreadyExistsAsync(name, id);
+            bool b = await documentLogic.CodeAlreadyExistsAsync(name, id);
             return new JsonResult(!b);
         }
     }

@@ -227,7 +227,7 @@ namespace BiblioIUC.Logics
                     newFileName = Tools.OssFile.SaveImage(categoryModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, PrefixCategoryImageName, mediaBasePath); ;
                     Tools.OssFile.DeleteFile(currentCategory.Image, mediaBasePath);
                 }
-                else if (!string.IsNullOrEmpty(currentCategory.Image) && categoryModel.DeletePhoto)
+                else if (!string.IsNullOrEmpty(currentCategory.Image) && categoryModel.DeleteImage)
                 {
                     Tools.OssFile.DeleteFile(currentCategory.Image, mediaBasePath);
                 }

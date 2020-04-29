@@ -63,8 +63,20 @@ namespace BiblioIUC.Models
         {
             CategoryParentName = category?.CategoryParent?.Name;
             ImageLink = !string.IsNullOrEmpty(category?.Image) ? $"{imageLinkBaseUrl}/{category?.Image}" : null;
-            NumberOfDocuments = new Random().Next(0, 10000);
+            NumberOfDocuments = countDocument(category);
             NumberOfSubCategories = category?.InverseCategoryParent.Count() ?? 0;
+        }
+
+        private int countDocument(Category category)
+        {
+            if (category == null) return 0;
+            int count = category.Documents.Count();
+            //if (category.InverseCategoryParent.Count() == 0) return 0;
+            foreach(Category c in category.InverseCategoryParent)
+            {
+                count += countDocument(c);
+            }
+            return count;
         }
 
         public CategoryModel(IEnumerable<CategoryModel> categoryParents, int? categoryParentId,

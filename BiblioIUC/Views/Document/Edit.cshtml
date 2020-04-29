@@ -8,41 +8,31 @@
 </div>
 
 <form method="post" asp-action="Edit" asp-controller="Document" enctype="multipart/form-data">
-    <partial name="_LayoutInput" model="Model"/>
+    <partial name="_LayoutInput" model="Model" />
     <input type="hidden" asp-for="DataModel.Id" />
-    @*<div class="row">
-        <div class="col-md-6">
+    <div class="row">
+        <div class="col-md-4">
             <div class="form-group">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" type="text" class="form-control" placeholder="@Text.Category_name" />
-                <span class="text-danger" asp-validation-for="Name"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description"></label>
-                <textarea asp-for="Description" class="form-control" placeholder="@Text.Category_description"></textarea>
-                <span class="text-danger" asp-validation-for="Description"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryParentId"></label>
-                <select class="custom-select" asp-for="CategoryParentId" asp-items="@Model.CategoryParentModels">
-                    <option value="">(@Text.None)</option>
-                </select>
-                <span class="text-danger" asp-validation-for="CategoryParentId"></span>
-            </div>
-            <div class="form-group">
-                <label>@Text.Status</label>
-                <input hidden asp-for="Status" />
-                <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
-                    <input type="checkbox" onchange="$('#@Html.IdFor(x=> x.Status)').val($(this).is(':checked') ? 1 : 0);$('#state_label').html($(this).is(':checked') ? '@Text.Actived' : '@Text.Disabled')" class="custom-control-input" asp-for="State">
-                    <label class="custom-control-label" id="state_label" asp-for="State">@Model.StatusName</label>
+                <div class="row">
+                    <div class="col-auto mr-auto">
+                        <label asp-for="DataModel.FileUploaded">@Text.The_document</label>
+                    </div>
+                    <div class="col-auto">
+                        <a href="#" id="extract" style="display:none">
+                            <i class="fas fa-file-export"></i> @Text.Extract_metadata
+                        </a>
+                    </div>
+                </div>
+                <div class="custom-file">
+                    <input type="file" accept="application/pdf" class="custom-file-input" asp-for="DataModel.FileUploaded">
+                    <label class="custom-file-label truncate" data-asterix="false" asp-for="DataModel.FileUploaded">@Text.Upload_the_document <i class="fas fa-file-pdf text-danger"></i></label>
+                    <span class="text-danger" asp-validation-for="DataModel.FileUploaded"></span>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
             <div class="form-group">
                 <div class="row">
                     <div class="col-md-7">
-                        <label>@Text.Illustrative_image <i>(max. : 2Mo)</i></label>
+                        <label>@Text.Cover_image <i style="font-size:10px">(max. : 2Mo)</i></label>
                     </div>
                     <div id="cropper_btn" class="col-md-5 justify-content-end d-flex" style="display:none !important">
                         <button type="button" onclick="cropper_rotate_left()" class="btn btn-outline-primary btn-circle-mini">
@@ -60,10 +50,10 @@
                     </div>
                 </div>
                 <div id="preview" class="card justify-content-center align-items-center"
-                     style="height: 310px;background-color: transparent;">
-                    @if (!string.IsNullOrEmpty(Model?.ImageLink))
+                     style="height: 320px;background-color: transparent;">
+                    @if (!string.IsNullOrEmpty(Model?.DataModel.ImageLink))
                     {
-                        <img id="@Html.IdFor(x=> x.ImageLink)" src="@Url.Content(Model.ImageLink)" class="img-fluid rounded" />
+                        <img id="@Html.IdFor(x=> x.DataModel.ImageLink)" src="@Url.Content(Model.DataModel.ImageLink)" class="img-fluid rounded" />
                     }
                     else
                     {
@@ -72,11 +62,11 @@
                 </div>
                 <div class="row">
                     <div class="col-md-8">
-                        @if (!string.IsNullOrEmpty(Model?.ImageLink))
+                        @if (!string.IsNullOrEmpty(Model?.DataModel.ImageLink))
                         {
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" asp-for="DeletePhoto">
-                                <label class="custom-control-label" asp-for="DeletePhoto"></label>
+                            <div class="custom-control custom-checkbox" style="font-size:12px">
+                                <input type="checkbox" class="custom-control-input" asp-for="DataModel.DeleteImage">
+                                <label class="custom-control-label pt-1" asp-for="DataModel.DeleteImage"></label>
                             </div>
                         }
                     </div>
@@ -87,15 +77,102 @@
                 <input type="file" accept="image/*" id="photo_input" style="display: none;" onchange="readURL(this, $('#preview'), 2 * 1024, $('#preview').width(), $('#preview').height(), custum_cropper)" />
             </div>
         </div>
-    </div>*@
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="DataModel.Code"></label>
+                <input asp-for="DataModel.Code" type="text" class="form-control" placeholder="@Text.Document_code_or_isbn" />
+                <span class="text-danger" asp-validation-for="DataModel.Code"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Title"></label>
+                <input asp-for="DataModel.Title" type="text" class="form-control" placeholder="@Text.Document_title" />
+                <span class="text-danger" asp-validation-for="DataModel.Title"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Subtitle"></label>
+                <input asp-for="DataModel.Subtitle" type="text" class="form-control" placeholder="@Text.Document_subtitle" />
+                <span class="text-danger" asp-validation-for="DataModel.Subtitle"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Author"></label>
+                <input asp-for="DataModel.Author" type="text" class="form-control" placeholder="@Text.Document_author" />
+                <span class="text-danger" asp-validation-for="DataModel.Author"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Contributors"></label>
+                <textarea asp-for="DataModel.Contributors" class="form-control" placeholder="@Text.Document_contributors"></textarea>
+                <span class="text-danger" asp-validation-for="DataModel.Contributors"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="DataModel.CategoryId"></label>
+                <select class="custom-select" asp-for="DataModel.CategoryId" asp-items="@Model.DataModel.CategoryModels">
+                    <option value="">@Text.Choose_a_category</option>
+                </select>
+                <span class="text-danger" asp-validation-for="DataModel.CategoryId"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Publisher"></label>
+                <input type="text" asp-for="DataModel.Publisher" class="form-control" placeholder="@Text.Document_publisher" />
+                <span class="text-danger" asp-validation-for="DataModel.Publisher"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="DataModel.Language"></label>
+                        <input asp-for="DataModel.Language" type="text" class="form-control" placeholder="@Text.Document_language" />
+                        <span class="text-danger" asp-validation-for="DataModel.Language"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="DataModel.PublishDate"></label>
+                        <input type="date" asp-for="DataModel.PublishDate" class="form-control" placeholder="@Text.Document_publish_date" />
+                        <span class="text-danger" asp-validation-for="DataModel.PublishDate"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="DataModel.NumberOfPages"></label>
+                        <input type="number" asp-for="DataModel.NumberOfPages" class="form-control" placeholder="@Text.Document_number_of_pages" />
+                        <span class="text-danger" asp-validation-for="DataModel.NumberOfPages"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>@Text.Status</label>
+                        <div class="custom-control h5 custom-switch custom-switch-adaptive pt-1" style="width:100%">
+                            <input asp-for="DataModel.State" type="checkbox" class="custom-control-input" onchange="$('#@Html.IdFor(x=> x.DataModel.Status)').val($(this).is(':checked') ? 1 : 0);$('#state_label').html($(this).is(':checked') ? '@Text.Actived' : '@Text.Disabled')">
+                            <label asp-for="DataModel.State" id="state_label" class="custom-control-label">@Model.DataModel.StatusName</label>
+                        </div>
+                        <input type="hidden" asp-for="DataModel.Status" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Description"></label>
+                <textarea asp-for="DataModel.Description" class="form-control" placeholder="@Text.Document_description"></textarea>
+                <span class="text-danger" asp-validation-for="DataModel.Description"></span>
+            </div>
+        </div>
+    </div>
     <div class="row flex-row-reverse">
-        <div class="col-md-6 mb-4">
+        <div class="col-md-4 mb-3">
             <button type="submit" class="btn btn-success btn-block">
                 <i class="fas fa-check"></i>
                 @Text.Save
             </button>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4 mb-3">
+            <button type="submit" class="btn btn-outline-success btn-block">
+                <i class="fas fa-save"></i>
+                <small>@Text.Save_and_update_metadata_file</small>
+            </button>
+        </div>
+        <div class="col-md-4">
             <a href="@Model.ReturnUrl" class="btn btn-secondary btn-block">
                 <i class="fas fa-undo"></i>
                 @Text.Cancel
@@ -121,7 +198,7 @@
             cropper = new Cropper(
                 img,
                 {
-                    aspectRatio: 1/1
+                    aspectRatio: 2/3
                 }
             );
             cropper.crop();
@@ -184,5 +261,18 @@
             for (b = (new ClipboardEvent('')).clipboardData || new DataTransfer; c--;) b.items.add(a[c])
             return b.files
         }
+        var inputFileDegaultText = $('#@Html.IdFor(x=>x.DataModel.FileUploaded)').siblings(".custom-file-label").html();
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            if (!fileName) {
+                fileName = inputFileDegaultText;
+                $(this).removeClass("valid");
+                $('#extract').hide();
+            } else {
+                $(this).addClass("valid");
+                $('#extract').show();
+            }
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
     </script>
 }

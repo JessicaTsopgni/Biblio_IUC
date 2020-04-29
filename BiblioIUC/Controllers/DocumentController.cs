@@ -34,18 +34,6 @@ namespace BiblioIUC.Controllers
             this.env = env;
         }
 
-        [AllowAnonymous]
-        public string Test()
-        {
-            var mediaBasePath = Path.Combine(env.WebRootPath, configuration["MediaFolderPath"].Replace("~/", string.Empty));
-            (
-                Path.Combine(mediaBasePath, "cSharp.pdf"),
-                Path.Combine(mediaBasePath, "thumb.png"),
-                1
-            );
-            return Path.Combine(mediaBasePath, "thumb.png");
-        }
-
         public async Task<IActionResult> Index(LayoutModel layoutModel)
         {
             try

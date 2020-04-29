@@ -108,9 +108,9 @@ namespace BiblioIUC.Controllers
                     configuration["MediaFolderPath"]
                 );
                 var profileModel = new ProfileModel(userModel);
-                var pageModel = new PageModel<UserModel>
+                var pageModel = new PageModel<ProfileModel>
                 (
-                    userModel,
+                    profileModel,
                     layoutModel
                 );
                 return View(pageModel);

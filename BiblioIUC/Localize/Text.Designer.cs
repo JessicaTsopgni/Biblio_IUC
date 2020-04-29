@@ -97,6 +97,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auteur.
+        /// </summary>
+        public static string Author {
+            get {
+                return ResourceManager.GetString("Author", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Librairie.
         /// </summary>
         public static string Bookstore {
@@ -169,11 +178,38 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choisir une catégorie.
+        /// </summary>
+        public static string Choose_a_category {
+            get {
+                return ResourceManager.GetString("Choose_a_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code / ISBN.
+        /// </summary>
+        public static string Code {
+            get {
+                return ResourceManager.GetString("Code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contributeurs.
         /// </summary>
         public static string Contributors {
             get {
                 return ResourceManager.GetString("Contributors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image de couverture.
+        /// </summary>
+        public static string Cover_image {
+            get {
+                return ResourceManager.GetString("Cover_image", resourceCulture);
             }
         }
         
@@ -304,6 +340,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auteur du document.
+        /// </summary>
+        public static string Document_author {
+            get {
+                return ResourceManager.GetString("Document_author", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Catégories de document.
         /// </summary>
         public static string Document_categories {
@@ -313,11 +358,92 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code ou ISBN du document.
+        /// </summary>
+        public static string Document_code_or_isbn {
+            get {
+                return ResourceManager.GetString("Document_code_or_isbn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contributeurs du document.
+        /// </summary>
+        public static string Document_contributors {
+            get {
+                return ResourceManager.GetString("Document_contributors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description ou resumé du document.
+        /// </summary>
+        public static string Document_description {
+            get {
+                return ResourceManager.GetString("Document_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Langue du document.
+        /// </summary>
+        public static string Document_language {
+            get {
+                return ResourceManager.GetString("Document_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aucun document trouvé !.
         /// </summary>
         public static string Document_not_found {
             get {
                 return ResourceManager.GetString("Document_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nombre de pages du document.
+        /// </summary>
+        public static string Document_number_of_pages {
+            get {
+                return ResourceManager.GetString("Document_number_of_pages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date de publication du document.
+        /// </summary>
+        public static string Document_publish_date {
+            get {
+                return ResourceManager.GetString("Document_publish_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editeur du document.
+        /// </summary>
+        public static string Document_publisher {
+            get {
+                return ResourceManager.GetString("Document_publisher", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sous-titre du document.
+        /// </summary>
+        public static string Document_subtitle {
+            get {
+                return ResourceManager.GetString("Document_subtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Titre du document.
+        /// </summary>
+        public static string Document_title {
+            get {
+                return ResourceManager.GetString("Document_title", resourceCulture);
             }
         }
         
@@ -390,6 +516,15 @@ namespace BiblioIUC.Localize {
         public static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extraire les métadonnées.
+        /// </summary>
+        public static string Extract_metadata {
+            get {
+                return ResourceManager.GetString("Extract_metadata", resourceCulture);
             }
         }
         
@@ -619,6 +754,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enregistrer &amp; mettre à jour les métadonnées du document.
+        /// </summary>
+        public static string Save_and_update_metadata_file {
+            get {
+                return ResourceManager.GetString("Save_and_update_metadata_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enregistrement réussi !.
         /// </summary>
         public static string Save_done {
@@ -763,6 +907,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Charger le document.
+        /// </summary>
+        public static string Upload_the_document {
+            get {
+                return ResourceManager.GetString("Upload_the_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Voir les documents.
         /// </summary>
         public static string View_documents {
@@ -804,6 +957,15 @@ namespace BiblioIUC.Localize {
         public static string x_and_y_doesn_t_matches {
             get {
                 return ResourceManager.GetString("x_and_y_doesn_t_matches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} min est {1} !.
+        /// </summary>
+        public static string x_minimum_value_is_y {
+            get {
+                return ResourceManager.GetString("x_minimum_value_is_y", resourceCulture);
             }
         }
         

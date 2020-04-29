@@ -67,8 +67,8 @@
                         @if (!string.IsNullOrEmpty(Model?.DataModel.ImageLink))
                         {
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" asp-for="DataModel.DeletePhoto">
-                                <label class="custom-control-label" asp-for="DataModel.DeletePhoto"></label>
+                                <input type="checkbox" class="custom-control-input" asp-for="DataModel.DeleteImage">
+                                <label class="custom-control-label" asp-for="DataModel.DeleteImage"></label>
                             </div>
                         }
                     </div>
@@ -81,7 +81,7 @@
         </div>
     </div>
     <div class="row flex-row-reverse">
-        <div class="col-md-6 mb-4">
+        <div class="col-md-6 mb-3">
             <button type="submit" class="btn btn-success btn-block">
                 <i class="fas fa-check"></i>
                 @Text.Save

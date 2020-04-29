@@ -138,7 +138,7 @@ namespace BiblioIUC.Logics
                     newFileName = Tools.OssFile.SaveImage(profileModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaBasePath); ;
                     Tools.OssFile.DeleteFile(currentUser.Image, mediaBasePath);
                 }
-                else if (!string.IsNullOrEmpty(currentUser.Image) && profileModel.DeletePhoto)
+                else if (!string.IsNullOrEmpty(currentUser.Image) && profileModel.DeleteImage)
                 {
                     Tools.OssFile.DeleteFile(currentUser.Image, mediaBasePath);
                 }

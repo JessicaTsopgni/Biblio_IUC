@@ -84,7 +84,7 @@ namespace BiblioIUC.Logics.Tools
             string relativeFolderPath)
         {
             string newFileName = GetNewFileName(file, filePrefixName);
-            var filePath = Path.Combine(relativeFolderPath, filePrefixName);
+            var filePath = Path.Combine(relativeFolderPath, newFileName);
             using (var stream = File.Create(filePath))
             {
                 await file.CopyToAsync(stream);
@@ -489,12 +489,11 @@ namespace BiblioIUC.Logics.Tools
             if (destination == null || destination.Length == 0)
                 destination = source;
 
-                destination = source;
-
             var nextRatio = ratio;
             System.IO.MemoryStream ms;
             System.Drawing.Image image;
             System.Drawing.Bitmap bmp1;
+            int previousLength = source.Length;
             while (nextRatio > 0 && (destination.Length < minByteWeight || destination.Length > maxByteWeight))
             {
                 using (image = System.Drawing.Image.FromStream(new System.IO.MemoryStream(source)))
@@ -506,6 +505,11 @@ namespace BiblioIUC.Logics.Tools
                         {
                             bmp1.Save(ms, imageCodecInfo, encoderParameters);
                             destination = ms.ToArray();
+                            if(destination.Length == previousLength)
+                            {
+                                break;
+                            }
+                            previousLength = destination.Length;
                             if (destination.LongLength > maxByteWeight)
                             {
                                 if (nextRatio > 10)

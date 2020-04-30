@@ -279,6 +279,9 @@
   <data name="Full_name" xml:space="preserve">
     <value>Nom complet</value>
   </data>
+  <data name="Generate" xml:space="preserve">
+    <value>Générer</value>
+  </data>
   <data name="Illustrative_image" xml:space="preserve">
     <value>Image illustrative</value>
   </data>

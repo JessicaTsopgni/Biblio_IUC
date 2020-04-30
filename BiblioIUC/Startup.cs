@@ -47,7 +47,7 @@ namespace BiblioIUC
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddFile("Logs/log-{Date}.log");
+            loggerFactory.AddFile("Log/log-{Date}.log");
 
             if (env.IsDevelopment())
             {

@@ -88,6 +88,21 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GenerateCode()
+        {
+            try
+            {
+                return Json(await documentLogic.GenerateCodeAsync(configuration["DocumentCodePrefix"]));
+            }
+            catch (Exception ex)
+            {
+                loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+                return Json(Text.An_error_occured);
+            }
+        }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(LayoutModel layoutModel)
         {
@@ -95,10 +110,11 @@ namespace BiblioIUC.Controllers
             {
                 DocumentModel documentModel = new DocumentModel
                 (
+                    null,
                     await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
                     null,
                     StatusOptions.Actived
-                );
+                ) ;
                 var pageModel = new PageModel<DocumentModel>
                 (
                     documentModel,
@@ -127,11 +143,6 @@ namespace BiblioIUC.Controllers
                     id ?? 0,
                     configuration["MediaFolderPath"]
                 );
-                documentModel.SetCategoryModels
-                (
-                    await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
-                    documentModel.CategoryId
-                );
                 if (documentModel == null)
                 {
                     TempData["MessageType"] = MessageOptions.Warning;
@@ -141,6 +152,11 @@ namespace BiblioIUC.Controllers
                 }
                 else
                 {
+                    documentModel.SetCategoryModels
+                    (
+                        await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
+                        documentModel.CategoryId
+                    );
                     var pageModel = new PageModel<DocumentModel>
                     (
                         documentModel,
@@ -166,16 +182,28 @@ namespace BiblioIUC.Controllers
         {
             try
             {
+                pageModel.DataModel.SetCategoryModels
+                (
+                    await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
+                    pageModel.DataModel.CategoryId
+                );
                 if (ModelState.IsValid)
                 {
-                    DocumentModel newProfileModel = null;
+                    DocumentModel newDocumentModel = null;
 
                     TempData["MessageType"] = MessageOptions.Success;
                     TempData["Message"] = Text.Save_done;
 
                     if (pageModel.DataModel.Id == 0)
                     {
-                        newProfileModel = await documentLogic.AddAsync
+                        if(!Logics.Tools.OssFile.HasFile(pageModel.DataModel.FileUploaded))
+                        {
+                            TempData["MessageType"] = MessageOptions.Warning;
+                            TempData["Message"] = string.Format(Text.The_fields_x_is_required, Text.The_document);
+                            ModelState.AddModelError("DataModel.FileUploaded", TempData["Message"].ToString());
+                            return View(pageModel);
+                        }
+                        newDocumentModel = await documentLogic.AddAsync
                         (
                             pageModel.DataModel,
                             configuration["MediaFolderPath"],
@@ -186,7 +214,7 @@ namespace BiblioIUC.Controllers
                     }
                     else
                     {
-                        newProfileModel = await documentLogic.SetAsync
+                        newDocumentModel = await documentLogic.SetAsync
                         (
                             pageModel.DataModel,
                             configuration["MediaFolderPath"],
@@ -194,14 +222,18 @@ namespace BiblioIUC.Controllers
                             configuration["PrefixDocumentFileName"]
                         );
                     }
+
+                    if (pageModel.DataModel.UpdateMetadata)
+                    {
+                        documentLogic.UpdateMetaData
+                        (
+                            configuration["MediaFolderPath"],
+                            newDocumentModel
+                        );
+                    }
                 }
                 else
                 {
-                    pageModel.DataModel.SetCategoryModels
-                    (
-                        await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
-                        pageModel.DataModel.CategoryId
-                    );
                     TempData["MessageType"] = MessageOptions.Warning;
                     TempData["Message"] = "<ul>";
                     foreach (var v in ModelState.Values)
@@ -254,9 +286,9 @@ namespace BiblioIUC.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<JsonResult> CodeExists(string name, int id)
+        public async Task<JsonResult> CodeExists(PageModel<DocumentModel> pageModel)
         {
-            bool b = await documentLogic.CodeAlreadyExistsAsync(name, id);
+            bool b = await documentLogic.CodeAlreadyExistsAsync(pageModel.DataModel.Code, pageModel.DataModel.Id);
             return new JsonResult(!b);
         }
     }

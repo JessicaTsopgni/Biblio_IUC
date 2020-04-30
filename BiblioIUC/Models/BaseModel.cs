@@ -17,7 +17,7 @@ namespace BiblioIUC.Models
         public IFormFile ImageUploaded { get; set; }
 
         [Display(Name = "Delete_this_image_on_save", ResourceType = typeof(Text))]
-        public bool DeletePhoto { get; set; }
+        public bool DeleteImage { get; set; }
         public StatusOptions Status { get; set; }
 
         public string StatusName

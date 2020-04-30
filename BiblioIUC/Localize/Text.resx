@@ -129,6 +129,9 @@
   <data name="An_error_occured" xml:space="preserve">
     <value>Une erreur est survenue. Réessayez plus tard svp !</value>
   </data>
+  <data name="Author" xml:space="preserve">
+    <value>Auteur</value>
+  </data>
   <data name="Bookstore" xml:space="preserve">
     <value>Librairie</value>
   </data>
@@ -153,8 +156,17 @@
   <data name="Category_not_found" xml:space="preserve">
     <value>Aucune catégorie trouvée !</value>
   </data>
+  <data name="Choose_a_category" xml:space="preserve">
+    <value>Choisir une catégorie</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Code / ISBN</value>
+  </data>
   <data name="Contributors" xml:space="preserve">
     <value>Contributeurs</value>
+  </data>
+  <data name="Cover_image" xml:space="preserve">
+    <value>Image de couverture</value>
   </data>
   <data name="Create_a_category" xml:space="preserve">
     <value>Créer une catégorie</value>
@@ -198,11 +210,41 @@
   <data name="Documents" xml:space="preserve">
     <value>Documents</value>
   </data>
+  <data name="Document_author" xml:space="preserve">
+    <value>Auteur du document</value>
+  </data>
   <data name="Document_categories" xml:space="preserve">
     <value>Catégories de document</value>
   </data>
+  <data name="Document_code_or_isbn" xml:space="preserve">
+    <value>Code ou ISBN du document</value>
+  </data>
+  <data name="Document_contributors" xml:space="preserve">
+    <value>Contributeurs du document</value>
+  </data>
+  <data name="Document_description" xml:space="preserve">
+    <value>Description ou resumé du document</value>
+  </data>
+  <data name="Document_language" xml:space="preserve">
+    <value>Langue du document</value>
+  </data>
   <data name="Document_not_found" xml:space="preserve">
     <value>Aucun document trouvé !</value>
+  </data>
+  <data name="Document_number_of_pages" xml:space="preserve">
+    <value>Nombre de pages du document</value>
+  </data>
+  <data name="Document_publisher" xml:space="preserve">
+    <value>Editeur du document</value>
+  </data>
+  <data name="Document_publish_date" xml:space="preserve">
+    <value>Date de publication du document</value>
+  </data>
+  <data name="Document_subtitle" xml:space="preserve">
+    <value>Sous-titre du document</value>
+  </data>
+  <data name="Document_title" xml:space="preserve">
+    <value>Titre du document</value>
   </data>
   <data name="Do_you_really_want_to_delete_x" xml:space="preserve">
     <value>Voulez-vous vraiment supprimer {0} ?</value>
@@ -227,6 +269,9 @@
   </data>
   <data name="Error" xml:space="preserve">
     <value>Erreur</value>
+  </data>
+  <data name="Extract_metadata" xml:space="preserve">
+    <value>Extraire les métadonnées</value>
   </data>
   <data name="Forgotten_password" xml:space="preserve">
     <value>Mot de passe oublé ?</value>
@@ -303,6 +348,9 @@
   <data name="Save" xml:space="preserve">
     <value>Enregistrer</value>
   </data>
+  <data name="Save_and_update_metadata_file" xml:space="preserve">
+    <value>Enregistrer &amp; mettre à jour les métadonnées du document</value>
+  </data>
   <data name="Save_done" xml:space="preserve">
     <value>Enregistrement réussi !</value>
   </data>
@@ -351,6 +399,9 @@
   <data name="Title" xml:space="preserve">
     <value>Titre</value>
   </data>
+  <data name="Upload_the_document" xml:space="preserve">
+    <value>Charger le document</value>
+  </data>
   <data name="View_documents" xml:space="preserve">
     <value>Voir les documents</value>
   </data>
@@ -365,6 +416,9 @@
   </data>
   <data name="x_and_y_doesn_t_matches" xml:space="preserve">
     <value>{1} and {0} doesn't matches !</value>
+  </data>
+  <data name="x_minimum_value_is_y" xml:space="preserve">
+    <value>{0} min est {1} !</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Oui</value>

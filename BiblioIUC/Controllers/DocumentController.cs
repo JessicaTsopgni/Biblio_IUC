@@ -33,7 +33,7 @@ namespace BiblioIUC.Controllers
             this.categoryLogic = categoryLogic;
             this.env = env;
         }
-
+        
         [AllowAnonymous]
         public string Test()
         {
@@ -50,7 +50,7 @@ namespace BiblioIUC.Controllers
             );
             return Path.Combine(mediaBasePath, "thumb.png");
         }
-
+        
         public async Task<IActionResult> Index(LayoutModel layoutModel)
         {
             try

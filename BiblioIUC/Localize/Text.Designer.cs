@@ -547,6 +547,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Générer.
+        /// </summary>
+        public static string Generate {
+            get {
+                return ResourceManager.GetString("Generate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image illustrative.
         /// </summary>
         public static string Illustrative_image {
@@ -772,6 +781,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Résultat de la recherche de catégorie : {0}.
+        /// </summary>
+        public static string Search_category_results_of_x {
+            get {
+                return ResourceManager.GetString("Search_category_results_of_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rechercher une catégorie....
         /// </summary>
         public static string Searh_a_category {
@@ -966,6 +984,15 @@ namespace BiblioIUC.Localize {
         public static string x_minimum_value_is_y {
             get {
                 return ResourceManager.GetString("x_minimum_value_is_y", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sous catégories de : {0}.
+        /// </summary>
+        public static string x_sub_categories {
+            get {
+                return ResourceManager.GetString("x_sub_categories", resourceCulture);
             }
         }
         

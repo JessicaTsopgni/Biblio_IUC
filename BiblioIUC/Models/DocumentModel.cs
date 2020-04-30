@@ -37,7 +37,6 @@ namespace BiblioIUC.Models
         public string Author { get; set; }
 
         [Display(Name = "Description", ResourceType = typeof(Text))]
-        [MaxLength(500, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         public string Description { get; set; }
 
         [Display(Name = "Language", ResourceType = typeof(Text))]
@@ -46,6 +45,7 @@ namespace BiblioIUC.Models
         public string Language { get; set; }
 
         [Display(Name = "Publish_date", ResourceType = typeof(Text))]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")] 
         public DateTime? PublishDate { get; set; }
 
         [Display(Name = "Publisher", ResourceType = typeof(Text))]
@@ -60,8 +60,10 @@ namespace BiblioIUC.Models
         [MaxLength(300, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         public string Contributors { get; set; }
 
+        public bool IsFileUploadedRequired { get => Id == 0; }
+
+        //[Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
         [Display(Name = "The_document", ResourceType = typeof(Text))]
-        [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
         public IFormFile FileUploaded { get; set; }
 
         [Display(Name = "Category", ResourceType = typeof(Text))]
@@ -73,6 +75,7 @@ namespace BiblioIUC.Models
         [Display(Name = "The_document", ResourceType = typeof(Text))]
         public string FileLink { get; protected set; }
 
+        public bool UpdateMetadata { get; set; }
         public IEnumerable<SelectListItem> CategoryModels { get; set; }
 
         public DocumentModel() : base()
@@ -106,7 +109,9 @@ namespace BiblioIUC.Models
 
 
         public DocumentModel(Document document, string imageLinkBaseUrl, string fileLinkBaseUrl)
-          : this(document?.Id ?? 0, 
+          : this(document?.Id ?? 0, document?.Code, document?.Title,document?.Subtitle, document?.Author,
+                document?.Description, document?.Language, document?.PublishDate, document?.Publisher,
+                document?.NumberOfPages ?? 0, document?.Contributors, document?.CategoryId ?? 0,
                 (StatusOptions)(document?.Status ?? 0))
         {
             CategoryName = document?.Category?.Name;
@@ -114,9 +119,10 @@ namespace BiblioIUC.Models
             FileLink = !string.IsNullOrEmpty(document?.File) ? $"{fileLinkBaseUrl}/{document?.File}" : null;
         }
 
-        public DocumentModel(IEnumerable<CategoryModel> categories, int? categoryId,
+        public DocumentModel(string code, IEnumerable<CategoryModel> categories, int? categoryId,
             StatusOptions status) : base(0, status)
         {
+            Code = code;
             SetCategoryModels(categories, categoryId);
         }
 

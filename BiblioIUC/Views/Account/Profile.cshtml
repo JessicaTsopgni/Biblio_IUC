@@ -7,7 +7,7 @@
     <h1 class="h3 mb-0 text-gray-800">@ViewBag.Title</h1>
 </div>
 
-<form method="post" asp-action="Profile" asp-controller="Account" enctype="multipart/form-data">   
+<form id="formEdit" method="post" asp-action="Profile" asp-controller="Account" enctype="multipart/form-data">   
     <input type="hidden" asp-for="ReturnUrl"/>
     <div class="row">
         <div class="col-md-6">
@@ -131,7 +131,7 @@
             $('#cropper_btn').attr('style', 'display:none!important');
             $('#preview').html(default_content);
             $('#photo_input').val(null);
-            $('#@Html.IdFor(x=>x.DataModel.ImageUploaded)').val(null);
+            //$('#@Html.IdFor(x=>x.DataModel.ImageUploaded)').val(null);
             $('button[type="submit"]').prop('disabled', false);
         }
         var _blob, filename, file_type;
@@ -151,7 +151,7 @@
             });
             cropper.destroy();
         }
-        $('form').submit(function (e) {
+        $('#formEdit').submit(function (e) {
             e.preventDefault();
 
             if (!$(this).valid())
@@ -164,7 +164,7 @@
                 input.type = 'file'
                 // input.multiple = true
                 input.files = createFileList(file)
-                input.name = '@Html.IdFor(x=>x.DataModel.ImageUploaded)'
+                input.name = '@Html.NameFor(x=>x.DataModel.ImageUploaded)'
                 input.hidden = true
                 this.appendChild(input)
             }

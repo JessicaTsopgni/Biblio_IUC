@@ -107,11 +107,6 @@ namespace BiblioIUC.Controllers
                     id ?? 0,
                     configuration["MediaFolderPath"]
                 );
-                categoryModel.SetCategoryParentModels
-                (
-                    await categoryLogic.LeafsAsync(configuration["MediaFolderPath"]),
-                    categoryModel.CategoryParentId
-                );
                 if (categoryModel == null)
                 {
                     TempData["MessageType"] = MessageOptions.Warning;
@@ -121,6 +116,11 @@ namespace BiblioIUC.Controllers
                 }
                 else
                 {
+                    categoryModel.SetCategoryParentModels
+                    (
+                        await categoryLogic.LeafsAsync(configuration["MediaFolderPath"]),
+                        categoryModel.CategoryParentId
+                    );
                     var pageModel = new PageModel<CategoryModel>
                     (
                         categoryModel,
@@ -148,14 +148,14 @@ namespace BiblioIUC.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    CategoryModel newProfileModel = null;
+                    CategoryModel newCategoryModel = null;
 
                     TempData["MessageType"] = MessageOptions.Success;
                     TempData["Message"] = Text.Save_done;
 
                     if (pageModel.DataModel.Id == 0)
                     {
-                        newProfileModel = await categoryLogic.AddAsync
+                        newCategoryModel = await categoryLogic.AddAsync
                         (
                             pageModel.DataModel,
                             configuration["MediaFolderPath"],
@@ -165,7 +165,7 @@ namespace BiblioIUC.Controllers
                     }
                     else
                     {
-                        newProfileModel = await categoryLogic.SetAsync
+                        newCategoryModel = await categoryLogic.SetAsync
                         (
                             pageModel.DataModel,
                             configuration["MediaFolderPath"],
@@ -232,9 +232,9 @@ namespace BiblioIUC.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<JsonResult> NameExists(string name, int id)
+        public async Task<JsonResult> NameExists(PageModel<CategoryModel> pageModel)
         {
-            bool b = await categoryLogic.NameAlreadyExistsAsync(name, id);
+            bool b = await categoryLogic.NameAlreadyExistsAsync(pageModel.DataModel.Name, pageModel.DataModel.Id);
             return new JsonResult(!b);
         }
     }

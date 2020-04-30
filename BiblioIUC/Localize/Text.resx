@@ -357,6 +357,9 @@
   <data name="Save_done" xml:space="preserve">
     <value>Enregistrement réussi !</value>
   </data>
+  <data name="Search_category_results_of_x" xml:space="preserve">
+    <value>Résultat de la recherche de catégorie : {0}</value>
+  </data>
   <data name="Searh_a_category" xml:space="preserve">
     <value>Rechercher une catégorie...</value>
   </data>
@@ -422,6 +425,9 @@
   </data>
   <data name="x_minimum_value_is_y" xml:space="preserve">
     <value>{0} min est {1} !</value>
+  </data>
+  <data name="x_sub_categories" xml:space="preserve">
+    <value>Sous catégories de : {0}</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Oui</value>

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BiblioIUC.Logics
@@ -32,6 +33,29 @@ namespace BiblioIUC.Logics
         {
             this.biblioEntities = biblioEntities;
             this.env = env;
+        }
+
+        public async Task<string> GenerateCodeAsync(string codePrefix)
+        {
+          
+            string code = Generate(codePrefix);
+            var rdv = await biblioEntities.Documents.FirstOrDefaultAsync(x => x.Code == code);
+            while (rdv != null)
+            {
+                Thread.Sleep(500);
+                code = Generate(codePrefix);
+                rdv = await biblioEntities.Documents.FirstOrDefaultAsync(x => x.Code == code);
+            }
+            return code;
+        }
+
+        private string Generate(string codePrefix)
+        {
+            int min = 100000;
+            int max = 999999;
+            var r = new Random();
+            long n = r.Next(min, max + 1);
+            return codePrefix + DateTime.UtcNow.Year + DateTime.UtcNow.Month + n.ToString();
         }
 
         public async Task<IEnumerable<DocumentModel>> FindAsync(string value, string mediaFolderPath,
@@ -70,6 +94,11 @@ namespace BiblioIUC.Logics
             ).ToArray();
         }
 
+        public void UpdateMetaData(string mediaFolderPath, DocumentModel documentModel)
+        {
+            //TODO : update metadata
+        }
+
         private DocumentModel GetDocumentModel(Document document, string mediaFolderPath)
         {
             return document != null ? new DocumentModel
@@ -82,7 +111,8 @@ namespace BiblioIUC.Logics
 
         public async Task<DocumentModel> GetAsync(int id, string mediaFolderPath)
         {
-            var document = await biblioEntities.Documents.FindAsync(id);
+            var document = await biblioEntities.Documents.Include(x=> x.Category)
+                .SingleOrDefaultAsync(x=> x.Id == id);
             if (document != null)
                 return GetDocumentModel(document, mediaFolderPath);
             return null;            

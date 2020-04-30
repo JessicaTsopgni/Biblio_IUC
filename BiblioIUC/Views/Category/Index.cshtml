@@ -1,6 +1,20 @@
 ﻿@model PageListModel<CategoryModel>
 @{
-    ViewBag.Title = Text.Document_categories;
+    if (string.IsNullOrEmpty(Model?.SearchValue))
+    {
+        if (Model?.DataModels?.FirstOrDefault()?.CategoryParentId == null)
+        {
+            ViewBag.Title = Text.Document_categories;
+        }
+        else
+        {
+            ViewBag.Title = string.Format(Text.x_sub_categories, Model?.DataModels?.FirstOrDefault()?.CategoryParentName);
+        }
+    }
+    else
+    {
+        ViewBag.Title = string.Format(Text.Search_category_results_of_x, Model?.SearchValue);
+    }
 }
 
 <!--Page Heading -->

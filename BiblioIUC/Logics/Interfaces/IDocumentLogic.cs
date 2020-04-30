@@ -19,5 +19,7 @@ namespace BiblioIUC.Logics.Interfaces
         Task<DocumentModel> AddAsync(DocumentModel documentModel, 
             string mediaFolderPath, string PrefixDocumentImageName, string PrefixDocumentFileName);
         Task RemoveAsync(int id, string mediaFolderPath);
+        Task<string> GenerateCodeAsync(string codePrefix);
+        void UpdateMetaData(string mediaFolderPath, DocumentModel documentModel);
     }
 }

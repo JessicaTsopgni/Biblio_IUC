@@ -7,7 +7,7 @@
     <h1 class="h3 mb-0 text-gray-800">@ViewBag.Title</h1>
 </div>
 
-<form method="post" asp-action="Edit" asp-controller="Document" enctype="multipart/form-data">
+<form id="formEdit" method="post" asp-action="Edit" asp-controller="Document" enctype="multipart/form-data">
     <partial name="_LayoutInput" model="Model" />
     <input type="hidden" asp-for="DataModel.Id" />
     <div class="row">
@@ -79,7 +79,14 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label asp-for="DataModel.Code"></label>
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="DataModel.Code"></label>
+                    </div>
+                    <div class="col-7 text-right">
+                        <a href="javascript:;" onclick="generate_code(this)"><i class="fas fa-sync"></i> @Text.Generate</a>
+                    </div>
+                </div>
                 <input asp-for="DataModel.Code" type="text" class="form-control" placeholder="@Text.Document_code_or_isbn" />
                 <span class="text-danger" asp-validation-for="DataModel.Code"></span>
             </div>
@@ -127,8 +134,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label asp-for="DataModel.PublishDate"></label>
-                        <input type="date" asp-for="DataModel.PublishDate" class="form-control" placeholder="@Text.Document_publish_date" />
+                        <label for="publish_date">@Text.Publish_date</label>
+                        <input type="date" asp-for="DataModel.PublishDate" id="publish_date" class="form-control" placeholder="@Text.Document_publish_date" />
                         <span class="text-danger" asp-validation-for="DataModel.PublishDate"></span>
                     </div>
                 </div>
@@ -167,10 +174,11 @@
             </button>
         </div>
         <div class="col-md-4 mb-3">
-            <button type="submit" class="btn btn-outline-success btn-block">
+            <input type="hidden" value="false" asp-for="DataModel.UpdateMetadata"/>
+            <a href="javascript:;" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('true');$('#formEdit').submit();" class="btn btn-outline-success btn-block">
                 <i class="fas fa-save"></i>
                 <small>@Text.Save_and_update_metadata_file</small>
-            </button>
+            </a>
         </div>
         <div class="col-md-4">
             <a href="@Model.ReturnUrl" class="btn btn-secondary btn-block">
@@ -216,7 +224,7 @@
             $('#cropper_btn').attr('style', 'display:none!important');
             $('#preview').html(default_content);
             $('#photo_input').val(null);
-            $('#@Html.IdFor(x=>x.DataModel.ImageUploaded)').val(null);
+            //$('#@Html.IdFor(x=>x.DataModel.ImageUploaded)').val(null);
             $('button[type="submit"]').prop('disabled', false);
         }
         var _blob, filename, file_type;
@@ -236,7 +244,7 @@
             });
             cropper.destroy();
         }
-        $('form').submit(function (e) {
+        $('#formEdit').submit(function (e) {
             e.preventDefault();
             if (!$(this).valid())
                 return;
@@ -248,7 +256,7 @@
                 input.type = 'file'
                 // input.multiple = true
                 input.files = createFileList(file)
-                input.name = '@Html.IdFor(x=>x.DataModel.ImageUploaded)'
+                input.name = '@Html.NameFor(x=>x.DataModel.ImageUploaded)'
                 input.hidden = true
                 this.appendChild(input)
             }
@@ -274,5 +282,13 @@
             }
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
+        function generate_code(link) {
+            $("#@Html.IdFor(x=> x.DataModel.Code)").val("@(Text.InProcess)...");
+            $(link).attr("disabled", true);
+            $.getJSON("@Url.Action("GenerateCode", "Document")", function (result) {
+                $("#@Html.IdFor(x=> x.DataModel.Code)").val(result);
+                $(link).removeAttr("disabled");
+            });
+        }
     </script>
 }

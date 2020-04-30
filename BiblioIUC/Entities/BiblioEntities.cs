@@ -92,21 +92,33 @@ namespace BiblioIUC.Entities
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.Author)
+                    .IsRequired()
+                    .HasColumnName("author")
+                    .HasColumnType("varchar(100)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
                 entity.Property(e => e.CategoryId)
                     .HasColumnName("category_id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.Contributors)
+                entity.Property(e => e.Code)
                     .IsRequired()
+                    .HasColumnName("code")
+                    .HasColumnType("varchar(50)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Contributors)
                     .HasColumnName("contributors")
                     .HasColumnType("varchar(300)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Description)
-                    .IsRequired()
                     .HasColumnName("description")
-                    .HasColumnType("varchar(500)")
+                    .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
@@ -119,13 +131,6 @@ namespace BiblioIUC.Entities
 
                 entity.Property(e => e.Image)
                     .HasColumnName("image")
-                    .HasColumnType("varchar(50)")
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasColumnName("code")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
@@ -146,7 +151,6 @@ namespace BiblioIUC.Entities
                     .HasColumnType("date");
 
                 entity.Property(e => e.Publisher)
-                    .IsRequired()
                     .HasColumnName("publisher")
                     .HasColumnType("varchar(100)")
                     .HasCharSet("utf8")

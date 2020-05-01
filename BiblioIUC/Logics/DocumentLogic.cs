@@ -190,6 +190,7 @@ namespace BiblioIUC.Logics
                     null,
                     newFileName,
                     newImageName,
+                    DateTime.UtcNow,
                     (short)documentModel.Status
                 );
 
@@ -266,6 +267,7 @@ namespace BiblioIUC.Logics
                    null,
                    newFileName,
                    newImageName,
+                   currentDocument.CreateDate,
                    (short)documentModel.Status
                );
 

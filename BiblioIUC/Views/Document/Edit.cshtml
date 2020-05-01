@@ -134,8 +134,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="publish_date">@Text.Publish_date</label>
-                        <input type="date" asp-for="DataModel.PublishDate" id="publish_date" class="form-control" placeholder="@Text.Document_publish_date" />
+                        <label asp-for="DataModel.PublishDate"></label>
+                        <input type="date" max="@DateTime.UtcNow.ToString("yyyy-MM-dd")" asp-for="DataModel.PublishDate"  class="form-control" placeholder="@Text.Document_publish_date" />
                         <span class="text-danger" asp-validation-for="DataModel.PublishDate"></span>
                     </div>
                 </div>
@@ -168,17 +168,17 @@
     </div>
     <div class="row flex-row-reverse">
         <div class="col-md-4 mb-3">
-            <button type="submit" class="btn btn-success btn-block">
+            <button type="submit" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('false');" class="btn btn-success btn-block">
                 <i class="fas fa-check"></i>
                 @Text.Save
             </button>
         </div>
         <div class="col-md-4 mb-3">
             <input type="hidden" value="false" asp-for="DataModel.UpdateMetadata"/>
-            <a href="javascript:;" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('true');$('#formEdit').submit();" class="btn btn-outline-success btn-block">
+            <button type="submit" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('true');" class="btn btn-outline-success btn-block">
                 <i class="fas fa-save"></i>
                 <small>@Text.Save_and_update_metadata_file</small>
-            </a>
+            </button>
         </div>
         <div class="col-md-4">
             <a href="@Model.ReturnUrl" class="btn btn-secondary btn-block">
@@ -245,10 +245,11 @@
             cropper.destroy();
         }
         $('#formEdit').submit(function (e) {
-            e.preventDefault();
+            //e.preventDefault();
             if (!$(this).valid())
-                return;
+                return false;
 
+            $(this).find(":submit").attr('disabled', 'disabled');
             if (_blob) {
                 var file = new File([_blob], filename, { type: file_type })
                 var input = document.createElement('input')
@@ -260,7 +261,7 @@
                 input.hidden = true
                 this.appendChild(input)
             }
-            this.submit();
+            return true;
         });
         function createFileList(a) {
             a = [].slice.call(Array.isArray(a) ? a : arguments)
@@ -288,6 +289,7 @@
             $.getJSON("@Url.Action("GenerateCode", "Document")", function (result) {
                 $("#@Html.IdFor(x=> x.DataModel.Code)").val(result);
                 $(link).removeAttr("disabled");
+                $("#@Html.IdFor(x=> x.DataModel.Code)").focus();
             });
         }
     </script>

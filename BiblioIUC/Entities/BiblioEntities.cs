@@ -116,6 +116,11 @@ namespace BiblioIUC.Entities
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
+                entity.Property(e => e.CreateDate)
+                    .HasColumnName("create_date")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
                     .HasColumnType("text")

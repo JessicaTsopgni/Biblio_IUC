@@ -210,6 +210,9 @@
   <data name="Documents" xml:space="preserve">
     <value>Documents</value>
   </data>
+  <data name="Documents_x" xml:space="preserve">
+    <value>Documents: {0}</value>
+  </data>
   <data name="Document_author" xml:space="preserve">
     <value>Auteur du document</value>
   </data>
@@ -359,6 +362,9 @@
   </data>
   <data name="Search_category_results_of_x" xml:space="preserve">
     <value>Résultat de la recherche de catégorie : {0}</value>
+  </data>
+  <data name="Search_document_results_of_x" xml:space="preserve">
+    <value>Résultat de la recherche du document: {0}</value>
   </data>
   <data name="Searh_a_category" xml:space="preserve">
     <value>Rechercher une catégorie...</value>

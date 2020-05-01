@@ -122,3 +122,11 @@ $('input, textarea, select').not('input[type="hidden"], input[type="checkbox"]')
         }
     }
 });
+
+$(function () {
+    $('form').not('form[action="multipart/form-data"]').submit(function (e) {
+        if ($(this).valid()) {
+            $(this).find(":submit").attr('disabled', 'disabled');
+        }
+    });
+});

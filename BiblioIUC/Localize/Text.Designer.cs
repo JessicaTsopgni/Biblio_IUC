@@ -457,6 +457,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documents: {0}.
+        /// </summary>
+        public static string Documents_x {
+            get {
+                return ResourceManager.GetString("Documents_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modifier.
         /// </summary>
         public static string Edit {
@@ -786,6 +795,15 @@ namespace BiblioIUC.Localize {
         public static string Search_category_results_of_x {
             get {
                 return ResourceManager.GetString("Search_category_results_of_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Résultat de la recherche du document: {0}.
+        /// </summary>
+        public static string Search_document_results_of_x {
+            get {
+                return ResourceManager.GetString("Search_document_results_of_x", resourceCulture);
             }
         }
         

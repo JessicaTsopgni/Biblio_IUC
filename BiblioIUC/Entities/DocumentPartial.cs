@@ -14,7 +14,7 @@ namespace BiblioIUC.Entities
         public Document(int id, string code, string title, string subtitle, string author, string description,
             string language, DateTime? publishDate, string publisher, int numberOfPages,
          string contributors, int categoryId, Category category, string file,
-         string image, short status):this()
+         string image, DateTime createDate, short status):this()
         {
             Id = id;
             Code = code;
@@ -28,10 +28,11 @@ namespace BiblioIUC.Entities
             NumberOfPages = numberOfPages;
             Contributors = contributors;
             CategoryId = categoryId;
+            Category = category;
             Image = image;
             File = file;
+            CreateDate = createDate;
             Status = status;
-            Category = category;
         }
     }
 }

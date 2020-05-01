@@ -19,6 +19,7 @@ namespace BiblioIUC.Entities
         public int CategoryId { get; set; }
         public string Image { get; set; }
         public string File { get; set; }
+        public DateTime CreateDate { get; set; }
         public short Status { get; set; }
 
         public virtual Category Category { get; set; }

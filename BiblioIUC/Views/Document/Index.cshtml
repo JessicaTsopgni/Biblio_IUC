@@ -1,6 +1,20 @@
 ﻿@model PageListModel<DocumentModel>
 @{
-    ViewBag.Title = Text.The_documents;
+    if (string.IsNullOrEmpty(Model?.SearchValue))
+    {
+        if (Model?.DataModels?.FirstOrDefault()?.CategoryId == null)
+        {
+            ViewBag.Title = Text.The_documents;
+        }
+        else
+        {
+            ViewBag.Title = string.Format(Text.Documents_x, Model?.DataModels?.FirstOrDefault()?.CategoryName);
+        }
+    }
+    else
+    {
+        ViewBag.Title = string.Format(Text.Search_document_results_of_x, Model?.SearchValue);
+    }
 }
 
 <!--Page Heading -->

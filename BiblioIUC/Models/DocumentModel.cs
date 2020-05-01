@@ -76,6 +76,9 @@ namespace BiblioIUC.Models
         public string FileLink { get; protected set; }
 
         public bool UpdateMetadata { get; set; }
+
+        public DateTime CreateDate { get; set; }
+
         public IEnumerable<SelectListItem> CategoryModels { get; set; }
 
         public DocumentModel() : base()
@@ -91,7 +94,7 @@ namespace BiblioIUC.Models
 
         private DocumentModel(int id, string code, string title, string subtitle, string author,
             string description, string language, DateTime? publishDate, string publisher,
-            int numberOfPages, string contributors, int categoryId, 
+            int numberOfPages, string contributors, int categoryId, DateTime createDate,
             StatusOptions status):this(id, status)
         {
             Code = code;
@@ -105,6 +108,7 @@ namespace BiblioIUC.Models
             NumberOfPages = numberOfPages;
             Contributors = contributors;
             CategoryId = categoryId;
+            CreateDate = createDate;
         }
 
 
@@ -112,7 +116,7 @@ namespace BiblioIUC.Models
           : this(document?.Id ?? 0, document?.Code, document?.Title,document?.Subtitle, document?.Author,
                 document?.Description, document?.Language, document?.PublishDate, document?.Publisher,
                 document?.NumberOfPages ?? 0, document?.Contributors, document?.CategoryId ?? 0,
-                (StatusOptions)(document?.Status ?? 0))
+               document?.CreateDate?? DateTime.UtcNow, (StatusOptions)(document?.Status ?? 0))
         {
             CategoryName = document?.Category?.Name;
             ImageLink = !string.IsNullOrEmpty(document?.Image) ? $"{imageLinkBaseUrl}/{document?.Image}" : null;

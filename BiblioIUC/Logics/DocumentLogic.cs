@@ -58,7 +58,7 @@ namespace BiblioIUC.Logics
             return codePrefix + DateTime.UtcNow.Year + DateTime.UtcNow.Month + n.ToString();
         }
 
-        public async Task<IEnumerable<DocumentModel>> FindAsync(string value, string mediaFolderPath,
+        public async Task<IEnumerable<DocumentModel>> FindAsync(int[] documentIds, string value, string mediaFolderPath,
             Expression<Func<Document, object>> orderBy,
             bool withDisabled = false,  int pageIndex = DEFAULT_PAGE_INDEX, 
             int pageSize = DEFAULT_PAGE_SIZE)
@@ -69,17 +69,23 @@ namespace BiblioIUC.Logics
             var query = biblioEntities.Documents
             .Include(x => x.Category)
             .Where(x => true);
-            
-            query = query.Where
-            (
-                x =>
-                (x.Title.ToLower().Contains(value) || value.Contains(x.Title)) ||
-                (x.Subtitle.ToLower().Contains(value) || value.Contains(x.Subtitle)) ||
-                (x.Description.ToLower().Contains(value) || value.Contains(x.Description)) ||
-                (x.Publisher.ToLower().Contains(value) || value.Contains(x.Publisher)) ||
-                (x.Contributors.ToLower().Contains(value) || value.Contains(x.Contributors)) ||
-                (x.Language.ToLower().Contains(value) || value.Contains(x.Language))
-            );
+            if (documentIds !=  null && documentIds.Count() > 0)
+            {
+                query = query.Where(x => documentIds.Any(y => y == x.Id));
+            }
+            else
+            {
+                query = query.Where
+                (
+                    x =>
+                    (x.Title.ToLower().Contains(value) || value.Contains(x.Title)) ||
+                    (x.Subtitle.ToLower().Contains(value) || value.Contains(x.Subtitle)) ||
+                    (x.Description.ToLower().Contains(value) || value.Contains(x.Description)) ||
+                    (x.Publisher.ToLower().Contains(value) || value.Contains(x.Publisher)) ||
+                    (x.Contributors.ToLower().Contains(value) || value.Contains(x.Contributors)) ||
+                    (x.Language.ToLower().Contains(value) || value.Contains(x.Language))
+                );
+            }
 
             if (!withDisabled)
                 query = query.Where(x => x.Status == (short)StatusOptions.Actived);
@@ -117,7 +123,6 @@ namespace BiblioIUC.Logics
                 return GetDocumentModel(document, mediaFolderPath);
             return null;            
         }
-
 
         public async Task RemoveAsync(int id, string mediaFolderPath)
         {
@@ -179,7 +184,7 @@ namespace BiblioIUC.Logics
                     documentModel.Code,
                     documentModel.Title,
                     documentModel.Subtitle,
-                    documentModel.Author,
+                    documentModel.Authors,
                     documentModel.Description,
                     documentModel.Language,
                     documentModel.PublishDate,
@@ -256,7 +261,7 @@ namespace BiblioIUC.Logics
                    documentModel.Code,
                    documentModel.Title,
                    documentModel.Subtitle,
-                   documentModel.Author,
+                   documentModel.Authors,
                    documentModel.Description,
                    documentModel.Language,
                    documentModel.PublishDate,

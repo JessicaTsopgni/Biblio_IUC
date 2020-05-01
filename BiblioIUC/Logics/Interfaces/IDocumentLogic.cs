@@ -10,7 +10,7 @@ namespace BiblioIUC.Logics.Interfaces
 {
     public interface IDocumentLogic
     {
-        Task<IEnumerable<DocumentModel>> FindAsync(string value, string mediaFolderPath,
+        Task<IEnumerable<DocumentModel>> FindAsync(int[] documentIds, string value, string mediaFolderPath,
             Expression<Func<Document, object>> orderBy, bool withDisabled = false, int pageIndex = 1, int pageSize = 10);
         Task<DocumentModel> GetAsync(int id, string mediaFolderPath);
         Task<DocumentModel> SetAsync(DocumentModel documentModel, 

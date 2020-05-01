@@ -92,10 +92,10 @@ namespace BiblioIUC.Entities
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.Author)
+                entity.Property(e => e.Authors)
                     .IsRequired()
-                    .HasColumnName("author")
-                    .HasColumnType("varchar(100)")
+                    .HasColumnName("authors")
+                    .HasColumnType("varchar(300)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 

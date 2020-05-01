@@ -34,6 +34,13 @@ namespace BiblioIUC.Logics
             this.env = env;
         }
 
+        public List<int> DocumentIds(int categoryId)
+        {
+
+            return biblioEntities.Documents.Where(x => x.CategoryId == categoryId).Select(x=> x.Id).ToList();
+
+        }
+
         public async Task<IEnumerable<CategoryModel>> FindAsync(int id, int categoryParentId, string value, string mediaFolderPath,
             Expression<Func<Category, object>> orderBy,
             bool withDisabled = false,  int pageIndex = DEFAULT_PAGE_INDEX, 
@@ -91,6 +98,7 @@ namespace BiblioIUC.Logics
             return category != null ? new CategoryModel
             (
                 category,
+                this,
                 mediaFolderPath
             ) : null;
         }
@@ -134,7 +142,6 @@ namespace BiblioIUC.Logics
                 return GetCategoryModel(category, mediaFolderPath);
             return null;            
         }
-
 
         public async Task RemoveAsync(int id, string mediaFolderPath)
         {
@@ -197,7 +204,7 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Categories.Add(newCategory);
                 await biblioEntities.SaveChangesAsync();
-                return new CategoryModel(newCategory, mediaFolderPath);
+                return new CategoryModel(newCategory,  this, mediaFolderPath);
             }
             catch (Exception ex)
             {
@@ -248,7 +255,7 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Entry(currentCategory).CurrentValues.SetValues(newCategory);
                 await biblioEntities.SaveChangesAsync();
-                return new CategoryModel(newCategory, mediaFolderPath);
+                return new CategoryModel(newCategory, this, mediaFolderPath);
             }
             catch (Exception ex)
             {

@@ -51,13 +51,14 @@ namespace BiblioIUC.Controllers
             return Path.Combine(mediaBasePath, "thumb.png");
         }
         
-        public async Task<IActionResult> Index(LayoutModel layoutModel)
+        public async Task<IActionResult> Index(string categoryName, string documentIds, LayoutModel layoutModel)
         {
             try
             {
-                
+                ViewBag.SearchCategoryName = categoryName;
                 var documentModels = await documentLogic.FindAsync
                 (
+                    documentIds: documentIds?.Split(',').Where(x=> int.TryParse(x, out _)).Select(x => int.Parse(x)).ToArray(),
                     value: layoutModel.SearchValue,
                     mediaFolderPath: configuration["MediaFolderPath"],
                     withDisabled: User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString(),

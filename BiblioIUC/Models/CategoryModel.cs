@@ -1,5 +1,6 @@
 ﻿using BiblioIUC.Entities;
 using BiblioIUC.Localize;
+using BiblioIUC.Logics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,8 +33,9 @@ namespace BiblioIUC.Models
 
         public IEnumerable<SelectListItem> CategoryParentModels { get; set; }
 
-        public int NumberOfDocuments { get; }
+        public int NumberOfDocuments { get => DocumentIds?.Count() ?? 0; }
         public string NumberOfDocumentsFormated { get => NumberOfDocuments.ToString("N0"); }
+        public List<int> DocumentIds { get; }
 
         public int NumberOfSubCategories { get; }
         public string NumberOfSubCategoriesFormated { get => NumberOfSubCategories.ToString("N0"); }
@@ -45,7 +47,6 @@ namespace BiblioIUC.Models
 
         private CategoryModel(int id, StatusOptions status):base(id, status)
         {
-
         }
 
         private CategoryModel(int id, string name, string description,
@@ -57,26 +58,28 @@ namespace BiblioIUC.Models
             CategoryParentId = categoryParentId;
         }
 
-        public CategoryModel(Category category, string imageLinkBaseUrl)
+        public CategoryModel(Category category, CategoryLogic categoryLogic, string imageLinkBaseUrl)
             : this(category?.Id ?? 0, category?.Name, category?.Description, category?.CategoryParentId,
                   (StatusOptions)(category?.Status ?? 0))
         {
             CategoryParentName = category?.CategoryParent?.Name;
             ImageLink = !string.IsNullOrEmpty(category?.Image) ? $"{imageLinkBaseUrl}/{category?.Image}" : null;
-            NumberOfDocuments = countDocument(category);
+            DocumentIds = SetDocumentIds(category, categoryLogic);
             NumberOfSubCategories = category?.InverseCategoryParent.Count() ?? 0;
         }
 
-        private int countDocument(Category category)
+        private List<int> SetDocumentIds(Category category, CategoryLogic categoryLogic)
         {
-            if (category == null) return 0;
-            int count = category.Documents.Count();
-            //if (category.InverseCategoryParent.Count() == 0) return 0;
+            List<int> ids = categoryLogic.DocumentIds(category.Id);
+            if (category == null || category.InverseCategoryParent.Count == 0) 
+                return ids;
+            if (ids == null)
+                ids = new List<int>();
             foreach(Category c in category.InverseCategoryParent)
             {
-                count += countDocument(c);
+                ids.AddRange(SetDocumentIds(c, categoryLogic));
             }
-            return count;
+            return ids;
         }
 
         public CategoryModel(IEnumerable<CategoryModel> categoryParents, int? categoryParentId,

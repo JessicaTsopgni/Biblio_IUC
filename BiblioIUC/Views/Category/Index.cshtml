@@ -89,35 +89,13 @@
                         '<div class="col-md-12 mx-auto text-center text-danger"><i class="fas fa-exclamation-circle"></i> @Text.An_error_occured</div>'
                     );
                 },
-                        complete: function () {
-                            $('#loader').addClass('d-none');
+                    complete: function () {
+                        $('#loader').addClass('d-none');
                 }
             });
         }
 
         loadData();
 
-        function init_model(title, message, bg_class, text_class,
-            cancel_btn_text, cancel_btn_class, success_btn_text, success_btn_class, success_btn_link) {
-            $('#myModalContent').addClass(bg_class);
-            $('#myModalContent').addClass(text_class);
-
-            $('#myModalTitle').html(title);
-            $('#myModalMessage').html(message);
-
-            if (!cancel_btn_text)
-                $('#myModalCancelBtn').hide();
-            else
-                $('#myModalCancelBtn').html(cancel_btn_text);
-            $('#myModalCancelBtn').addClass(cancel_btn_class);
-
-            if (!success_btn_text)
-                $('#myModalOkBtn').hide();
-            else
-                $('#myModalOkBtn').html(success_btn_text);
-            $('#myModalOkBtn').attr('href', success_btn_link);
-            $('#myModalOkBtn').addClass(success_btn_class);
-            $('#myModal').modal('show');
-        }
     </script>   
 }

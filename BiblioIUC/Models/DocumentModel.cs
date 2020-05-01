@@ -31,10 +31,10 @@ namespace BiblioIUC.Models
         public string Subtitle { get; set; }
 
 
-        [Display(Name = "Author", ResourceType = typeof(Text))]
+        [Display(Name = "Authors", ResourceType = typeof(Text))]
         [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
-        public string Author { get; set; }
+        public string Authors { get; set; }
 
         [Display(Name = "Description", ResourceType = typeof(Text))]
         public string Description { get; set; }
@@ -71,7 +71,7 @@ namespace BiblioIUC.Models
 
         [Display(Name = "Category", ResourceType = typeof(Text))]
         public string CategoryName { get; }
-
+        
         [Display(Name = "The_document", ResourceType = typeof(Text))]
         public string FileLink { get; protected set; }
 
@@ -92,7 +92,7 @@ namespace BiblioIUC.Models
         }
 
 
-        private DocumentModel(int id, string code, string title, string subtitle, string author,
+        private DocumentModel(int id, string code, string title, string subtitle, string authors,
             string description, string language, DateTime? publishDate, string publisher,
             int numberOfPages, string contributors, int categoryId, DateTime createDate,
             StatusOptions status):this(id, status)
@@ -100,7 +100,7 @@ namespace BiblioIUC.Models
             Code = code;
             Title = title;
             Subtitle = subtitle;
-            Author = author;
+            Authors = authors;
             Description = description;
             Language = language;
             PublishDate = publishDate;
@@ -113,7 +113,7 @@ namespace BiblioIUC.Models
 
 
         public DocumentModel(Document document, string imageLinkBaseUrl, string fileLinkBaseUrl)
-          : this(document?.Id ?? 0, document?.Code, document?.Title,document?.Subtitle, document?.Author,
+          : this(document?.Id ?? 0, document?.Code, document?.Title,document?.Subtitle, document?.Authors,
                 document?.Description, document?.Language, document?.PublishDate, document?.Publisher,
                 document?.NumberOfPages ?? 0, document?.Contributors, document?.CategoryId ?? 0,
                document?.CreateDate?? DateTime.UtcNow, (StatusOptions)(document?.Status ?? 0))

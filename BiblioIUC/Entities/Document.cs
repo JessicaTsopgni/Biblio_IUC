@@ -9,7 +9,7 @@ namespace BiblioIUC.Entities
         public string Code { get; set; }
         public string Title { get; set; }
         public string Subtitle { get; set; }
-        public string Author { get; set; }
+        public string Authors { get; set; }
         public string Description { get; set; }
         public string Language { get; set; }
         public DateTime? PublishDate { get; set; }

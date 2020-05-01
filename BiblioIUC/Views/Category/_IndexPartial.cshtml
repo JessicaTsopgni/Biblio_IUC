@@ -36,8 +36,17 @@
                                 }
                             </div>
                             <div class="h4 mb-0 font-weight-bold text-gray-800" style="line-height: 0.6" title="@Text.Documents">
-                                @category.NumberOfDocumentsFormated 
-                                <span style="font-size: 0.7rem">@(category.NumberOfDocuments > 0 ? Text.Documents : Text.Document)</span>
+                                @if(category.NumberOfDocuments > 0)
+                                { 
+                                    <a class="font-weight-bold text-gray-800" asp-action="Index" asp-controller="Document" asp-route-categoryName="@category.Name" asp-route-documentIds="@string.Join( ",", category.DocumentIds)">
+                                        @category.NumberOfDocumentsFormated 
+                                        <span style="font-size: 0.7rem">@(category.NumberOfDocuments > 0 ? Text.Documents : Text.Document)</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>0</span> <span style="font-size: 0.7rem">@Text.Document</span>
+                                }
                             </div>
                             <div class="truncate mt-1">
                                 @if (category.CategoryParentId != null)

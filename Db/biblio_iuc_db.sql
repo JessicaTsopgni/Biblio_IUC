@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.8.4
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  lun. 27 avr. 2020 à 22:20
--- Version du serveur :  5.7.23
--- Version de PHP :  7.2.10
+-- Généré le :  lun. 04 mai 2020 à 11:53
+-- Version du serveur :  5.7.24
+-- Version de PHP :  7.2.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -39,23 +39,58 @@ CREATE TABLE IF NOT EXISTS `category` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_name` (`name`),
   KEY `fk_category_category` (`category_parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `category`
 --
 
 INSERT INTO `category` (`id`, `name`, `description`, `category_parent_id`, `image`, `status`) VALUES
-(1, 'Informatique', 'TIC, Génie logiciel, Réseau, Sécurité informatique, Télécommunication, Infographie, etc.', NULL, NULL, 1),
-(2, 'Droit', 'Droit constitutionnel, administratif, des finances publiques, civil. social, pénal, commercial, judiciaire.', 33, 'cat_5e9a5c515ab5e.png', 1),
-(32, 'rbsdf', 'sDBSDF', NULL, NULL, 1),
-(33, 'fdndfndn d asdcjkabjca askjcbkajsbcakjs', 'dfnDFn', NULL, NULL, 0),
-(34, 'sdb', 'bdS', NULL, NULL, 1),
-(35, 'jon snow', NULL, 1, NULL, 1),
-(37, 'test', NULL, 1, 'cat_0a425f0d-ec0b-441a-9ac7-f6b16826c3b3.webp', 1),
-(39, 'test 2', NULL, NULL, NULL, 1),
-(40, 'Amour', 'Aimer c\'est souffrir', NULL, 'cat_45f3f5ed-e575-49ac-8700-8f746db91042.png', 1),
-(41, 'Amour passionnel', NULL, 40, NULL, 1);
+(1, 'Informatique', 'TIC, Génie logiciel, Réseau, Sécurité informatique, Télécommunication, Infographie, etc.', NULL, 'cat_f67d4926-46a0-4770-aa7b-4dbe66ab9531.jpg', 1),
+(33, 'DROIT', NULL, NULL, 'cat_aa11762d-d2db-4cae-aff2-43eae7924142.jpg', 1),
+(35, 'Rapports de stages d\'informatique', NULL, 1, 'cat_242bdf96-05b1-48ce-931e-a6c791a618a8.jpg', 1),
+(37, 'Epreuves d\'informatique', NULL, 1, 'cat_d722321b-1899-4a8b-a389-fe3546b4d927.jpg', 1),
+(40, 'Télécommunication', NULL, NULL, 'cat_d17f570f-aa5b-4efc-944e-675617374658.jpg', 1),
+(42, 'Livres d\'informatique', NULL, 1, 'cat_121155d4-4a87-455e-8fcd-7e606c0e0ffe.png', 1),
+(44, 'Cours d\'informatique', NULL, 1, NULL, 1),
+(45, 'Epreuves de droit', NULL, 33, NULL, 1),
+(46, 'Livres de droit', NULL, 33, NULL, 1),
+(47, 'Rapports de stages de droit', NULL, 33, NULL, 1),
+(49, 'Cours de droit', NULL, 33, NULL, 1),
+(50, 'Cours de télécommunication', NULL, 40, NULL, 1),
+(51, 'Rapports de stages de télécommunication', NULL, 40, NULL, 1),
+(53, 'Livres de télécommunication', NULL, 40, NULL, 1),
+(54, 'Epreuves de télécommunication', NULL, 40, NULL, 1),
+(55, 'Chimie', NULL, NULL, 'cat_61749a2e-3bbb-454b-bbcc-7baeade388c3.jpeg', 1),
+(56, 'Physiques', NULL, NULL, 'cat_fd324136-1f40-4adc-8675-f9382c94a9d8.jpg', 1),
+(57, 'Mathématiques', NULL, NULL, 'cat_6523bde2-a1e7-4de1-98b9-37795c30ed26.jpg', 1),
+(58, 'Agronomie', NULL, NULL, 'cat_1551f927-7786-49b5-ba7b-967c193ff609.jpg', 1),
+(59, 'Ingénierie BioMedicale', NULL, NULL, 'cat_084da3e7-ad38-41f9-9d21-6b100da0944f.jpg', 1),
+(60, 'Architecture et Design Industriel', NULL, NULL, 'cat_5ba10f88-c1a6-433e-8415-11889523b712.jpg', 1),
+(61, 'Epreuves d\'Agronomie', NULL, 58, NULL, 1),
+(62, 'Rapports de stages d\'Agronomie', NULL, 58, NULL, 1),
+(63, 'Livres d\'Agronomie', NULL, 58, NULL, 1),
+(64, 'Cours d\'Agronomie', NULL, 58, NULL, 1),
+(65, 'Rapports de stages de physiques', NULL, 56, NULL, 1),
+(66, 'Epreuves de physiques', NULL, 56, NULL, 1),
+(67, 'Cours de physiques', NULL, 56, NULL, 1),
+(68, 'Livres de physiques', NULL, 56, NULL, 1),
+(69, 'Livres de chimie', NULL, 55, NULL, 1),
+(70, 'Epreuves de chimie', NULL, 55, NULL, 1),
+(71, 'Rapports de stages de chimie', NULL, 55, NULL, 1),
+(72, 'Cours de chimie', NULL, 55, NULL, 1),
+(73, 'Rapports de stages de Maths', NULL, 57, NULL, 1),
+(74, 'Epreuves de Maths', NULL, 57, NULL, 1),
+(75, 'Livres de Maths', NULL, 57, NULL, 1),
+(76, 'Cours de Maths', NULL, 57, NULL, 1),
+(77, 'Rapports de stages de IBM', NULL, 59, NULL, 1),
+(78, 'Epreuves de IBM', NULL, 59, NULL, 1),
+(79, 'Livres de IBM', NULL, 59, NULL, 1),
+(80, 'Cours de IBM', NULL, 59, NULL, 1),
+(81, 'Rapports de stages ADI', NULL, 60, NULL, 1),
+(82, 'Epreuves ADI', NULL, 60, NULL, 1),
+(83, 'Livres ADI', NULL, 60, NULL, 1),
+(84, 'Cours ADI', NULL, 60, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -69,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `document` (
   `code` varchar(50) NOT NULL,
   `title` varchar(100) NOT NULL,
   `subtitle` varchar(100) DEFAULT NULL,
-  `author` varchar(100) NOT NULL,
-  `description` varchar(500) DEFAULT NULL,
+  `authors` varchar(300) NOT NULL,
+  `description` text,
   `language` varchar(50) NOT NULL,
   `publish_date` date DEFAULT NULL,
   `publisher` varchar(100) DEFAULT NULL,
@@ -79,11 +114,20 @@ CREATE TABLE IF NOT EXISTS `document` (
   `category_id` int(11) NOT NULL,
   `image` varchar(50) DEFAULT NULL,
   `file` varchar(500) NOT NULL,
+  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` smallint(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_code` (`code`) USING BTREE,
   KEY `fk_document_category` (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `document`
+--
+
+INSERT INTO `document` (`id`, `code`, `title`, `subtitle`, `authors`, `description`, `language`, `publish_date`, `publisher`, `number_of_pages`, `contributors`, `category_id`, `image`, `file`, `create_date`, `status`) VALUES
+(1, 'DOC-20204160586', 'Linq to Object', NULL, 'Zeus', 'Très bel ouvrage', 'Français', '2020-01-15', NULL, 40, NULL, 42, 'dth_0bad9e54-d36e-42c3-a4b2-72a4e025cf83.png', 'doc_b4f918e9-cbca-49fa-a1e4-0b1a2d370282.pdf', '2020-05-04 09:37:16', 1),
+(3, 'DOC-20205224797', 'CSharp', 'C#', 'J Martins, Kevin Clark, Rigobert Song', 'Ces critères sont dits \"In The Page\" c’est-à-dire qu’ils conservent le contenu de la page afin d’affiner leur classement, les robots utilisent également des critères \"Off The Page\" qui eux prennent en compte l’usage fait par les internautes de la page.\r\nLe robot analyse donc la pertinence des résultats qu’il fournit pour une requête donnée en calculant le temps passé par l’utilisateur sur la page proposée et son retour ou non en arrière vers le page des résultats.\r\nLes résultats proposés par le moteur sont donc issus d’une équation prenant en compte tous ces paramètres.\r\nCes critères sont dits \"In The Page\" c’est-à-dire qu’ils conservent le contenu de la page afin d’affiner leur classement, les robots utilisent également des critères \"Off The Page\" qui eux prennent en compte l’usage fait par les internautes de la page.\r\nLe robot analyse donc la pertinence des résultats qu’il fournit pour une requête donnée en calculant le temps passé par l’utilisateur sur la page proposée et son retour ou non en arrière vers le page des résultats.\r\nLes résultats proposés par le moteur sont donc issus d’une équation prenant en compte tous ces paramètres.\r\n', 'Français', '2020-02-04', 'IUC', 654, 'Jean Charles REMOND, COllins Martins, Alexandre SONG, Petit pays', 42, 'dth_4a08a8cd-47db-40ef-b662-57838d647fb0.jpg', 'doc_91df59d7-8578-4e99-b968-6db16c8b11b9.pdf', '2020-05-04 08:47:37', 1);
 
 -- --------------------------------------------------------
 

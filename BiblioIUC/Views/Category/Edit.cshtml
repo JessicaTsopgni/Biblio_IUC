@@ -160,10 +160,11 @@
             cropper.destroy();
         }
         $('#formEdit').submit(function (e) {
-            e.preventDefault();
+            //e.preventDefault();
             if (!$(this).valid())
-                return;
+                return false;
 
+            $(this).find(":submit").attr('disabled', 'disabled');
             if (_blob) {
                 var file = new File([_blob], filename, { type: file_type })
                 var input = document.createElement('input')
@@ -175,7 +176,7 @@
                 input.hidden = true
                 this.appendChild(input)
             }
-            this.submit();
+            return true;
         });
         function createFileList(a) {
             a = [].slice.call(Array.isArray(a) ? a : arguments)

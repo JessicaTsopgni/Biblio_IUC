@@ -92,10 +92,10 @@ namespace BiblioIUC.Entities
                     .HasColumnName("id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.Author)
+                entity.Property(e => e.Authors)
                     .IsRequired()
-                    .HasColumnName("author")
-                    .HasColumnType("varchar(100)")
+                    .HasColumnName("authors")
+                    .HasColumnType("varchar(300)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
@@ -115,6 +115,11 @@ namespace BiblioIUC.Entities
                     .HasColumnType("varchar(300)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnName("create_date")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")

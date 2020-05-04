@@ -1,0 +1,109 @@
+﻿@model IEnumerable<DocumentModel>
+@{
+    List<string> colors = new List<string> { "success", "danger", "primary", "warning", "info" };
+    List<string> text_colors = new List<string> { "white", "white", "white", "dark", "dark" };
+    Random randNum = new Random();
+    colors = colors.OrderBy(i => randNum.Next()).ToList();
+    colors.Add("dark");
+    int j = 0;
+    int maxLength = 200;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var document in Model)
+    {
+        if (j >= colors.Count - 1)
+        {
+            j = 0;
+        }
+        if(!document.State)
+        {
+            j = colors.Count - 1;
+        }
+        <div class="col-md-6">
+            <div class="card shadow mb-4 border-left-@colors[j] border-bottom-@colors[j]">
+                <div class="card-header py-3 d-flex flex-row justify-content-between border-@colors[j]" style="background-color:transparent;">
+                    <h6 class="m-0 font-weight-bold text-@colors[j] truncate">@document.Title.ToUpper()</h6>
+                    <div class="dropdown no-arrow mt-1">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink@(document.Id)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-@colors[j]"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink@(document.Id)">
+                            <a class="dropdown-item" asp-action="Index" asp-controller="Document" asp-route-categoryId="@document.CategoryId"><i class="fas fa-book"></i> &nbsp;@Text.Document_in_same_category</a>
+                            <a class="dropdown-item" href="javascript:;">
+                                <i class="fas fa-share" style="font-size:95%"></i> @Text.Share
+                            </a>
+                            @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())
+                            {                               
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-primary" href="javascript:;" onclick="goto('@Url.Action("Edit", "Document")', {'id':'@document.Id'})">
+                                    <i class="fas fa-edit"></i> @Text.Edit
+                                </a>
+                                <a class="dropdown-item text-danger" href="javascript:;" onclick="init_model('@Text.Warning', '@HttpUtility.JavaScriptStringEncode(string.Format(Text.Do_you_really_want_to_delete_x, "[ " + document.Title + " ]"))', 'bg-warning', 'text-dark',
+                                    '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "Document", new { id = document.Id, returnUrl = ViewBag.Url })')">
+                                    <i class="fas fa-trash"></i> &nbsp;@Text.Delete
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body card-body-document">
+                    <div class="row">
+                        <div class="col-md-6 d-flex card-body-image justify-content-center align-items-center">
+                            @if (!string.IsNullOrEmpty(document.ImageLink))
+                            {
+                                <img class="img-fluid-100" src="@Url.Content(document.ImageLink)" alt="@document.Title">
+                            }
+                            else
+                            {
+                                <i class="fas fa-book-open" style="font-size: 1000%;"></i>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-1">
+                                <i class="fas fa-user text-@colors[j]"></i> <span>@document.Authors</span>
+                            </div>
+                            <div class="mb-1">
+                                <i class="fas fa-layer-group text-@colors[j]"></i> <span><a class="text-@colors[j]" asp-action="Index" asp-controller="Category" asp-route-categoryParentId="@document.CategoryId">@document.CategoryName</a></span>
+                            </div>
+                            <div class="mb-1">
+                                <i class="fas fa-copyright text-@colors[j]"></i> <span>@document.Publisher</span>
+                            </div>
+                            <div class="mb-1">
+                                <i class="fas fa-users text-@colors[j]"></i> <span>@document.Contributors</span>
+                            </div>
+                            <div class="mb-1">
+                                <i class="fas fa-hashtag text-@colors[j]"></i> <span>@document.Code</span>
+                            </div>
+                            <div class="mb-1">
+                                <i class="fas fa-calendar-alt text-@colors[j]"></i> <span>@document.PublishDate?.ToShortDateString()</span>
+                            </div>
+                            <div class="mb-1 text-justify">
+                                <i class="fas fa-info-circle text-@colors[j]"></i>
+                                <span>
+                                    @if ((document.Description?.Length ?? 0) > maxLength)
+                                    {
+                                        @Html.Raw(document?.Description?.Substring(0, maxLength).Replace("\r\n", "<br />") + "...")
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(document?.Description?.Replace("\r\n", "<br />"))
+                                    }
+                                </span>
+                            </div>
+                            @if ((document.Description?.Length ?? 0) > maxLength)
+                            {
+                                <a href="#" class="text-@colors[j]" onclick="init_model('@Text.Description_Resume', '@Html.Raw(HttpUtility.JavaScriptStringEncode(document.Description))', 'bg-@colors[j]', 'text-@text_colors[j]',
+                                    '@Text.Ok', 'btn-outline-light', null, null, null)">@Text.Learn_more</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer border-@colors[j]" style="text-align: end; background-color:transparent;">
+                    <a href="#" class="btn btn-sm btn-@colors[j] shadow-sm"><i class="fas fa-eye fa-sm text-white-50"></i> @Text.Read</a>
+                </div>
+            </div>
+        </div>        
+        j++;
+    }
+}

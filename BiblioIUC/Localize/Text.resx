@@ -129,8 +129,8 @@
   <data name="An_error_occured" xml:space="preserve">
     <value>Une erreur est survenue. Réessayez plus tard svp !</value>
   </data>
-  <data name="Author" xml:space="preserve">
-    <value>Auteur</value>
+  <data name="Authors" xml:space="preserve">
+    <value>Auteurs</value>
   </data>
   <data name="Bookstore" xml:space="preserve">
     <value>Librairie</value>
@@ -201,6 +201,9 @@
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="Description_Resume" xml:space="preserve">
+    <value>Description/Résumé</value>
+  </data>
   <data name="Disabled" xml:space="preserve">
     <value>Désactivé</value>
   </data>
@@ -209,6 +212,9 @@
   </data>
   <data name="Documents" xml:space="preserve">
     <value>Documents</value>
+  </data>
+  <data name="Documents_x" xml:space="preserve">
+    <value>Documents: {0}</value>
   </data>
   <data name="Document_author" xml:space="preserve">
     <value>Auteur du document</value>
@@ -224,6 +230,9 @@
   </data>
   <data name="Document_description" xml:space="preserve">
     <value>Description ou resumé du document</value>
+  </data>
+  <data name="Document_in_same_category" xml:space="preserve">
+    <value>Documents dans la même catégorie</value>
   </data>
   <data name="Document_language" xml:space="preserve">
     <value>Langue du document</value>
@@ -300,6 +309,9 @@
   <data name="Language" xml:space="preserve">
     <value>Langue</value>
   </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>Savoir+</value>
+  </data>
   <data name="Loading" xml:space="preserve">
     <value>Chargement...</value>
   </data>
@@ -339,6 +351,9 @@
   <data name="Publish_date" xml:space="preserve">
     <value>Date de publication</value>
   </data>
+  <data name="Read" xml:space="preserve">
+    <value>Lire</value>
+  </data>
   <data name="Repeat_password" xml:space="preserve">
     <value>Répéter le mot de passe</value>
   </data>
@@ -360,6 +375,9 @@
   <data name="Search_category_results_of_x" xml:space="preserve">
     <value>Résultat de la recherche de catégorie : {0}</value>
   </data>
+  <data name="Search_document_results_of_x" xml:space="preserve">
+    <value>Résultat de la recherche du document: {0}</value>
+  </data>
   <data name="Searh_a_category" xml:space="preserve">
     <value>Rechercher une catégorie...</value>
   </data>
@@ -368,6 +386,9 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Paramètres</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Partager</value>
   </data>
   <data name="Sign_in" xml:space="preserve">
     <value>Authentification</value>

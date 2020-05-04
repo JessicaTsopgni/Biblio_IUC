@@ -97,11 +97,11 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auteur.
+        ///   Looks up a localized string similar to Auteurs.
         /// </summary>
-        public static string Author {
+        public static string Authors {
             get {
-                return ResourceManager.GetString("Author", resourceCulture);
+                return ResourceManager.GetString("Authors", resourceCulture);
             }
         }
         
@@ -313,6 +313,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description/Résumé.
+        /// </summary>
+        public static string Description_Resume {
+            get {
+                return ResourceManager.GetString("Description_Resume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Désactivé.
         /// </summary>
         public static string Disabled {
@@ -385,6 +394,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documents dans la même catégorie.
+        /// </summary>
+        public static string Document_in_same_category {
+            get {
+                return ResourceManager.GetString("Document_in_same_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Langue du document.
         /// </summary>
         public static string Document_language {
@@ -453,6 +471,15 @@ namespace BiblioIUC.Localize {
         public static string Documents {
             get {
                 return ResourceManager.GetString("Documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documents: {0}.
+        /// </summary>
+        public static string Documents_x {
+            get {
+                return ResourceManager.GetString("Documents_x", resourceCulture);
             }
         }
         
@@ -610,6 +637,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Savoir+.
+        /// </summary>
+        public static string Learn_more {
+            get {
+                return ResourceManager.GetString("Learn_more", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Chargement....
         /// </summary>
         public static string Loading {
@@ -727,6 +763,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lire.
+        /// </summary>
+        public static string Read {
+            get {
+                return ResourceManager.GetString("Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Répéter le mot de passe.
         /// </summary>
         public static string Repeat_password {
@@ -790,6 +835,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Résultat de la recherche du document: {0}.
+        /// </summary>
+        public static string Search_document_results_of_x {
+            get {
+                return ResourceManager.GetString("Search_document_results_of_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rechercher une catégorie....
         /// </summary>
         public static string Searh_a_category {
@@ -813,6 +867,15 @@ namespace BiblioIUC.Localize {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Partager.
+        /// </summary>
+        public static string Share {
+            get {
+                return ResourceManager.GetString("Share", resourceCulture);
             }
         }
         

@@ -122,3 +122,38 @@ $('input, textarea, select').not('input[type="hidden"], input[type="checkbox"]')
         }
     }
 });
+
+$(function () {
+    $('form').not('form[action="multipart/form-data"]').submit(function (e) {
+        if ($(this).valid()) {
+            $(this).find(":submit").attr('disabled', 'disabled');
+        }
+    });
+});
+
+function init_model(title, message, bg_class, text_class,
+    cancel_btn_text, cancel_btn_class, success_btn_text, success_btn_class, success_btn_link) {
+    console.log(bg_class);
+    $('#myModalContent').removeClass(["bg-primary", "bg-danger", "bg-success", "bg-info", "bg-warning"]);
+    $('#myModalContent').addClass(bg_class);
+    $('#myModalContent').removeClass(["text-dark", "text-white", "text-primary", "text-danger", "text-success", "text-info", "text-warning"]);
+    $('#myModalContent').addClass(text_class);
+
+    $('#myModalTitle').html(title);
+    $('#myModalMessage').html(message);
+
+    if (!cancel_btn_text)
+        $('#myModalCancelBtn').hide();
+    else
+        $('#myModalCancelBtn').html(cancel_btn_text);
+    $('#myModalCancelBtn').addClass(cancel_btn_class);
+
+    if (!success_btn_text)
+        $('#myModalOkBtn').hide();
+    else
+        $('#myModalOkBtn').html(success_btn_text);
+    $('#myModalOkBtn').attr('href', success_btn_link);
+    $('#myModalOkBtn').addClass(success_btn_class);
+    $('#myModal').modal('show');
+}
+

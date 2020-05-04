@@ -20,5 +20,6 @@ namespace BiblioIUC.Logics.Interfaces
         Task<CategoryModel> AddAsync(CategoryModel categoryModel, string mediaFolderPath, string PrefixCategoryImageName);
         Task RemoveAsync(int id, string mediaFolderPath);
         Task<IEnumerable<CategoryModel>> NoChildAsync(string mediaFolderPath);
+        List<int> DocumentIds(int categoryId);
     }
 }

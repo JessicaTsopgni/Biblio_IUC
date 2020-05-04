@@ -101,9 +101,9 @@
                 <span class="text-danger" asp-validation-for="DataModel.Subtitle"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataModel.Author"></label>
-                <input asp-for="DataModel.Author" type="text" class="form-control" placeholder="@Text.Document_author" />
-                <span class="text-danger" asp-validation-for="DataModel.Author"></span>
+                <label asp-for="DataModel.Authors"></label>
+                <textarea asp-for="DataModel.Authors" class="form-control" placeholder="@Text.Document_author"></textarea>
+                <span class="text-danger" asp-validation-for="DataModel.Authors"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DataModel.Contributors"></label>
@@ -134,11 +134,16 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="publish_date">@Text.Publish_date</label>
-                        <input type="date" asp-for="DataModel.PublishDate" id="publish_date" class="form-control" placeholder="@Text.Document_publish_date" />
+                        <label asp-for="DataModel.PublishDate"></label>
+                        <input type="date" max="@DateTime.UtcNow.ToString("yyyy-MM-dd")" asp-for="DataModel.PublishDate" class="form-control" placeholder="@Text.Document_publish_date" />
                         <span class="text-danger" asp-validation-for="DataModel.PublishDate"></span>
                     </div>
                 </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Description"></label>
+                <textarea asp-for="DataModel.Description" class="form-control" placeholder="@Text.Document_description"></textarea>
+                <span class="text-danger" asp-validation-for="DataModel.Description"></span>
             </div>
             <div class="row">
                 <div class="col-6">
@@ -151,7 +156,7 @@
                 <div class="col-6">
                     <div class="form-group">
                         <label>@Text.Status</label>
-                        <div class="custom-control h5 custom-switch custom-switch-adaptive pt-1" style="width:100%">
+                        <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
                             <input asp-for="DataModel.State" type="checkbox" class="custom-control-input" onchange="$('#@Html.IdFor(x=> x.DataModel.Status)').val($(this).is(':checked') ? 1 : 0);$('#state_label').html($(this).is(':checked') ? '@Text.Actived' : '@Text.Disabled')">
                             <label asp-for="DataModel.State" id="state_label" class="custom-control-label">@Model.DataModel.StatusName</label>
                         </div>
@@ -159,26 +164,21 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DataModel.Description"></label>
-                <textarea asp-for="DataModel.Description" class="form-control" placeholder="@Text.Document_description"></textarea>
-                <span class="text-danger" asp-validation-for="DataModel.Description"></span>
-            </div>
         </div>
     </div>
     <div class="row flex-row-reverse">
         <div class="col-md-4 mb-3">
-            <button type="submit" class="btn btn-success btn-block">
+            <button type="submit" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('false');" class="btn btn-success btn-block">
                 <i class="fas fa-check"></i>
                 @Text.Save
             </button>
         </div>
         <div class="col-md-4 mb-3">
             <input type="hidden" value="false" asp-for="DataModel.UpdateMetadata"/>
-            <a href="javascript:;" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('true');$('#formEdit').submit();" class="btn btn-outline-success btn-block">
+            <button type="submit" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('true');" class="btn btn-outline-success btn-block">
                 <i class="fas fa-save"></i>
                 <small>@Text.Save_and_update_metadata_file</small>
-            </a>
+            </button>
         </div>
         <div class="col-md-4">
             <a href="@Model.ReturnUrl" class="btn btn-secondary btn-block">
@@ -245,10 +245,11 @@
             cropper.destroy();
         }
         $('#formEdit').submit(function (e) {
-            e.preventDefault();
+            //e.preventDefault();
             if (!$(this).valid())
-                return;
+                return false;
 
+            $(this).find(":submit").attr('disabled', 'disabled');
             if (_blob) {
                 var file = new File([_blob], filename, { type: file_type })
                 var input = document.createElement('input')
@@ -260,7 +261,7 @@
                 input.hidden = true
                 this.appendChild(input)
             }
-            this.submit();
+            return true;
         });
         function createFileList(a) {
             a = [].slice.call(Array.isArray(a) ? a : arguments)
@@ -288,6 +289,7 @@
             $.getJSON("@Url.Action("GenerateCode", "Document")", function (result) {
                 $("#@Html.IdFor(x=> x.DataModel.Code)").val(result);
                 $(link).removeAttr("disabled");
+                $("#@Html.IdFor(x=> x.DataModel.Code)").focus();
             });
         }
     </script>

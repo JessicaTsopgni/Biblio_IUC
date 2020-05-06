@@ -1,0 +1,386 @@
+﻿@model PageModel<DocumentModel>
+@{
+    ViewBag.Title = Text.Reading;
+}
+<!--Page Heading -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <a title="@Text.Back" href="@(!string.IsNullOrEmpty(Model.ReturnUrl) ? Model.ReturnUrl : Url.Action("Index", "Document"))" class=" text-gray-800">
+            <i class="fas fa-chevron-circle-left"></i>
+        </a>
+    </h1>
+</div>
+<div class="row mb-2">
+    <div class="col-5 text-left">
+        <a id="prev1" class="btn btn-outline-success" href="javascript:;">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+    </div>
+    <div class="col-2 align-content-center">
+        <div class="input-group">
+            <input id="input-basic-addon1" type="number" class="form-control" min="1" value="1" aria-describedby="basic-addon1">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon1"></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-5 text-right">
+        <a id="next1" class="btn btn-outline-success" href="javascript:;">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+<div class="row mb-2">
+    <div id="content-viewer" class="col-md-12">
+        <div id="w_loading" class="d-flex justify-content-center">
+            <img src="~/img/biblio_iuc.jpg" class="img-fluid" />
+        </div>
+    </div>
+</div>
+
+<div class="row mb-2">
+    <div class="col-5 text-left">
+        <a id="prev2" class="btn btn-outline-success" href="javascript:;">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+    </div>
+    <div class="col-2 align-content-center">
+        <input id="input-basic-addon2" type="number" class="form-control" min="1" value="1" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2"></span>
+        </div>
+    </div>
+    <div class="col-5 text-right">
+        <a id="next2" class="btn btn-outline-success" href="javascript:;">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+</div>
+@section scripts{
+    <script src="~/js/pdf.js"></script>
+    <script>
+        var pdfDoc = null,
+            pageNum = 0,
+            pageSize = 3,
+            pageRendering = false,
+            pageNumPending = null,
+            canvasContainer = document.getElementById('content-viewer'),
+            scrollLoad = false,
+            scrollPos = 0,
+            isUp = false;
+
+        initPdf({ data: atob('@Html.Raw(Model.DataModel.FileBase64)') });
+
+
+        function initPdf(url) {
+            pdfjsLib.getDocument(url).promise.then(function (doc) {
+                pdfDoc = doc;
+                $('#basic-addon1, #basic-addon2').html(' / ' + pdfDoc.numPages);
+                $('#input-basic-addon1, #input-basic-addon2').attr('max', pdfDoc.numPages);
+                fetchNext(1);
+                scrollLoad = true;
+            });
+        }
+
+        function renderPage(num, direction = null, index = 0) {
+            pageRendering = true;
+            // Using promise to fetch the page
+            pdfDoc.getPage(num).then(function (page) {
+                var viewport = page.getViewport({ scale: 1 });
+
+                var computedStyle = getComputedStyle(canvasContainer);
+
+                canvasContainerWidth = canvasContainer.clientWidth - (parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight))
+
+                let scale = canvasContainerWidth / viewport.width;
+
+                viewport = page.getViewport({ scale: scale });
+
+                var wrapper = $('#w_' + num)[0];
+                if (!wrapper) {
+                    wrapper = document.createElement("div");
+                    wrapper.className = "canvas-wrapper";
+                    wrapper.id = 'w_' + num;
+                    wrapper.style = 'height:' + Math.floor(viewport.height) + 'px;width:' + Math.floor(viewport.width) + 'px;margin-bottom:10px';
+                }
+                if (!$(wrapper).children('#_' + num)[0]) {
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    canvas.id = '_' + num;
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    var renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+
+                    wrapper.appendChild(canvas);
+
+                    if ($(canvasContainer).children('#w_loading')[0])
+                        $(canvasContainer).children('#w_loading').remove();
+
+                    if (!$(canvasContainer).children('#w_' + num)[0]) {
+                        if (isUp)
+                            canvasContainer.insertBefore(wrapper, canvasContainer.firstChild);
+                        else
+                            canvasContainer.appendChild(wrapper);
+                    }
+
+                    var renderTask = page.render(renderContext);
+                    $('#input-basic-addon1, #input-basic-addon2').val(num);
+
+
+                    // Wait for rendering to finish
+                    renderTask.promise.then(function () {
+                        pageRendering = false;
+                        if (pageNumPending !== null) {
+                            // New page rendering is pending
+                            renderPage(pageNumPending);
+                            pageNumPending = null;
+                        }
+                        repeat(direction, index);
+                    });
+                } else {
+                    repeat(direction, index);
+                }
+            });
+
+            // Update page counters
+            //document.getElementById('page_num').textContent = num;
+        }
+        function repeat(direction, index) {
+            if (direction) {
+                var i = index;
+                if (i < pageSize) {
+                    if (direction === 'prev') {
+                        fetchPrev(++i);
+                    }
+                    else {
+                        fetchNext(++i);
+                    }
+                }
+            }
+        }
+
+        function fetchPrev(index) {
+            if (pageNum > 1) {
+                renderPage(--pageNum, 'prev', index);
+            }
+        }
+
+        function fetchNext(index) {
+            if (pageNum < pdfDoc.numPages) {
+                renderPage(++pageNum, 'next', index);
+            }
+        }
+
+        //function renderPage(page) {
+
+        //    let viewport = page.getViewport({ scale: 1 });
+
+        //    let computedStyle = getComputedStyle(_canvasContainer);
+
+        //    canvasContainerWidth = _canvasContainer.clientWidth - (parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight))
+
+        //    let scale = canvasContainerWidth / viewport.width;
+
+        //    viewport = page.getViewport({ scale: scale });
+
+        //    let wrapper = document.createElement("div");
+        //    wrapper.className = "canvas-wrapper";
+        //    console.log(num);
+        //    wrapper.id = '_' + num;
+        //    let canvas = document.createElement('canvas');
+        //    let ctx = canvas.getContext('2d');
+
+        //    let renderContext = {
+        //        canvasContext: ctx,
+        //        viewport: viewport
+        //    };
+
+        //    canvas.height = viewport.height;
+        //    canvas.width = viewport.width;
+
+        //    wrapper.appendChild(canvas)
+
+        //    j = 0;
+
+        //    if (_isUp) {
+        //        _canvasContainer.insertBefore(wrapper, _canvasContainer.firstChild);
+        //        while (j < _pageSize && (num % _pageSize) == 0) {
+        //            j++;
+        //            $(_canvasContainer).children('#_' + (num + j)).remove();
+        //        }
+        //    }
+        //    else {
+        //        _canvasContainer.appendChild(wrapper);
+        //        while (j < _pageSize && (num % _pageSize) == 0) {
+        //            j++;
+        //            $(_canvasContainer).children('#_' + (num - _pageSize)).remove();
+        //        }
+        //    }
+        //    page.render(renderContext);
+        //}
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        /**
+         * Displays previous page.
+         */
+        function onPrevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+        document.getElementById('prev1').addEventListener('click', onPrevPage);
+        document.getElementById('prev2').addEventListener('click', onPrevPage);
+
+        /**
+         * Displays next page.
+         */
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+        document.getElementById('next1').addEventListener('click', onNextPage);
+        document.getElementById('next2').addEventListener('click', onNextPage);
+
+        //var page = null;
+       // function renderPages() {
+       //     for (let num = (((pageNum - 1) * pageSize) + 1); num <= (pageNum * pageSize); num++) {
+       //         onNextPage(num);
+       //     }
+       //}
+
+
+        var downPosition = (document.body.getBoundingClientRect()).top;
+        var downPositionToDelete = (document.body.getBoundingClientRect()).top;
+        var indexToBeginDelete = pageSize;
+        $(window).scroll(function () {
+            if ((document.body.getBoundingClientRect()).top > scrollPos) {
+                //console.log('data-scroll-direction', 'UP', $(this).scrollTop());
+                isUp = true;
+                if ($('#w_' + pageNum)[0]) {
+                    var size = $('#w_' + pageNum).outerHeight() / 3;
+                    var sizeToDelete = $('#w_' + pageNum).outerHeight();
+                    var distance = Math.abs(Math.abs(scrollPos) - Math.abs(downPosition));
+                    var distanceToDelete = Math.abs(Math.abs(scrollPos) - Math.abs(downPositionToDelete));
+                    //console.log('pageNum =', pageNum);
+                    //console.log('size =', size);
+                    //console.log('distance =', distance);
+                    if (distance >= size) {
+                        //console.log('pdfDoc.numPages =', pdfDoc.numPages);
+
+                        scrollLoad = false;
+                        fetchPrev(1);
+                        downPosition = (document.body.getBoundingClientRect()).top;
+
+                        if (distanceToDelete >= sizeToDelete && pdfDoc.numPages > pageSize && indexToBeginDelete >= pageSize) {
+                            j = pageSize;
+                            max =  1;
+                            var index = indexToBeginDelete;
+                            console.log('init indexToBeginDelete =', indexToBeginDelete);
+                            while (j > max) {
+                                removeIndex = index + j;
+                                console.log('removeIndex = ', removeIndex);
+                                $(canvasContainer).children().eq(removeIndex).children().remove();
+                                j--;
+                            }
+                            indexToBeginDelete--;
+                            console.log('indexToBeginDelete =', indexToBeginDelete);
+                            downPositionToDelete = (document.body.getBoundingClientRect()).top;
+                        }
+                        scrollLoad = true;
+                    }
+                }
+            } else {
+                //console.log('data-scroll-direction', 'DOWN');
+                isUp = false;
+                downPosition = scrollPos;
+                downPositionToDelete = scrollPos;
+                //if (scrollLoad && ($(document).height() - $(this).height() - 100) < $(this).scrollTop()) {
+                if ($('#w_' + pageNum)[0]) {
+                    var size = ($('#w_' + pageNum).outerHeight() * pageNum) - 400;
+                    //console.log(size);
+                    if (Math.abs(scrollPos) >= size) {
+                        scrollLoad = false;
+                        fetchNext(1);
+
+                        if (pdfDoc.numPages > pageSize) {
+                            pageIndex = pageNum - 1;
+                            indexToBeginDelete = pageIndex;
+
+                            j = 0;
+                            max = pageIndex == pageSize ? pageSize - 1 : pageSize;
+                            while (j < max) {
+                                removeIndex = pageIndex - (pageSize - 1) - j;
+                                //console.log('removeIndex = ', removeIndex);
+                                $(canvasContainer).children().eq(removeIndex).children().remove();
+                                j++;
+                            }
+                        }
+
+                        scrollLoad = true;
+                    }
+
+                }
+            }
+            // saves the new position for iteration.
+            scrollPos = (document.body.getBoundingClientRect()).top;
+        });
+
+        window.onload = function () {
+            document.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
+            }, false);
+            document.addEventListener("keydown", function (e) {
+                //document.onkeydown = function(e) {
+                // "I" key
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+                    disabledEvent(e);
+                }
+                // "J" key
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
+                    disabledEvent(e);
+                }
+                // "S" key + macOS
+                if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+                    disabledEvent(e);
+                }
+                // "U" key
+                if (e.ctrlKey && e.keyCode == 85) {
+                    disabledEvent(e);
+                }
+                // "F12" key
+                if (event.keyCode == 123) {
+                    disabledEvent(e);
+                }
+            }, false);
+            function disabledEvent(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation();
+                } else if (window.event) {
+                    window.event.cancelBubble = true;
+                }
+                e.preventDefault();
+                return false;
+            }
+            $('body').on('contextmenu', function () {
+                return false;
+            });
+        };
+    </script>
+}

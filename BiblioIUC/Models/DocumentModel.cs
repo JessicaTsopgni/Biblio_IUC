@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -73,7 +74,9 @@ namespace BiblioIUC.Models
         public string CategoryName { get; }
         
         [Display(Name = "The_document", ResourceType = typeof(Text))]
-        public string FileLink { get; protected set; }
+        public string FileLink { get; set; }
+
+        public string FileBase64 { get; set; }
 
         public bool UpdateMetadata { get; set; }
 
@@ -112,7 +115,7 @@ namespace BiblioIUC.Models
         }
 
 
-        public DocumentModel(Document document, string imageLinkBaseUrl, string fileLinkBaseUrl)
+        public DocumentModel(Document document, string imageLinkBaseUrl, string fileLinkBaseUrl, string mediaBasePath)
           : this(document?.Id ?? 0, document?.Code, document?.Title,document?.Subtitle, document?.Authors,
                 document?.Description, document?.Language, document?.PublishDate, document?.Publisher,
                 document?.NumberOfPages ?? 0, document?.Contributors, document?.CategoryId ?? 0,
@@ -121,6 +124,7 @@ namespace BiblioIUC.Models
             CategoryName = document?.Category?.Name;
             ImageLink = !string.IsNullOrEmpty(document?.Image) ? $"{imageLinkBaseUrl}/{document?.Image}" : null;
             FileLink = !string.IsNullOrEmpty(document?.File) ? $"{fileLinkBaseUrl}/{document?.File}" : null;
+            FileBase64 = !string.IsNullOrEmpty(document?.File) && !string.IsNullOrEmpty(mediaBasePath) ? Logics.Tools.OssFile.GetBase64(Path.Combine(mediaBasePath, document?.File)) : null;
         }
 
         public DocumentModel(string code, IEnumerable<CategoryModel> categories, int? categoryId,

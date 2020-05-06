@@ -39,7 +39,7 @@ function showNotification(colorBg, colorText, appName, tile, text, icon, placeme
                 '<div class="toast-header bg-{0}">' +
                 '<strong class="mr-auto">' +
                 '<span><i class="' + icon + '"></i></span> ' +
-                '<span>{1}</span></strong><span class="mr-1"><small>' + appName + '</small></span>' +
+                '<span>{1}</span></strong><span class="mr-1 ' + colorText + '"><small>' + appName + '</small></span>' +
                 '<button type="button" onclick="$(\'#toast_close\').click()" class="close" data-dismiss="toast" aria-label="Close">' +
                 '<span aria-hidden="true">&times;</span>' +
                 '</button>' +

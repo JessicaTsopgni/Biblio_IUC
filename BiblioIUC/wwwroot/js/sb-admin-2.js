@@ -1,10 +1,8 @@
-var t_end_page = window.setTimeout(function () {
-    var end_page = $('#sidebarToggleTop');
-    if (end_page != null)
-        window.clearTimeout(t_end_page);
+(function ($) {
     "use strict"; // Start of use strict
     // Toggle the side navigation
     $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
+        e.stopPropagation();
         $("body").toggleClass("sidebar-toggled");
         $(".sidebar").toggleClass("toggled");
         if ($(".sidebar").hasClass("toggled")) {
@@ -12,6 +10,14 @@ var t_end_page = window.setTimeout(function () {
         };
     });
 
+    $("body").click(function () {
+        if(!$(".sidebar").hasClass("toggled"));
+            $(".sidebar").addClass("toggled");
+    });
+
+    $(".sidebar").click(function (e) {
+        e.stopPropagation();
+    });
     // Close any open menu accordions when window is resized below 768px
     $(window).resize(function () {
         if ($(window).width() < 768) {
@@ -48,7 +54,7 @@ var t_end_page = window.setTimeout(function () {
         e.preventDefault();
     });
 
-}, 2000);
+})(jQuery); // End of use strict
 
 default_content = '';
 count_change = 0;

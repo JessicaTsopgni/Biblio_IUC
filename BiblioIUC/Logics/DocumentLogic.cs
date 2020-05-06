@@ -96,7 +96,7 @@ namespace BiblioIUC.Logics
             )
             .Select
             (
-                x => GetDocumentModel(x, mediaFolderPath)
+                x => GetDocumentModel(x, mediaFolderPath, null)
             ).ToArray();
         }
 
@@ -105,13 +105,14 @@ namespace BiblioIUC.Logics
             //TODO : update metadata
         }
 
-        private DocumentModel GetDocumentModel(Document document, string mediaFolderPath)
+        private DocumentModel GetDocumentModel(Document document, string mediaFolderPath, string mediaBasePath)
         {
             return document != null ? new DocumentModel
             (
                 document,
                 mediaFolderPath,
-                mediaFolderPath
+                mediaFolderPath,
+                mediaBasePath
             ) : null;
         }
 
@@ -120,8 +121,26 @@ namespace BiblioIUC.Logics
             var document = await biblioEntities.Documents.Include(x=> x.Category)
                 .SingleOrDefaultAsync(x=> x.Id == id);
             if (document != null)
-                return GetDocumentModel(document, mediaFolderPath);
+            {
+                var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+                return GetDocumentModel(document, mediaFolderPath, mediaBasePath);
+            }
             return null;            
+        }
+
+        public async Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath)
+        {
+            var query = biblioEntities.Documents.Include(x => x.Category).Where(x => x.Code == code);
+            if (role != RoleOptions.Admin)
+                query = query.Where(x => x.Status == (short)StatusOptions.Actived);
+
+            var document = await query.SingleOrDefaultAsync();
+            if (document != null)
+            {
+                var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+                return GetDocumentModel(document, mediaFolderPath, mediaBasePath);
+            }
+            return null;
         }
 
         public async Task RemoveAsync(int id, string mediaFolderPath)
@@ -201,7 +220,7 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Documents.Add(newDocument);
                 await biblioEntities.SaveChangesAsync();
-                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath);
+                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null);
             }
             catch (Exception ex)
             {
@@ -278,7 +297,7 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Entry(currentDocument).CurrentValues.SetValues(newDocument);
                 await biblioEntities.SaveChangesAsync();
-                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath);
+                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null);
             }
             catch (Exception ex)
             {

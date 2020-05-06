@@ -26,7 +26,7 @@
                             <div class="text-xs font-weight-bold text-@colors[j] text-uppercase mb-2 truncate">
                                 @if (category.NumberOfSubCategories > 0)
                                 {
-                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'Id':'@category.Id'})" class="text-@colors[j]">
+                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'Id':'@category.Id', 'ReturnUrl': '@ViewBag.Url'})" class="text-@colors[j]">
                                         @category.Name
                                     </a>
                                 }
@@ -51,7 +51,7 @@
                             <div class="truncate mt-1">
                                 @if (category.CategoryParentId != null)
                                 {
-                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'CategoryParentId':'@category.CategoryParentId'})" class="text-gray-800">
+                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'CategoryParentId':'@category.CategoryParentId', 'ReturnUrl': '@ViewBag.Url'})" class="text-gray-800">
                                         <small>@category.CategoryParentName</small>
                                     </a>
                                 }
@@ -78,7 +78,7 @@
                         <div class="col-10 text-@colors[j]" title="@Text.Sub_categories">
                             @if (category.NumberOfSubCategories > 0)
                             {
-                                <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'id':'@category.Id'})" class="text-@colors[j]">
+                                <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'Id':'@category.Id', 'ReturnUrl': '@ViewBag.Url'})" class="text-@colors[j]">
                                     <i class="fas fa-sitemap" style="font-size:100%;"></i> @category.NumberOfSubCategoriesFormated @*@Text.Sub_category*@
                                 </a>
                             }
@@ -99,7 +99,7 @@
                                     }
                                     @if (category.NumberOfSubCategories > 0)
                                     {
-                                        <a class="dropdown-item" href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'id':'@category.Id'})">
+                                        <a class="dropdown-item" href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'Id':'@category.Id', 'ReturnUrl': '@ViewBag.Url'})">
                                             <i class="fas fa-sitemap" style="font-size:95%"></i> @Text.View_sub_categories
                                         </a>
                                     }
@@ -109,11 +109,11 @@
                                         {
                                             <div class="dropdown-divider"></div>
                                         }
-                                        <a class="dropdown-item text-primary"href="javascript:;" onclick="goto('@Url.Action("Edit", "Category")', {'id':'@category.Id'})">
+                                        <a class="dropdown-item text-primary"href="javascript:;" onclick="goto('@Url.Action("Edit", "Category")', {'Id':'@category.Id', 'ReturnUrl': '@ViewBag.Url'})">
                                             <i class="fas fa-edit"></i> @Text.Edit
                                         </a>
                                         <a class="dropdown-item text-danger" href="javascript:;" onclick="init_model('@Text.Warning', '@HttpUtility.JavaScriptStringEncode(string.Format(Text.Do_you_really_want_to_delete_x, "[ " +category.Name+" ]"))', 'bg-warning', 'text-dark',
-                                            '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "Category", new { id = category.Id, returnUrl = ViewBag.Url })')">
+                                            '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "Category", new { Id = category.Id, ReturnUrl = ViewBag.Url })')">
                                             <i class="fas fa-trash"></i> &nbsp;@Text.Delete
                                         </a>
                                     }

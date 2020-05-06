@@ -83,12 +83,52 @@ namespace BiblioIUC.Controllers
             catch (Exception ex)
             {
                 loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
-                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["MessageType"] = MessageOptions.Danger;
                 TempData["Message"] = Text.An_error_occured;
             }
             return RedirectToAction("Index", "Home");
         }
 
+        public async Task<IActionResult> Read(string id, LayoutModel layoutModel)
+        {
+            try
+            {
+                var documentModel = await documentLogic.GetAsync
+                (
+                    id,
+                    (RoleOptions)Enum.Parse(typeof(RoleOptions), User.FindFirst(ClaimTypes.Role).Value),
+                    configuration["MediaFolderPath"]
+                );
+                if (documentModel == null)
+                {
+                    TempData["MessageType"] = MessageOptions.Warning;
+                    TempData["Message"] = Text.Document_not_found;
+                    if (!string.IsNullOrEmpty(layoutModel.ReturnUrl))
+                        return Redirect(layoutModel.ReturnUrl);
+                }
+                else
+                {
+                    documentModel.SetCategoryModels
+                    (
+                        await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
+                        documentModel.CategoryId
+                    );
+                    var pageModel = new PageModel<DocumentModel>
+                    (
+                        documentModel,
+                        layoutModel
+                    );
+                    return View(pageModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+                TempData["MessageType"] = MessageOptions.Danger;
+                TempData["Message"] = Text.An_error_occured;
+            }
+            return RedirectToAction("Index");
+        }
 
         [AllowAnonymous]
         public async Task<IActionResult> GenerateCode()
@@ -126,7 +166,7 @@ namespace BiblioIUC.Controllers
             catch (Exception ex)
             {
                 loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
-                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["MessageType"] = MessageOptions.Danger;
                 TempData["Message"] = Text.An_error_occured;
             }
             if (!string.IsNullOrEmpty(layoutModel.ReturnUrl))
@@ -169,7 +209,7 @@ namespace BiblioIUC.Controllers
             catch (Exception ex)
             {
                 loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
-                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["MessageType"] = MessageOptions.Danger;
                 TempData["Message"] = Text.An_error_occured;
             }
             return RedirectToAction("Index");
@@ -252,7 +292,7 @@ namespace BiblioIUC.Controllers
             catch (Exception ex)
             {
                 loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
-                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["MessageType"] = MessageOptions.Danger;
                 TempData["Message"] = Text.An_error_occured;
             }
             if (!string.IsNullOrEmpty(pageModel.ReturnUrl))
@@ -278,7 +318,7 @@ namespace BiblioIUC.Controllers
             catch (Exception ex)
             {
                 loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
-                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["MessageType"] = MessageOptions.Danger;
                 TempData["Message"] = Text.An_error_occured;
             }
             if (!string.IsNullOrEmpty(returnUrl))

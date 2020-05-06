@@ -339,6 +339,9 @@
   <data name="Ok" xml:space="preserve">
     <value>Ok</value>
   </data>
+  <data name="Paging" xml:space="preserve">
+    <value>Pagination</value>
+  </data>
   <data name="Parent_category" xml:space="preserve">
     <value>Catégorie parent</value>
   </data>
@@ -378,6 +381,9 @@
   <data name="Save_done" xml:space="preserve">
     <value>Enregistrement réussi !</value>
   </data>
+  <data name="Scroll" xml:space="preserve">
+    <value>Défilement</value>
+  </data>
   <data name="Search_category_results_of_x" xml:space="preserve">
     <value>Résultat de la recherche de catégorie : {0}</value>
   </data>
@@ -413,6 +419,9 @@
   </data>
   <data name="Success" xml:space="preserve">
     <value>Confirmation</value>
+  </data>
+  <data name="Switch_view" xml:space="preserve">
+    <value>Changer de vue</value>
   </data>
   <data name="The_document" xml:space="preserve">
     <value>Le document</value>

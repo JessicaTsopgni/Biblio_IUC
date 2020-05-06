@@ -9,23 +9,32 @@
             <i class="fas fa-chevron-circle-left"></i>
         </a>
     </h1>
+    <div class="d-none d-sm-inline-block btn-group" role="group" aria-label="@Text.Switch_view">
+        <button name="scroll-view" type="button" class="btn btn-sm btn-success shadow-sm"><i class="fas fa-arrow-down fa-sm text-white-50"></i> @Text.Scroll</button>
+        <button name="paging-view" type="button" class="btn btn-sm btn-success shadow-sm"><i class="fas fa-arrow-right fa-sm text-white-50"></i> @Text.Paging</button>
+    </div>
+    <div class="d-block d-sm-none btn-group" role="group" aria-label="@Text.Switch_view">
+        <button name="scroll-view" type="button" class="btn btn-sm btn-success btn-circle shadow-sm"><i class="fas fa-arrow-down"></i></button>
+        <button name="paging-view" type="button" class="btn btn-sm btn-success btn-circle shadow-sm"><i class="fas fa-arrow-right"></i></button>
+    </div>
 </div>
-<div class="row mb-2">
-    <div class="col-5 text-left">
-        <a id="prev1" class="btn btn-outline-success" href="javascript:;">
+
+<div name="pagination-controls" class="row mb-2" style="display:none;">
+    <div class="col-3 text-left">
+        <a id="prev" class="btn btn-outline-success" href="javascript:;">
             <i class="fas fa-chevron-left"></i>
         </a>
     </div>
-    <div class="col-2 align-content-center">
-        <div class="input-group">
-            <input id="input-basic-addon1" type="number" class="form-control" min="1" value="1" aria-describedby="basic-addon1">
+    <div class="col-6 d-flex justify-content-center">
+        <div class="input-group input-page-number">
+            <input name="input-display-page-number" type="number" class="form-control" min="1" value="1" aria-describedby="display-page-number">
             <div class="input-group-append">
-                <span class="input-group-text" id="basic-addon1"></span>
+                <span class="input-group-text" name="display-page-number"></span>
             </div>
         </div>
     </div>
-    <div class="col-5 text-right">
-        <a id="next1" class="btn btn-outline-success" href="javascript:;">
+    <div class="col-3 text-right">
+        <a id="next" class="btn btn-outline-success" href="javascript:;">
             <i class="fas fa-chevron-right"></i>
         </a>
     </div>
@@ -39,24 +48,27 @@
     </div>
 </div>
 
-<div class="row mb-2">
-    <div class="col-5 text-left">
-        <a id="prev2" class="btn btn-outline-success" href="javascript:;">
+<div name="pagination-controls" class="row mb-2" style="display:none;">
+    <div class="col-3 text-left">
+        <a id="prev" class="btn btn-outline-success" href="javascript:;">
             <i class="fas fa-chevron-left"></i>
         </a>
     </div>
-    <div class="col-2 align-content-center">
-        <input id="input-basic-addon2" type="number" class="form-control" min="1" value="1" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-            <span class="input-group-text" id="basic-addon2"></span>
+    <div class="col-6 d-flex justify-content-center">
+        <div class="input-group input-page-number">
+            <input name="input-display-page-number" type="number" class="form-control" min="1" value="1" aria-describedby="display-page-number">
+            <div class="input-group-append">
+                <span class="input-group-text" name="display-page-number"></span>
+            </div>
         </div>
     </div>
-    <div class="col-5 text-right">
-        <a id="next2" class="btn btn-outline-success" href="javascript:;">
+    <div class="col-3 text-right">
+        <a id="next" class="btn btn-outline-success" href="javascript:;">
             <i class="fas fa-chevron-right"></i>
         </a>
     </div>
 </div>
+
 @section scripts{
     <script src="~/js/pdf.js"></script>
     <script>
@@ -70,17 +82,55 @@
             scrollPos = 0,
             isUp = false;
 
-        initPdf({ data: atob('@Html.Raw(Model.DataModel.FileBase64)') });
+        $('button[name="scroll-view"]').click(function () {
+            scrollLoad = true;
+            removeChildrenExcept('w_' + (pageNum + 1));
+            $('div[name="pagination-controls"]').hide();
+            if (pageNum != 0)
+                pageNum--;
+            fetchNext(1);
+        });
 
 
-        function initPdf(url) {
+        $('button[name="paging-view"]').click(function () {
+            if (pageNum > 0 && pageNum % pageSize == 0)
+                pageNum -= pageSize;
+            else
+                pageNum = 0;
+            removeChildrenExcept('w_' + (pageNum + 1));
+            $('div[name="pagination-controls"]').show();
+            onNextPage();
+            $('span[name="display-page-number"]').html(' / ' + pdfDoc.numPages);
+            $('input[name="input-display-page-number"]').attr('max', pdfDoc.numPages);
+            scrollLoad = false;
+        });
+
+        $('input[name="input-display-page-number"]').on('change keyup', function () {
+            removeChildrenExcept(null);
+            pageNum = parseInt($('input[name="input-display-page-number"]').val());
+            if (pageNum < 1 || pageNum > pdfDoc.numPages) {
+                return;
+            }
+            queueRenderPage(pageNum);
+        })
+
+        function initPdf(url, callback) {
             pdfjsLib.getDocument(url).promise.then(function (doc) {
                 pdfDoc = doc;
-                $('#basic-addon1, #basic-addon2').html(' / ' + pdfDoc.numPages);
-                $('#input-basic-addon1, #input-basic-addon2').attr('max', pdfDoc.numPages);
-                fetchNext(1);
-                scrollLoad = true;
+                callback();
             });
+        }
+
+        function removeChildrenExcept(except) {
+            var num = pageNum;
+            if (num == 0)
+                num = 1;
+            var length = $(canvasContainer).children().length;
+            for (i = num; i <= length + num; i++) {
+                if (except != ('w_' + i)) {
+                    $(canvasContainer).children('#w_' + i).remove();
+                }
+            }
         }
 
         function renderPage(num, direction = null, index = 0) {
@@ -129,8 +179,6 @@
                     }
 
                     var renderTask = page.render(renderContext);
-                    $('#input-basic-addon1, #input-basic-addon2').val(num);
-
 
                     // Wait for rendering to finish
                     renderTask.promise.then(function () {
@@ -143,6 +191,7 @@
                         repeat(direction, index);
                     });
                 } else {
+                    pageRendering = false;
                     repeat(direction, index);
                 }
             });
@@ -150,6 +199,7 @@
             // Update page counters
             //document.getElementById('page_num').textContent = num;
         }
+
         function repeat(direction, index) {
             if (direction) {
                 var i = index;
@@ -164,13 +214,13 @@
             }
         }
 
-        function fetchPrev(index) {
+        function fetchPrev(index = 1) {
             if (pageNum > 1) {
                 renderPage(--pageNum, 'prev', index);
             }
         }
 
-        function fetchNext(index) {
+        function fetchNext(index = 1) {
             if (pageNum < pdfDoc.numPages) {
                 renderPage(++pageNum, 'next', index);
             }
@@ -190,7 +240,6 @@
 
         //    let wrapper = document.createElement("div");
         //    wrapper.className = "canvas-wrapper";
-        //    console.log(num);
         //    wrapper.id = '_' + num;
         //    let canvas = document.createElement('canvas');
         //    let ctx = canvas.getContext('2d');
@@ -229,6 +278,7 @@
                 pageNumPending = num;
             } else {
                 renderPage(num);
+                $('input[name="input-display-page-number"]').val(num);
             }
         }
 
@@ -239,11 +289,12 @@
             if (pageNum <= 1) {
                 return;
             }
+            removeChildrenExcept(null);
             pageNum--;
             queueRenderPage(pageNum);
+            $(window).scrollTop(0);
         }
-        document.getElementById('prev1').addEventListener('click', onPrevPage);
-        document.getElementById('prev2').addEventListener('click', onPrevPage);
+        document.getElementById('prev').addEventListener('click', onPrevPage);
 
         /**
          * Displays next page.
@@ -252,11 +303,12 @@
             if (pageNum >= pdfDoc.numPages) {
                 return;
             }
+            removeChildrenExcept(null);
             pageNum++;
             queueRenderPage(pageNum);
+            $(window).scrollTop(0);
         }
-        document.getElementById('next1').addEventListener('click', onNextPage);
-        document.getElementById('next2').addEventListener('click', onNextPage);
+        document.getElementById('next').addEventListener('click', onNextPage);
 
         //var page = null;
        // function renderPages() {
@@ -270,79 +322,75 @@
         var downPositionToDelete = (document.body.getBoundingClientRect()).top;
         var indexToBeginDelete = pageSize;
         $(window).scroll(function () {
-            if ((document.body.getBoundingClientRect()).top > scrollPos) {
-                //console.log('data-scroll-direction', 'UP', $(this).scrollTop());
-                isUp = true;
-                if ($('#w_' + pageNum)[0]) {
-                    var size = $('#w_' + pageNum).outerHeight() / 3;
-                    var sizeToDelete = $('#w_' + pageNum).outerHeight();
-                    var distance = Math.abs(Math.abs(scrollPos) - Math.abs(downPosition));
-                    var distanceToDelete = Math.abs(Math.abs(scrollPos) - Math.abs(downPositionToDelete));
-                    //console.log('pageNum =', pageNum);
-                    //console.log('size =', size);
-                    //console.log('distance =', distance);
-                    if (distance >= size) {
-                        //console.log('pdfDoc.numPages =', pdfDoc.numPages);
+            if (scrollLoad) {
+                if ((document.body.getBoundingClientRect()).top > scrollPos) {
+                    isUp = true;
+                    if ($('#w_' + pageNum)[0]) {
+                        var size = $('#w_' + pageNum).outerHeight() / 3;
+                        var sizeToDelete = $('#w_' + pageNum).outerHeight();
+                        var distance = Math.abs(Math.abs(scrollPos) - Math.abs(downPosition));
+                        var distanceToDelete = Math.abs(Math.abs(scrollPos) - Math.abs(downPositionToDelete));
+                        if (distance >= size) {
 
-                        scrollLoad = false;
-                        fetchPrev(1);
-                        downPosition = (document.body.getBoundingClientRect()).top;
+                            scrollLoad = false;
+                            fetchPrev(1);
+                            downPosition = (document.body.getBoundingClientRect()).top;
 
-                        if (distanceToDelete >= sizeToDelete && pdfDoc.numPages > pageSize && indexToBeginDelete >= pageSize) {
-                            j = pageSize;
-                            max =  1;
-                            var index = indexToBeginDelete;
-                            console.log('init indexToBeginDelete =', indexToBeginDelete);
-                            while (j > max) {
-                                removeIndex = index + j;
-                                console.log('removeIndex = ', removeIndex);
-                                $(canvasContainer).children().eq(removeIndex).children().remove();
-                                j--;
+                            if (distanceToDelete >= sizeToDelete && pdfDoc.numPages > pageSize && indexToBeginDelete >= pageSize) {
+                                j = pageSize;
+                                max = 1;
+                                var index = indexToBeginDelete;
+                                while (j > max) {
+                                    removeIndex = index + j;
+                                    $(canvasContainer).children().eq(removeIndex).children().remove();
+                                    j--;
+                                }
+                                indexToBeginDelete--;
+                                downPositionToDelete = (document.body.getBoundingClientRect()).top;
                             }
-                            indexToBeginDelete--;
-                            console.log('indexToBeginDelete =', indexToBeginDelete);
-                            downPositionToDelete = (document.body.getBoundingClientRect()).top;
+                            scrollLoad = true;
                         }
-                        scrollLoad = true;
                     }
-                }
-            } else {
-                //console.log('data-scroll-direction', 'DOWN');
-                isUp = false;
-                downPosition = scrollPos;
-                downPositionToDelete = scrollPos;
-                //if (scrollLoad && ($(document).height() - $(this).height() - 100) < $(this).scrollTop()) {
-                if ($('#w_' + pageNum)[0]) {
-                    var size = ($('#w_' + pageNum).outerHeight() * pageNum) - 400;
-                    //console.log(size);
-                    if (Math.abs(scrollPos) >= size) {
-                        scrollLoad = false;
-                        fetchNext(1);
+                } else {
+                    isUp = false;
+                    downPosition = scrollPos;
+                    downPositionToDelete = scrollPos;
+                    //if (scrollLoad && ($(document).height() - $(this).height() - 100) < $(this).scrollTop()) {
+                    if ($('#w_' + pageNum)[0]) {
+                        var size = ($('#w_' + pageNum).outerHeight() * pageNum) - 400;
+                        if (Math.abs(scrollPos) >= size) {
+                            scrollLoad = false;
+                            fetchNext(1);
 
-                        if (pdfDoc.numPages > pageSize) {
-                            pageIndex = pageNum - 1;
-                            indexToBeginDelete = pageIndex;
+                            if (pdfDoc.numPages > pageSize) {
+                                pageIndex = pageNum - 1;
+                                indexToBeginDelete = pageIndex;
 
-                            j = 0;
-                            max = pageIndex == pageSize ? pageSize - 1 : pageSize;
-                            while (j < max) {
-                                removeIndex = pageIndex - (pageSize - 1) - j;
-                                //console.log('removeIndex = ', removeIndex);
-                                $(canvasContainer).children().eq(removeIndex).children().remove();
-                                j++;
+                                j = 0;
+                                max = pageIndex == pageSize ? pageSize - 1 : pageSize;
+                                while (j < max) {
+                                    removeIndex = pageIndex - (pageSize - 1) - j;
+                                    $(canvasContainer).children().eq(removeIndex).children().remove();
+                                    j++;
+                                }
                             }
+
+                            scrollLoad = true;
                         }
 
-                        scrollLoad = true;
                     }
-
                 }
-            }
             // saves the new position for iteration.
+
+            }
             scrollPos = (document.body.getBoundingClientRect()).top;
         });
 
-        window.onload = function () {
+
+        $(function () {
+            scrollLoad = true;
+            initPdf({ data: atob('@Html.Raw(Model.DataModel.FileBase64)') }, fetchNext);
+
             document.addEventListener("contextmenu", function (e) {
                 e.preventDefault();
             }, false);
@@ -381,6 +429,6 @@
             $('body').on('contextmenu', function () {
                 return false;
             });
-        };
+        });
     </script>
 }

@@ -727,6 +727,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pagination.
+        /// </summary>
+        public static string Paging {
+            get {
+                return ResourceManager.GetString("Paging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Catégorie parent.
         /// </summary>
         public static string Parent_category {
@@ -844,6 +853,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Défilement.
+        /// </summary>
+        public static string Scroll {
+            get {
+                return ResourceManager.GetString("Scroll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Résultat de la recherche de catégorie : {0}.
         /// </summary>
         public static string Search_category_results_of_x {
@@ -948,6 +966,15 @@ namespace BiblioIUC.Localize {
         public static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changer de vue.
+        /// </summary>
+        public static string Switch_view {
+            get {
+                return ResourceManager.GetString("Switch_view", resourceCulture);
             }
         }
         

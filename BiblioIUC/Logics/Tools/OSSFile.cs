@@ -13,6 +13,12 @@ namespace BiblioIUC.Logics.Tools
 {
     public static class OssFile
     {
+        public static string GetBase64(string filePafth)
+        {
+            byte[] bytes = File.ReadAllBytes(filePafth);
+            string file = Convert.ToBase64String(bytes);
+            return file;
+        }
         public static void ConvertPdfToImage(string libPath, string inputPDFFilePath, int pageNumber, string outputFilePath, int width, int height)
         {
             GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(libPath);

@@ -132,6 +132,9 @@
   <data name="Authors" xml:space="preserve">
     <value>Auteurs</value>
   </data>
+  <data name="Back" xml:space="preserve">
+    <value>Retour</value>
+  </data>
   <data name="Bookstore" xml:space="preserve">
     <value>Librairie</value>
   </data>
@@ -353,6 +356,9 @@
   </data>
   <data name="Read" xml:space="preserve">
     <value>Lire</value>
+  </data>
+  <data name="Reading" xml:space="preserve">
+    <value>Lecture</value>
   </data>
   <data name="Repeat_password" xml:space="preserve">
     <value>Répéter le mot de passe</value>

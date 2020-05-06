@@ -21,5 +21,6 @@ namespace BiblioIUC.Logics.Interfaces
         Task RemoveAsync(int id, string mediaFolderPath);
         Task<string> GenerateCodeAsync(string codePrefix);
         void UpdateMetaData(string mediaFolderPath, DocumentModel documentModel);
+        Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath);
     }
 }

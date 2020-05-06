@@ -394,6 +394,7 @@
             });
             if (params && $.isPlainObject(params)) {
                 $.each(params, function (key, value) {
+                    form.children('input[name="' + key + '"]').remove();
                     form.append('<input type="hidden" name="' + key + '" value="' + value + '"/>');
                 });
             }

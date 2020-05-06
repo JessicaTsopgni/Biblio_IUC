@@ -36,11 +36,11 @@
                             @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())
                             {                               
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-primary" href="javascript:;" onclick="goto('@Url.Action("Edit", "Document")', {'id':'@document.Id'})">
+                                <a class="dropdown-item text-primary" href="javascript:;" onclick="goto('@Url.Action("Edit", "Document")', {'Id':'@document.Id', 'ReturnUrl': '@ViewBag.Url'})">
                                     <i class="fas fa-edit"></i> @Text.Edit
                                 </a>
                                 <a class="dropdown-item text-danger" href="javascript:;" onclick="init_model('@Text.Warning', '@HttpUtility.JavaScriptStringEncode(string.Format(Text.Do_you_really_want_to_delete_x, "[ " + document.Title + " ]"))', 'bg-warning', 'text-dark',
-                                    '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "Document", new { id = document.Id, returnUrl = ViewBag.Url })')">
+                                    '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "Document", new { Id = document.Id, ReturnUrl = ViewBag.Url })')">
                                     <i class="fas fa-trash"></i> &nbsp;@Text.Delete
                                 </a>
                             }
@@ -139,7 +139,7 @@
                     </div>
                 </div>
                 <div class="card-footer border-@colors[j]" style="text-align: end; background-color:transparent;">
-                    <a href="#" class="btn btn-sm btn-@colors[j] shadow-sm"><i class="fas fa-eye fa-sm text-white-50"></i> @Text.Read</a>
+                    <a href="javascript:;" onclick="goto('@Url.Action("Read", "Document")', {'Id':'@document.Code', 'ReturnUrl': '@ViewBag.Url'})" class="btn btn-sm btn-@colors[j] shadow-sm"><i class="fas fa-eye fa-sm text-white-50"></i> @Text.Read</a>
                 </div>
             </div>
         </div>        

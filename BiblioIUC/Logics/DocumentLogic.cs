@@ -81,6 +81,7 @@ namespace BiblioIUC.Logics
                     (x.Title.ToLower().Contains(value) || value.Contains(x.Title)) ||
                     (x.Subtitle.ToLower().Contains(value) || value.Contains(x.Subtitle)) ||
                     (x.Description.ToLower().Contains(value) || value.Contains(x.Description)) ||
+                    (x.Authors.ToLower().Contains(value) || value.Contains(x.Authors)) ||
                     (x.Publisher.ToLower().Contains(value) || value.Contains(x.Publisher)) ||
                     (x.Contributors.ToLower().Contains(value) || value.Contains(x.Contributors)) ||
                     (x.Language.ToLower().Contains(value) || value.Contains(x.Language))

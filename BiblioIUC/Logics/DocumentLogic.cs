@@ -1,6 +1,7 @@
 ﻿using BiblioIUC.Entities;
 using BiblioIUC.Localize;
 using BiblioIUC.Logics.Interfaces;
+using BiblioIUC.Logics.Tools;
 using BiblioIUC.Models;
 using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Authentication;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -155,6 +157,7 @@ namespace BiblioIUC.Logics
             documentModel.Description = reader.Info["Subject"]?.ToString() + (!string.IsNullOrEmpty(reader.Info["Keywords"]?.ToString()) ? " " + reader.Info["Keywords"]?.ToString() : null);
             documentModel.Language = reader.Info["Language"]?.ToString();
             documentModel.Publisher = reader.Info["Creator"]?.ToString();
+            documentModel.CategoryId = int.Parse(reader.Info["CategoryId"]?.ToString() ?? "0");
             documentModel.Contributors = reader.Info["Contributors"]?.ToString();
             documentModel.NumberOfPages = reader.NumberOfPages;
             documentModel.FileUploadedTmpFileName = newFileName;
@@ -164,9 +167,89 @@ namespace BiblioIUC.Logics
             return documentModel;
         }
 
-        public void UpdateMetaData(string mediaFolderPath, DocumentModel documentModel)
+        public async Task UpdateMetaData(string mediaFolderPath, string prefixDocumentFileName,  DocumentModel documentModel)
         {
-            //TODO : update metadata
+            try
+            {
+                var document = await biblioEntities.Documents
+                    .SingleOrDefaultAsync(x => x.Id == documentModel.Id);
+
+                if (document != null)
+                {
+                    string inputFile = Path.Combine(env.WebRootPath, documentModel.FileLink.Replace("~/", string.Empty).Replace("/", @"\"));
+
+                    string mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+                    
+                    string newFileName = OssFile.GetNewFileName(inputFile, prefixDocumentFileName);
+
+                    string outputFile = Path.Combine(mediaBasePath, newFileName);
+
+                    using (FileStream fs = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        PdfReader reader = new PdfReader(inputFile);
+                        PdfStamper stamper = new PdfStamper(reader, fs);
+
+                        Hashtable info = reader.Info;
+                        if(info.ContainsKey("ISBN"))
+                            info.Remove("ISBN");
+                        info.Add("ISBN", documentModel.Code);
+                        if (info.ContainsKey("Title")) 
+                            info.Remove("Title");
+                        info.Add("Title", documentModel.Title);
+                        if (info.ContainsKey("Subtitle"))
+                            info.Remove("Subtitle");
+                        info.Add("Subtitle", documentModel.Subtitle);
+                        if (info.ContainsKey("Subject"))
+                            info.Remove("Subject");
+                        info.Add("Subject", documentModel.Description);
+                        if (info.ContainsKey("Creator"))
+                            info.Remove("Creator");
+                        info.Add("Creator", documentModel.Publisher);
+                        if (documentModel.PublishDate.HasValue)
+                        {
+                            if (info.ContainsKey("PublishDate"))
+                                info.Remove("PublishDate");
+                            info.Add("PublishDate", documentModel.PublishDate.Value.ToString("yyyy-MM-dd"));
+                        }
+                        if (info.ContainsKey("Author"))
+                            info.Remove("Author");
+                        info.Add("Author", documentModel.Authors);
+                        if (info.ContainsKey("Contributors"))
+                            info.Remove("Contributors");
+                        info.Add("Contributors", documentModel.Contributors);
+                        if (info.ContainsKey("Language"))
+                            info.Remove("Language");
+                        info.Add("Language", documentModel.Language);
+                        if (info.ContainsKey("CategoryId"))
+                            info.Remove("CategoryId");
+                        info.Add("CategoryId", documentModel.CategoryId.ToString());
+                        if (info.ContainsKey("CategoryName"))
+                            info.Remove("CategoryName");
+                        info.Add("CategoryName", documentModel.CategoryName);
+                        stamper.MoreInfo = info;
+                        stamper.Close();
+                        reader.Close();
+                    }
+                    document.File = newFileName;
+                    await biblioEntities.SaveChangesAsync();
+                    try
+                    {
+                        File.Delete(inputFile);
+                    }
+                    catch(Exception ex)
+                    {
+                        throw new FileLoadException(inputFile, ex);
+                    }
+                }
+            }
+            catch (FileLoadException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw new MethodAccessException("UpdateMetaData", ex);
+            }
         }
 
         private DocumentModel GetDocumentModel(Document document, string mediaFolderPath, string mediaBasePath)

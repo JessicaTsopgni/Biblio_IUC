@@ -308,7 +308,6 @@ namespace BiblioIUC.Controllers
                                 configuration["PrefixDocumentImageName"],
                                 configuration["PrefixDocumentFileName"]
                             );
-                            return RedirectToAction("Create", (LayoutModel)pageModel);
                         }
                         else
                         {
@@ -324,9 +323,10 @@ namespace BiblioIUC.Controllers
 
                         if (pageModel.DataModel.UpdateMetadata)
                         {
-                            documentLogic.UpdateMetaData
+                            await documentLogic.UpdateMetaData
                             (
                                 configuration["MediaFolderPath"],
+                                configuration["PrefixDocumentFileName"],
                                 newDocumentModel
                             );
                         }
@@ -348,12 +348,25 @@ namespace BiblioIUC.Controllers
                 TempData["MessageType"] = MessageOptions.Warning;
                 TempData["Message"] = Text.Data_not_exists_or_deleted;
             }
+            catch (MethodAccessException ex)
+            {
+                loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["Message"] = Text.Save_done_but_without_update_metadata;
+            }
+            catch (FileLoadException ex)
+            {
+                loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+            }
             catch (Exception ex)
             {
                 loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
                 TempData["MessageType"] = MessageOptions.Danger;
                 TempData["Message"] = Text.An_error_occured;
             }
+            if(pageModel.DataModel.Id == 0)
+                return RedirectToAction("Create", (LayoutModel)pageModel);
+
             if (!string.IsNullOrEmpty(pageModel.ReturnUrl))
                 return Redirect(pageModel.ReturnUrl);
             return RedirectToAction("Index");

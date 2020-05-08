@@ -181,7 +181,7 @@
     <value>Critique</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
-    <value>Tabeau de bord</value>
+    <value>Tableau de bord</value>
   </data>
   <data name="Data_not_exists_or_deleted" xml:space="preserve">
     <value>Donnée inexistante ou supprimée !</value>
@@ -380,6 +380,9 @@
   </data>
   <data name="Save_done" xml:space="preserve">
     <value>Enregistrement réussi !</value>
+  </data>
+  <data name="Save_done_but_without_update_metadata" xml:space="preserve">
+    <value>Enregistrement éffectué ! Mais sans modification des métadonnées.</value>
   </data>
   <data name="Scroll" xml:space="preserve">
     <value>Défilement</value>

@@ -3,6 +3,7 @@ using BiblioIUC.Localize;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,11 +27,9 @@ namespace BiblioIUC.Models
         [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         public string Title { get; set; }
 
-
         [Display(Name = "Sub_title", ResourceType = typeof(Text))]
         [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         public string Subtitle { get; set; }
-
 
         [Display(Name = "Authors", ResourceType = typeof(Text))]
         [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
@@ -65,7 +64,11 @@ namespace BiblioIUC.Models
 
         //[Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
         [Display(Name = "The_document", ResourceType = typeof(Text))]
+        [JsonIgnore] 
         public IFormFile FileUploaded { get; set; }
+        public string FileUploadedName { get; set; }
+        public string FileUploadedTmpFileName { get; set; }
+        public bool ForExtraction { get; set; }
 
         [Display(Name = "Category", ResourceType = typeof(Text))]
         public int CategoryId { get; set; }
@@ -77,6 +80,8 @@ namespace BiblioIUC.Models
         public string FileLink { get; set; }
 
         public string FileBase64 { get; set; }
+
+        public string ImageUploadedTmpFileName { get; set; }
 
         public bool UpdateMetadata { get; set; }
 
@@ -95,7 +100,7 @@ namespace BiblioIUC.Models
         }
 
 
-        private DocumentModel(int id, string code, string title, string subtitle, string authors,
+        public DocumentModel(int id, string code, string title, string subtitle, string authors,
             string description, string language, DateTime? publishDate, string publisher,
             int numberOfPages, string contributors, int categoryId, DateTime createDate,
             StatusOptions status):this(id, status)

@@ -178,7 +178,7 @@ namespace BiblioIUC.Logics
         public async Task<CategoryModel> AddAsync(CategoryModel categoryModel,
             string mediaFolderPath, string PrefixCategoryImageName)
         {
-            var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+            var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
             string newFileName = null;
             try
             {
@@ -188,7 +188,7 @@ namespace BiblioIUC.Logics
 
                 if (Tools.OssFile.HasImage(categoryModel.ImageUploaded))
                 {
-                    newFileName = Tools.OssFile.SaveImage(categoryModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, PrefixCategoryImageName, mediaBasePath); ;
+                    newFileName = Tools.OssFile.SaveImage(categoryModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, PrefixCategoryImageName, mediaAbsoluteBasePath); ;
                 }
 
                 Category newCategory = new Category
@@ -209,21 +209,21 @@ namespace BiblioIUC.Logics
             catch (Exception ex)
             {
                 if (Tools.OssFile.HasImage(categoryModel.ImageUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaBasePath);
+                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }
 
         public async Task<CategoryModel> SetAsync(CategoryModel categoryModel, 
-            string mediaFolderPath, string PrefixCategoryImageName)
+            string mediaFolderPath, string prefixCategoryImageName)
         {
             string newFileName = null;
-            var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
+            var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
             try
             {
                 if (categoryModel == null)
                     throw new ArgumentNullException("categoryModel");
-
+                bool deleteCurrentIamge = false;
                 var currentCategory = await biblioEntities.Categories.FindAsync(categoryModel.Id);
                 if (currentCategory == null)
                     throw new KeyNotFoundException("Category");
@@ -231,12 +231,12 @@ namespace BiblioIUC.Logics
 
                 if (Tools.OssFile.HasImage(categoryModel.ImageUploaded))
                 {
-                    newFileName = Tools.OssFile.SaveImage(categoryModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, PrefixCategoryImageName, mediaBasePath); ;
-                    Tools.OssFile.DeleteFile(currentCategory.Image, mediaBasePath);
+                    newFileName = Tools.OssFile.SaveImage(categoryModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixCategoryImageName, mediaAbsoluteBasePath); ;
+                    deleteCurrentIamge = true;
                 }
                 else if (!string.IsNullOrEmpty(currentCategory.Image) && categoryModel.DeleteImage)
                 {
-                    Tools.OssFile.DeleteFile(currentCategory.Image, mediaBasePath);
+                    deleteCurrentIamge = true;
                 }
                 else
                 {
@@ -255,12 +255,16 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Entry(currentCategory).CurrentValues.SetValues(newCategory);
                 await biblioEntities.SaveChangesAsync();
+
+                if (deleteCurrentIamge)
+                    Tools.OssFile.DeleteFile(currentCategory.Image, mediaAbsoluteBasePath);
+
                 return new CategoryModel(newCategory, this, mediaFolderPath);
             }
             catch (Exception ex)
             {
                 if(Tools.OssFile.HasImage(categoryModel.ImageUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaBasePath);
+                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }

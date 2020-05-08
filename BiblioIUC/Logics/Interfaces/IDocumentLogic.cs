@@ -11,16 +11,18 @@ namespace BiblioIUC.Logics.Interfaces
     public interface IDocumentLogic
     {
         Task<IEnumerable<DocumentModel>> FindAsync(int[] documentIds, string value, string mediaFolderPath,
-            Expression<Func<Document, object>> orderBy, bool withDisabled = false, int pageIndex = 1, int pageSize = 10);
+            Expression<Func<Document, object>> orderBy, Expression<Func<Document, object>> orderByDescending,
+ bool withDisabled = false, int pageIndex = 1, int pageSize = 10);
         Task<DocumentModel> GetAsync(int id, string mediaFolderPath);
         Task<DocumentModel> SetAsync(DocumentModel documentModel, 
-            string mediaFolderPath, string PrefixDocumentImageName, string PrefixDocumentFileName);
+            string mediaFolderPath, string mediaFolderTmpPath, string PrefixDocumentImageName, string PrefixDocumentFileName);
         Task<bool> CodeAlreadyExistsAsync(string name, int id);
         Task<DocumentModel> AddAsync(DocumentModel documentModel, 
-            string mediaFolderPath, string PrefixDocumentImageName, string PrefixDocumentFileName);
+            string mediaFolderPath, string mediaFolderTmpPath, string PrefixDocumentImageName, string PrefixDocumentFileName);
         Task RemoveAsync(int id, string mediaFolderPath);
         Task<string> GenerateCodeAsync(string codePrefix);
         void UpdateMetaData(string mediaFolderPath, DocumentModel documentModel);
         Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath);
+        Task<DocumentModel> ExtractMetadata(DocumentModel documentModel, string PrefixDocumentTmpFileName, string mediaFolderTmpPath, string libGostScriptPath, int userId);
     }
 }

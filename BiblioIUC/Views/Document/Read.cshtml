@@ -76,7 +76,7 @@
     <script src="~/js/pdf.js"></script>
     <script>
         var pdfDoc = null,
-            pageNum = 0,
+            pageNum = @((Model?.DataModel?.LastPageNumberRead ?? 0) > 0 ? (Model.DataModel.LastPageNumberRead - 1) : 0),
             pageSize = 3,
             pageRendering = false,
             pageNumPending = null,
@@ -134,6 +134,22 @@
                 }
             }
         }
+
+        var inProcess = false;
+        function save_last_read() {
+            if (!inProcess) {
+                inProcess = true;
+                var url = "@Url.Action("SaveLastRead", "Document", new { id = Model?.DataModel?.Code ?? "" })" + "?pageNumber=" + pageNum;
+                alert(url);
+                $.getJSON(url, function (result) {
+                    inProcess = false;
+                });
+            }
+        }
+
+        $(window).on("beforeunload", function () {
+            save_last_read();
+        });
 
         function renderPage(num, direction = null, index = 0) {
             pageRendering = true;

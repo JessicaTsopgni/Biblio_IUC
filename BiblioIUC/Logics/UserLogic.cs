@@ -95,7 +95,8 @@ namespace BiblioIUC.Logics
                    new Claim(ClaimTypes.NameIdentifier, profileModel.Account),
                    new Claim(ClaimTypes.Name, profileModel.FullName),
                    new Claim(ClaimTypes.Role, profileModel.RoleValue.ToString()),
-                   new Claim("User.ImageLink", profileModel.ImageLink ?? "")
+                   new Claim("User.ImageLink", profileModel.ImageLink ?? ""),
+                   new Claim("User.Id", profileModel.Id.ToString())
             };
 
             var identity = new ClaimsIdentity
@@ -122,7 +123,7 @@ namespace BiblioIUC.Logics
             HttpRequest request, string mediaFolderPath, string prefixPhotoProfileName)
         {
             string newFileName = null;
-            var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
+            var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
             try
             {
                 var currentUser = await biblioEntities.Users.SingleOrDefaultAsync
@@ -132,15 +133,15 @@ namespace BiblioIUC.Logics
                 if (currentUser == null)
                     throw new KeyNotFoundException("Profile");
 
-
+                bool deleteCurrentImage = false;
                 if (Tools.OssFile.HasImage(profileModel.ImageUploaded))
                 {
-                    newFileName = Tools.OssFile.SaveImage(profileModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaBasePath); ;
-                    Tools.OssFile.DeleteFile(currentUser.Image, mediaBasePath);
+                    newFileName = Tools.OssFile.SaveImage(profileModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaAbsoluteBasePath); ;
+                    deleteCurrentImage = true;
                 }
                 else if (!string.IsNullOrEmpty(currentUser.Image) && profileModel.DeleteImage)
                 {
-                    Tools.OssFile.DeleteFile(currentUser.Image, mediaBasePath);
+                    deleteCurrentImage = true;
                 }
                 else
                 {
@@ -160,13 +161,17 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Entry(currentUser).CurrentValues.SetValues(newUser);
                 await biblioEntities.SaveChangesAsync();
+
+                if (deleteCurrentImage)
+                    Tools.OssFile.DeleteFile(currentUser.Image, mediaAbsoluteBasePath);
+
                 profileModel = new ProfileModel(newUser, mediaFolderPath);
                 return profileModel;
             }
             catch (Exception ex)
             {
                 if (Tools.OssFile.HasImage(profileModel.ImageUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaBasePath);
+                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }

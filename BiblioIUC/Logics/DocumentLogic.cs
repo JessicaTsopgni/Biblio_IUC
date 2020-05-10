@@ -1,7 +1,9 @@
 ﻿using BiblioIUC.Entities;
 using BiblioIUC.Localize;
 using BiblioIUC.Logics.Interfaces;
+using BiblioIUC.Logics.Tools;
 using BiblioIUC.Models;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -60,6 +63,7 @@ namespace BiblioIUC.Logics
 
         public async Task<IEnumerable<DocumentModel>> FindAsync(int[] documentIds, string value, string mediaFolderPath,
             Expression<Func<Document, object>> orderBy,
+            Expression<Func<Document, object>> orderByDescending,
             bool withDisabled = false,  int pageIndex = DEFAULT_PAGE_INDEX, 
             int pageSize = DEFAULT_PAGE_SIZE)
         {
@@ -78,9 +82,11 @@ namespace BiblioIUC.Logics
                 query = query.Where
                 (
                     x =>
+                    (x.Code.ToLower().Contains(value) || value.Contains(x.Code)) ||
                     (x.Title.ToLower().Contains(value) || value.Contains(x.Title)) ||
                     (x.Subtitle.ToLower().Contains(value) || value.Contains(x.Subtitle)) ||
                     (x.Description.ToLower().Contains(value) || value.Contains(x.Description)) ||
+                    (x.Authors.ToLower().Contains(value) || value.Contains(x.Authors)) ||
                     (x.Publisher.ToLower().Contains(value) || value.Contains(x.Publisher)) ||
                     (x.Contributors.ToLower().Contains(value) || value.Contains(x.Contributors)) ||
                     (x.Language.ToLower().Contains(value) || value.Contains(x.Language))
@@ -90,19 +96,160 @@ namespace BiblioIUC.Logics
             if (!withDisabled)
                 query = query.Where(x => x.Status == (short)StatusOptions.Actived);
 
-            return 
-            (
-                await query.OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
-            )
-            .Select
-            (
-                x => GetDocumentModel(x, mediaFolderPath, null)
-            ).ToArray();
+            if (orderBy != null)
+                return
+                (
+                    await query.OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
+                ).Select
+                (
+                    x => GetDocumentModel(x, mediaFolderPath, null)
+                ).ToArray();
+            else if (orderByDescending != null)
+                return
+                (
+                    await query.OrderByDescending(orderByDescending).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
+                ).Select
+                (
+                    x => GetDocumentModel(x, mediaFolderPath, null)
+                ).ToArray();
+            else
+                return
+                (
+                    await query.OrderBy(x=> x.Title).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
+                ).Select
+                (
+                    x => GetDocumentModel(x, mediaFolderPath, null)
+                ).ToArray();
         }
 
-        public void UpdateMetaData(string mediaFolderPath, DocumentModel documentModel)
+        public async Task<DocumentModel> ExtractMetadata(DocumentModel documentModel,
+         string PrefixDocumentTmpFileName, string mediaFolderTmpPath, string libGostScriptPath, int userId)
         {
-            //TODO : update metadata
+            var mediaBaseTmpPath = Path.Combine(env.WebRootPath, mediaFolderTmpPath.Replace("~/", string.Empty).Replace("/", @"\"));
+            var libBaseGostScriptPath = Path.Combine(env.ContentRootPath, libGostScriptPath.Replace("~/", string.Empty));
+            var prefixTmpThumb = "tmp_" + userId + "_";
+
+            Tools.OssFile.DeleteFileInFolder(prefixTmpThumb, mediaBaseTmpPath);
+
+            string newFileName = string.Empty;
+            if (Tools.OssFile.HasFile(documentModel.FileUploaded))
+            {
+                newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, prefixTmpThumb, mediaBaseTmpPath); ;
+                documentModel.FileUploadedName = documentModel.FileUploaded.FileName;
+            }
+
+            string coverFileName = prefixTmpThumb + Guid.NewGuid().ToString().ToLower() + ".png";
+
+            Tools.OssFile.ConvertPdfToImage
+            (
+                libBaseGostScriptPath,
+                Path.Combine(mediaBaseTmpPath, newFileName),
+                1,
+                Path.Combine(mediaBaseTmpPath, coverFileName),
+                400,
+                600
+            );
+
+            PdfReader reader = new PdfReader(Path.Combine(mediaBaseTmpPath, newFileName));
+            documentModel.Code = reader.Info["ISBN"]?.ToString() ?? documentModel.Code;
+            documentModel.Title = reader.Info["Title"]?.ToString();
+            documentModel.Authors = reader.Info["Author"]?.ToString();
+            documentModel.Description = reader.Info["Subject"]?.ToString() + (!string.IsNullOrEmpty(reader.Info["Keywords"]?.ToString()) ? " " + reader.Info["Keywords"]?.ToString() : null);
+            documentModel.Language = reader.Info["Language"]?.ToString();
+            documentModel.Publisher = reader.Info["Creator"]?.ToString();
+            documentModel.CategoryId = int.Parse(reader.Info["CategoryId"]?.ToString() ?? "0");
+            documentModel.Contributors = reader.Info["Contributors"]?.ToString();
+            documentModel.NumberOfPages = reader.NumberOfPages;
+            documentModel.FileUploadedTmpFileName = newFileName;
+            documentModel.ImageUploadedTmpFileName = coverFileName;
+            documentModel.ImageLink = $"{mediaFolderTmpPath}/{coverFileName}";
+            reader.Close();
+            return documentModel;
+        }
+
+        public async Task UpdateMetaData(string mediaFolderPath, string prefixDocumentFileName,  DocumentModel documentModel)
+        {
+            try
+            {
+                var document = await biblioEntities.Documents
+                    .SingleOrDefaultAsync(x => x.Id == documentModel.Id);
+
+                if (document != null)
+                {
+                    string inputFile = Path.Combine(env.WebRootPath, documentModel.FileLink.Replace("~/", string.Empty).Replace("/", @"\"));
+
+                    string mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+                    
+                    string newFileName = OssFile.GetNewFileName(inputFile, prefixDocumentFileName);
+
+                    string outputFile = Path.Combine(mediaBasePath, newFileName);
+
+                    using (FileStream fs = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        PdfReader reader = new PdfReader(inputFile);
+                        PdfStamper stamper = new PdfStamper(reader, fs);
+
+                        Hashtable info = reader.Info;
+                        if(info.ContainsKey("ISBN"))
+                            info.Remove("ISBN");
+                        info.Add("ISBN", documentModel.Code);
+                        if (info.ContainsKey("Title")) 
+                            info.Remove("Title");
+                        info.Add("Title", documentModel.Title);
+                        if (info.ContainsKey("Subtitle"))
+                            info.Remove("Subtitle");
+                        info.Add("Subtitle", documentModel.Subtitle);
+                        if (info.ContainsKey("Subject"))
+                            info.Remove("Subject");
+                        info.Add("Subject", documentModel.Description);
+                        if (info.ContainsKey("Creator"))
+                            info.Remove("Creator");
+                        info.Add("Creator", documentModel.Publisher);
+                        if (documentModel.PublishDate.HasValue)
+                        {
+                            if (info.ContainsKey("PublishDate"))
+                                info.Remove("PublishDate");
+                            info.Add("PublishDate", documentModel.PublishDate.Value.ToString("yyyy-MM-dd"));
+                        }
+                        if (info.ContainsKey("Author"))
+                            info.Remove("Author");
+                        info.Add("Author", documentModel.Authors);
+                        if (info.ContainsKey("Contributors"))
+                            info.Remove("Contributors");
+                        info.Add("Contributors", documentModel.Contributors);
+                        if (info.ContainsKey("Language"))
+                            info.Remove("Language");
+                        info.Add("Language", documentModel.Language);
+                        if (info.ContainsKey("CategoryId"))
+                            info.Remove("CategoryId");
+                        info.Add("CategoryId", documentModel.CategoryId.ToString());
+                        if (info.ContainsKey("CategoryName"))
+                            info.Remove("CategoryName");
+                        info.Add("CategoryName", documentModel.CategoryName);
+                        stamper.MoreInfo = info;
+                        stamper.Close();
+                        reader.Close();
+                    }
+                    document.File = newFileName;
+                    await biblioEntities.SaveChangesAsync();
+                    try
+                    {
+                        File.Delete(inputFile);
+                    }
+                    catch(Exception ex)
+                    {
+                        throw new FileLoadException(inputFile, ex);
+                    }
+                }
+            }
+            catch (FileLoadException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw new MethodAccessException("UpdateMetaData", ex);
+            }
         }
 
         private DocumentModel GetDocumentModel(Document document, string mediaFolderPath, string mediaBasePath)
@@ -177,9 +324,10 @@ namespace BiblioIUC.Logics
         }
 
         public async Task<DocumentModel> AddAsync(DocumentModel documentModel,
-            string mediaFolderPath, string PrefixDocumentImageName, string PrefixDocumentFileName)
+            string mediaFolderPath, string mediaFolderTmpPath, string prefixDocumentImageName, string prefixDocumentFileName)
         {
-            var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+            var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+            var mediaAbsoluteBaseTmpPath = Path.Combine(env.WebRootPath, mediaFolderTmpPath.Replace("~/", string.Empty).Replace("/", @"\"));
             string newImageName = null;
             string newFileName = null;
             try
@@ -189,12 +337,52 @@ namespace BiblioIUC.Logics
 
                 if (Tools.OssFile.HasImage(documentModel.ImageUploaded))
                 {
-                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, PrefixDocumentImageName, mediaBasePath); ;
+                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, prefixDocumentImageName, mediaAbsoluteBasePath); ;
+                }
+                else
+                {
+                    if (!documentModel.DeleteImage)
+                    {
+                        if (!string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) &&
+                        File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)))
+                        {
+                            newImageName = Tools.OssFile.GetNewFileName(documentModel.ImageUploadedTmpFileName, prefixDocumentImageName);
+                            File.Move
+                            (
+                                Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName),
+                                Path.Combine(mediaAbsoluteBasePath, newImageName)
+                            );
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) &&
+                        File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)))
+                        {
+                            File.Delete
+                            (
+                                Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)
+                            );
+                        }
+                    }
                 }
 
                 if (Tools.OssFile.HasFile(documentModel.FileUploaded))
                 {
-                    newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, PrefixDocumentFileName, mediaBasePath); ;
+                    newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, prefixDocumentFileName, mediaAbsoluteBasePath); ;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(documentModel.FileUploadedTmpFileName) &&
+                    File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName)))
+                    {
+                        newFileName = Tools.OssFile.GetNewFileName(documentModel.FileUploadedTmpFileName, prefixDocumentFileName);
+                        File.Move
+                        (
+                            Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName),
+                            Path.Combine(mediaAbsoluteBasePath, newFileName)
+                        );
+                    }
                 }
 
                 Document newDocument = new Document
@@ -225,19 +413,20 @@ namespace BiblioIUC.Logics
             catch (Exception ex)
             {
                 if (Tools.OssFile.HasImage(documentModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
-                    Tools.OssFile.DeleteFile(newImageName, mediaBasePath);
+                    Tools.OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
                 if (Tools.OssFile.HasFile(documentModel.FileUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaBasePath);
+                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }
 
         public async Task<DocumentModel> SetAsync(DocumentModel documentModel, 
-            string mediaFolderPath, string PrefixDocumentImageName, string PrefixDocumentFileName)
+            string mediaFolderPath, string mediaFolderTmpPath, string prefixDocumentImageName, string prefixDocumentFileName)
         {
             string newImageName = null;
             string newFileName = null;
-            var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
+            var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
+            var mediaAbsoluteBaseTmpPath = Path.Combine(env.WebRootPath, mediaFolderTmpPath.Replace("~/", string.Empty).Replace("/", @"\"));
             try
             {
                 if (documentModel == null)
@@ -247,15 +436,37 @@ namespace BiblioIUC.Logics
                 if (currentDocument == null)
                     throw new KeyNotFoundException("Document");
 
-
+                bool deleteCurrentIamge = false, deleteCurrentFile = false;
+                string currentDocumentImage = currentDocument.Image;
+                string currentDocumentFile = currentDocument.File;
                 if (Tools.OssFile.HasImage(documentModel.ImageUploaded))
                 {
-                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, PrefixDocumentImageName, mediaBasePath); ;
-                    Tools.OssFile.DeleteFile(currentDocument.Image, mediaBasePath);
+                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, prefixDocumentImageName, mediaAbsoluteBasePath); ;
+                    deleteCurrentIamge = true;
                 }
-                else if (!string.IsNullOrEmpty(currentDocument.Image) && documentModel.DeleteImage)
+                else if (string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) && !string.IsNullOrEmpty(currentDocument.Image) && documentModel.DeleteImage)
                 {
-                    Tools.OssFile.DeleteFile(currentDocument.Image, mediaBasePath);
+                    deleteCurrentIamge = true;
+                }
+                else if (!documentModel.DeleteImage && !string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) &&
+                    File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)))
+                {
+                    newImageName = Tools.OssFile.GetNewFileName(documentModel.ImageUploadedTmpFileName, prefixDocumentImageName);
+                    File.Move
+                    (
+                        Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName),
+                        Path.Combine(mediaAbsoluteBasePath, newImageName)
+                    );
+                    deleteCurrentIamge = true;
+                }
+                else if (documentModel.DeleteImage && !string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) &&
+                    File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)))
+                {
+                    File.Delete
+                    (
+                        Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)
+                    );
+                    newImageName = currentDocument.Image;
                 }
                 else
                 {
@@ -265,14 +476,24 @@ namespace BiblioIUC.Logics
 
                 if (Tools.OssFile.HasFile(documentModel.FileUploaded))
                 {
-                    newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, PrefixDocumentFileName, mediaBasePath); ;
-                    Tools.OssFile.DeleteFile(currentDocument.File, mediaBasePath);
+                    newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, prefixDocumentFileName, mediaAbsoluteBasePath); ;
+                    deleteCurrentFile = true;
+                }
+                else if (!string.IsNullOrEmpty(documentModel.FileUploadedTmpFileName) &&
+                    File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName)))
+                {
+                    newFileName = Tools.OssFile.GetNewFileName(documentModel.FileUploadedTmpFileName, prefixDocumentFileName);
+                    File.Move
+                    (
+                        Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName),
+                        Path.Combine(mediaAbsoluteBasePath, newFileName)
+                    );
+                    deleteCurrentFile = true;
                 }
                 else
                 {
                     newFileName = currentDocument.File;
                 }
-
 
                 Document newDocument = new Document
                (
@@ -297,14 +518,20 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Entry(currentDocument).CurrentValues.SetValues(newDocument);
                 await biblioEntities.SaveChangesAsync();
+
+                if(deleteCurrentIamge)
+                    Tools.OssFile.DeleteFile(currentDocumentImage, mediaAbsoluteBasePath);
+                if(deleteCurrentFile)
+                    Tools.OssFile.DeleteFile(currentDocumentFile, mediaAbsoluteBasePath);
+
                 return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null);
             }
             catch (Exception ex)
             {
                 if(Tools.OssFile.HasImage(documentModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
-                    Tools.OssFile.DeleteFile(newImageName, mediaBasePath);
+                    Tools.OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
                 if (Tools.OssFile.HasFile(documentModel.FileUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaBasePath);
+                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }

@@ -250,7 +250,7 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tabeau de bord.
+        ///   Looks up a localized string similar to Tableau de bord.
         /// </summary>
         public static string Dashboard {
             get {
@@ -849,6 +849,15 @@ namespace BiblioIUC.Localize {
         public static string Save_done {
             get {
                 return ResourceManager.GetString("Save_done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enregistrement éffectué ! Mais sans modification des métadonnées..
+        /// </summary>
+        public static string Save_done_but_without_update_metadata {
+            get {
+                return ResourceManager.GetString("Save_done_but_without_update_metadata", resourceCulture);
             }
         }
         

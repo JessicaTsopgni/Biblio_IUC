@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Ghostscript.NET;
+using Newtonsoft.Json;
 
 namespace BiblioIUC.Controllers
 {
@@ -62,7 +63,8 @@ namespace BiblioIUC.Controllers
                     value: layoutModel.SearchValue,
                     mediaFolderPath: configuration["MediaFolderPath"],
                     withDisabled: User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString(),
-                    orderBy: x => x.Title,
+                    orderBy: null,
+                    orderByDescending: x => x.CreateDate,
                     pageIndex: layoutModel.PageIndex,
                     pageSize: layoutModel.PageSize
                 );
@@ -149,18 +151,26 @@ namespace BiblioIUC.Controllers
         {
             try
             {
-                DocumentModel documentModel = new DocumentModel
-                (
-                    null,
-                    await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
-                    null,
-                    StatusOptions.Actived
-                ) ;
-                var pageModel = new PageModel<DocumentModel>
-                (
-                    documentModel,
-                    layoutModel
-                );
+                PageModel<DocumentModel> pageModel = null;
+                if (TempData["PageModel"] != null)
+                {
+                    pageModel = JsonConvert.DeserializeObject<PageModel<DocumentModel>>(TempData["PageModel"].ToString());
+                }
+                else
+                {
+                    DocumentModel documentModel = new DocumentModel
+                    (
+                        null,
+                        await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
+                        null,
+                        StatusOptions.Actived
+                    );
+                    pageModel = new PageModel<DocumentModel>
+                    (
+                        documentModel,
+                        layoutModel
+                    );
+                }
                 return View("Edit", pageModel);
             }
             catch (Exception ex)
@@ -193,16 +203,24 @@ namespace BiblioIUC.Controllers
                 }
                 else
                 {
-                    documentModel.SetCategoryModels
-                    (
-                        await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
-                        documentModel.CategoryId
-                    );
-                    var pageModel = new PageModel<DocumentModel>
-                    (
-                        documentModel,
-                        layoutModel
-                    );
+                    PageModel<DocumentModel> pageModel = null;
+                    if (TempData["PageModel"] != null)
+                    {
+                        pageModel = JsonConvert.DeserializeObject<PageModel<DocumentModel>>(TempData["PageModel"].ToString());
+                    }
+                    else
+                    {
+                        documentModel.SetCategoryModels
+                        (
+                            await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
+                            documentModel.CategoryId
+                        );
+                        pageModel = new PageModel<DocumentModel>
+                        (
+                            documentModel,
+                            layoutModel
+                        );
+                    }
                     return View(pageModel);
                 }
             }
@@ -217,6 +235,8 @@ namespace BiblioIUC.Controllers
 
 
         [HttpPost]
+        [RequestFormLimits(MultipartBodyLengthLimit = 1073741824)]
+        [RequestSizeLimit(1073741824)]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(PageModel<DocumentModel> pageModel)
@@ -228,60 +248,99 @@ namespace BiblioIUC.Controllers
                     await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
                     pageModel.DataModel.CategoryId
                 );
-                if (ModelState.IsValid)
+                if (pageModel.DataModel.ForExtraction)
                 {
-                    DocumentModel newDocumentModel = null;
+                    if (!Logics.Tools.OssFile.HasFile(pageModel.DataModel.FileUploaded))
+                    {
+                        TempData["MessageType"] = MessageOptions.Warning;
+                        TempData["Message"] = string.Format(Text.The_fields_x_is_required, Text.The_document);
+                        ModelState.AddModelError("DataModel.FileUploaded", TempData["Message"].ToString());
+                        return View(pageModel);
+                    }
 
-                    TempData["MessageType"] = MessageOptions.Success;
-                    TempData["Message"] = Text.Save_done;
+                    int userId = 0;
+                    if (!string.IsNullOrEmpty(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value))
+                        userId = int.Parse(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value ?? "0");
 
+                    pageModel.DataModel = await documentLogic.ExtractMetadata
+                    (
+                        pageModel.DataModel,
+                        configuration["PrefixDocumentTemporyFileName"],
+                        configuration["MediaFolderTemporyPath"],
+                        configuration["LibGostScriptPath"],
+                        userId
+                    );
+                    pageModel.DataModel.ForExtraction = false;
+                    TempData["PageModel"] = JsonConvert.SerializeObject(pageModel);
                     if (pageModel.DataModel.Id == 0)
-                    {
-                        if(!Logics.Tools.OssFile.HasFile(pageModel.DataModel.FileUploaded))
-                        {
-                            TempData["MessageType"] = MessageOptions.Warning;
-                            TempData["Message"] = string.Format(Text.The_fields_x_is_required, Text.The_document);
-                            ModelState.AddModelError("DataModel.FileUploaded", TempData["Message"].ToString());
-                            return View(pageModel);
-                        }
-                        newDocumentModel = await documentLogic.AddAsync
-                        (
-                            pageModel.DataModel,
-                            configuration["MediaFolderPath"],
-                            configuration["PrefixDocumentImageName"],
-                            configuration["PrefixDocumentFileName"]
-                        );
-                        return RedirectToAction("Create", new { pageModel.ReturnUrl });
-                    }
+                        return RedirectToAction("Create", (LayoutModel)pageModel);
                     else
-                    {
-                        newDocumentModel = await documentLogic.SetAsync
-                        (
-                            pageModel.DataModel,
-                            configuration["MediaFolderPath"],
-                            configuration["PrefixDocumentImageName"],
-                            configuration["PrefixDocumentFileName"]
-                        );
-                    }
-
-                    if (pageModel.DataModel.UpdateMetadata)
-                    {
-                        documentLogic.UpdateMetaData
-                        (
-                            configuration["MediaFolderPath"],
-                            newDocumentModel
-                        );
-                    }
+                        return RedirectToAction("Edit", new { id = pageModel.DataModel.Id, layoutModel = (LayoutModel)pageModel});
                 }
                 else
                 {
-                    TempData["MessageType"] = MessageOptions.Warning;
-                    TempData["Message"] = "<ul>";
-                    foreach (var v in ModelState.Values)
-                        foreach (var vv in v.Errors)
-                            TempData["Message"] += $"<li>{(!string.IsNullOrEmpty(vv.ErrorMessage) ? vv.ErrorMessage : vv.Exception.Message)}</li>";
-                    TempData["Message"] += "</ul>";
-                    return View(pageModel);
+                    if (ModelState.IsValid)
+                    {
+                        DocumentModel newDocumentModel = null;
+
+                        TempData["MessageType"] = MessageOptions.Success;
+                        TempData["Message"] = Text.Save_done;
+
+                        if (pageModel.DataModel.Id == 0)
+                        {
+                            var mediaBaseTmpPath = Path.Combine(env.WebRootPath, configuration["MediaFolderTemporyPath"].Replace("~/", string.Empty).Replace("/", @"\"));
+
+                            if ((string.IsNullOrEmpty(pageModel.DataModel.FileUploadedTmpFileName) || 
+                                !System.IO.File.Exists(Path.Combine(mediaBaseTmpPath, pageModel.DataModel.FileUploadedTmpFileName))) 
+                                && !Logics.Tools.OssFile.HasFile(pageModel.DataModel.FileUploaded))
+                            {
+                                TempData["MessageType"] = MessageOptions.Warning;
+                                TempData["Message"] = string.Format(Text.The_fields_x_is_required, Text.The_document);
+                                ModelState.AddModelError("DataModel.FileUploaded", TempData["Message"].ToString());
+                                TempData["PageModel"] = JsonConvert.SerializeObject(pageModel);
+                                return RedirectToAction("Edit", (LayoutModel)pageModel);
+                            }
+                            newDocumentModel = await documentLogic.AddAsync
+                            (
+                                pageModel.DataModel,
+                                configuration["MediaFolderPath"],
+                                configuration["MediaFolderTemporyPath"],
+                                configuration["PrefixDocumentImageName"],
+                                configuration["PrefixDocumentFileName"]
+                            );
+                        }
+                        else
+                        {
+                            newDocumentModel = await documentLogic.SetAsync
+                            (
+                                pageModel.DataModel,
+                                configuration["MediaFolderPath"],
+                                configuration["MediaFolderTemporyPath"],
+                                configuration["PrefixDocumentImageName"],
+                                configuration["PrefixDocumentFileName"]
+                            );
+                        }
+
+                        if (pageModel.DataModel.UpdateMetadata)
+                        {
+                            await documentLogic.UpdateMetaData
+                            (
+                                configuration["MediaFolderPath"],
+                                configuration["PrefixDocumentFileName"],
+                                newDocumentModel
+                            );
+                        }
+                    }
+                    else
+                    {
+                        TempData["MessageType"] = MessageOptions.Warning;
+                        TempData["Message"] = "<ul>";
+                        foreach (var v in ModelState.Values)
+                            foreach (var vv in v.Errors)
+                                TempData["Message"] += $"<li>{(!string.IsNullOrEmpty(vv.ErrorMessage) ? vv.ErrorMessage : vv.Exception.Message)}</li>";
+                        TempData["Message"] += "</ul>";
+                        return View(pageModel);
+                    }
                 }
             }
             catch (KeyNotFoundException)
@@ -289,12 +348,25 @@ namespace BiblioIUC.Controllers
                 TempData["MessageType"] = MessageOptions.Warning;
                 TempData["Message"] = Text.Data_not_exists_or_deleted;
             }
+            catch (MethodAccessException ex)
+            {
+                loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["Message"] = Text.Save_done_but_without_update_metadata;
+            }
+            catch (FileLoadException ex)
+            {
+                loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+            }
             catch (Exception ex)
             {
                 loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
                 TempData["MessageType"] = MessageOptions.Danger;
                 TempData["Message"] = Text.An_error_occured;
             }
+            if(pageModel.DataModel.Id == 0)
+                return RedirectToAction("Create", (LayoutModel)pageModel);
+
             if (!string.IsNullOrEmpty(pageModel.ReturnUrl))
                 return Redirect(pageModel.ReturnUrl);
             return RedirectToAction("Index");

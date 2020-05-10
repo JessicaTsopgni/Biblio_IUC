@@ -5,7 +5,7 @@
 <!--Page Heading -->
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
-        <a title="@Text.Back" href="@(!string.IsNullOrEmpty(Model.ReturnUrl) ? Model.ReturnUrl : Url.Action("Index", "Document"))" class=" text-gray-800">
+        <a title="@Text.Back" href="@(!string.IsNullOrEmpty(Model.ReturnUrl) ? Model.ReturnUrl : Url.Action("Index", "Document"))" class="text-gray-800">
             <i class="fas fa-chevron-circle-left"></i>
         </a>
     </h1>
@@ -43,7 +43,10 @@
 <div class="row mb-2">
     <div id="content-viewer" class="col-md-12">
         <div id="w_loading" class="d-flex justify-content-center">
-            <img src="~/img/biblio_iuc.jpg" class="img-fluid" />
+            <div class="text-center" style="width:100%">
+                @Text.Loading<br/>
+                <img src="~/img/biblio_iuc.jpg" class="img-fluid" />
+            </div>
         </div>
     </div>
 </div>
@@ -90,7 +93,6 @@
                 pageNum--;
             fetchNext(1);
         });
-
 
         $('button[name="paging-view"]').click(function () {
             if (pageNum > 0 && pageNum % pageSize == 0)
@@ -357,7 +359,7 @@
                     downPositionToDelete = scrollPos;
                     //if (scrollLoad && ($(document).height() - $(this).height() - 100) < $(this).scrollTop()) {
                     if ($('#w_' + pageNum)[0]) {
-                        var size = ($('#w_' + pageNum).outerHeight() * pageNum) - 400;
+                        var size = ($('#w_' + pageNum).outerHeight() * pageNum) - 600;
                         if (Math.abs(scrollPos) >= size) {
                             scrollLoad = false;
                             fetchNext(1);

@@ -1,6 +1,7 @@
 ﻿using Ghostscript.NET;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using NUglify.JavaScript.Syntax;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +16,13 @@ namespace BiblioIUC.Logics.Tools
     {
         public static string GetBase64(string filePafth)
         {
-            byte[] bytes = File.ReadAllBytes(filePafth);
-            string file = Convert.ToBase64String(bytes);
-            return file;
+            if (File.Exists(filePafth))
+            {
+                byte[] bytes = File.ReadAllBytes(filePafth);
+                string file = Convert.ToBase64String(bytes);
+                return file;
+            }
+            return null;
         }
         public static void ConvertPdfToImage(string libPath, string inputPDFFilePath, int pageNumber, string outputFilePath, int width, int height)
         {
@@ -33,7 +38,6 @@ namespace BiblioIUC.Logics.Tools
             dev.CustomSwitches.Add("-dDOINTERPOLATE");
             dev.OutputPath = outputFilePath;
             dev.Process(gvi, true, null);
-
         }
 
         public static void DeleteFile(string filename, string mediaBasePath)
@@ -43,6 +47,19 @@ namespace BiblioIUC.Logics.Tools
                 string fileToDelete = Path.Combine(mediaBasePath, filename);
                 if (File.Exists(fileToDelete))
                     File.Delete(fileToDelete);
+            }
+        }
+
+        public static void DeleteFileInFolder(string likeFileName, string folderPath)
+        {
+            if (!string.IsNullOrEmpty(folderPath))
+            {
+                string[] files = Directory.GetFiles(folderPath);
+                foreach (string file in files)
+                {
+                    if(file.Contains(likeFileName))
+                        File.Delete(file);
+                }
             }
         }
 
@@ -79,11 +96,16 @@ namespace BiblioIUC.Logics.Tools
             }
         }
 
-        private static string GetNewFileName(IFormFile file, string filePrefixName)
+        public static string GetNewFileName(string fileName, string filePrefixName)
         {
-            string extension = GetExtension(file.FileName);
+            string extension = GetExtension(fileName);
             string newFileName = filePrefixName + Guid.NewGuid().ToString().ToLower() + extension;
             return newFileName;
+        }
+
+        public static string GetNewFileName(IFormFile file, string filePrefixName)
+        {
+            return GetNewFileName(file.FileName, filePrefixName);   
         }
 
         public static async Task<string> SaveFile(IFormFile file,  string filePrefixName,

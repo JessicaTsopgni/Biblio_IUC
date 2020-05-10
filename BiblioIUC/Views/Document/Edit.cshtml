@@ -6,15 +6,21 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     
     <h1 class="h3 mb-0 text-gray-800">
-        <a href="@Model.ReturnUrl" class="btn btn-secondary">
-                <i class="fas fa-chevron-circle-left"></i>
-            </a>
-            @ViewBag.Title</h1>
+        <a href="@Model.ReturnUrl" class="text-gray-800">
+            <i class="fas fa-chevron-circle-left"></i>
+        </a>
+        @ViewBag.Title</h1>
 </div>
 
 <form id="formEdit" method="post" asp-action="Edit" asp-controller="Document" enctype="multipart/form-data">
     <partial name="_LayoutInput" model="Model" />
     <input type="hidden" asp-for="DataModel.Id" />
+    <input type="hidden" asp-for="DataModel.ForExtraction" />
+    <input type="hidden" asp-for="DataModel.ImageUploadedTmpFileName" />
+    <input type="hidden" asp-for="DataModel.ImageUploadedTmpFileName" />
+    <input type="hidden" asp-for="DataModel.FileUploadedTmpFileName" />
+    <input type="hidden" asp-for="DataModel.FileUploadedName" />
+    <input type="hidden" asp-for="DataModel.ImageLink" />
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
@@ -23,7 +29,7 @@
                         <label asp-for="DataModel.FileUploaded">@Text.The_document</label>
                     </div>
                     <div class="col-auto">
-                        <a href="#" id="extract" style="display:none">
+                        <a href="javascript:;" onclick="extract()" id="extract" style="display:none">
                             <i class="fas fa-file-export"></i> @Text.Extract_metadata
                         </a>
                     </div>
@@ -179,7 +185,7 @@
             </button>
         </div>
         <div class="col-md-4 mb-3">
-            <input type="hidden" value="false" asp-for="DataModel.UpdateMetadata"/>
+            <input type="hidden" value="false" asp-for="DataModel.UpdateMetadata" />
             <button type="submit" onclick="$('#@Html.IdFor(x=> x.DataModel.UpdateMetadata)').val('true');" class="btn btn-outline-success btn-block">
                 <i class="fas fa-save"></i>
                 <small>@Text.Save_and_update_metadata_file</small>
@@ -229,7 +235,7 @@
             $('#cropper_btn').attr('style', 'display:none!important');
             $('#preview').html(default_content);
             $('#photo_input').val(null);
-            //$('#@Html.IdFor(x=>x.DataModel.ImageUploaded)').val(null);
+            //$('#@Html.IdFor(x => x.DataModel.ImageUploaded)').val(null);
             $('button[type="submit"]').prop('disabled', false);
         }
         var _blob, filename, file_type;
@@ -249,10 +255,16 @@
             });
             cropper.destroy();
         }
+
+        @if(!string.IsNullOrEmpty(Model?.DataModel?.FileUploadedName))
+        {
+            @:$('.custom-file-label').html('@Html.DisplayFor(x => x.DataModel.FileUploadedName)');
+        }
         $('#formEdit').submit(function (e) {
             //e.preventDefault();
-            if (!$(this).valid())
-                return false;
+            if (!$(this).valid()) {
+               return false;
+            }
 
             $(this).find(":submit").attr('disabled', 'disabled');
             if (_blob) {
@@ -266,6 +278,8 @@
                 input.hidden = true
                 this.appendChild(input)
             }
+            console.log('valid');
+
             return true;
         });
         function createFileList(a) {
@@ -296,6 +310,12 @@
                 $(link).removeAttr("disabled");
                 $("#@Html.IdFor(x=> x.DataModel.Code)").focus();
             });
+        }
+
+        function extract() {
+            $("#formEdit").validate().settings.ignore = "*";
+            $('#@Html.IdFor(x => x.DataModel.ForExtraction)').val('true');
+            $('#formEdit').submit();
         }
     </script>
 }

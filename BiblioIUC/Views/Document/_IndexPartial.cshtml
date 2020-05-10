@@ -49,10 +49,10 @@
                 </div>
                 <div class="card-body card-body-document">
                     <div class="row">
-                        <div class="col-md-6 d-flex card-body-image justify-content-center align-items-center">
+                        <div class="col-md-6 d-flex card-body-image justify-content-center align-items-start">
                             @if (!string.IsNullOrEmpty(document.ImageLink))
                             {
-                                <img class="img-fluid-100" src="@Url.Content(document.ImageLink)" alt="@document.Title">
+                                <img class="img-fluid-100 img-thumbnail " src="@Url.Content(document.ImageLink)" alt="@document.Title">
                             }
                             else
                             {

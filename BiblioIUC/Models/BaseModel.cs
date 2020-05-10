@@ -1,5 +1,6 @@
 ﻿using BiblioIUC.Localize;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,8 +13,9 @@ namespace BiblioIUC.Models
     {
         public int Id { get; set; }
 
-        public string ImageLink { get; protected set; }
+        public string ImageLink { get; set; }
 
+        [JsonIgnore]
         public IFormFile ImageUploaded { get; set; }
 
         [Display(Name = "Delete_this_image_on_save", ResourceType = typeof(Text))]

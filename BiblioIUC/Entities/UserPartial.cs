@@ -12,8 +12,6 @@ namespace BiblioIUC.Entities
     public partial class User
     {       
 
-        public User() {}
-
         public User(int id, string account, string password, string fullName, 
             short role, string image, short status):this()
         {

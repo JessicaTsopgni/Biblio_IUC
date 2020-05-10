@@ -447,6 +447,9 @@
   <data name="Upload_the_document" xml:space="preserve">
     <value>Charger le document</value>
   </data>
+  <data name="Users" xml:space="preserve">
+    <value>Utilisateurs</value>
+  </data>
   <data name="View_documents" xml:space="preserve">
     <value>Voir les documents</value>
   </data>

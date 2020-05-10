@@ -86,6 +86,7 @@ namespace BiblioIUC.Models
         public bool UpdateMetadata { get; set; }
 
         public DateTime CreateDate { get; set; }
+        public int LastPageNumberRead { get; set; }
 
         public IEnumerable<SelectListItem> CategoryModels { get; set; }
 
@@ -120,7 +121,7 @@ namespace BiblioIUC.Models
         }
 
 
-        public DocumentModel(Document document, string imageLinkBaseUrl, string fileLinkBaseUrl, string mediaBasePath)
+        public DocumentModel(Document document, string imageLinkBaseUrl, string fileLinkBaseUrl, string mediaBasePath, int lastPageNumberRead)
           : this(document?.Id ?? 0, document?.Code, document?.Title,document?.Subtitle, document?.Authors,
                 document?.Description, document?.Language, document?.PublishDate, document?.Publisher,
                 document?.NumberOfPages ?? 0, document?.Contributors, document?.CategoryId ?? 0,
@@ -130,6 +131,7 @@ namespace BiblioIUC.Models
             ImageLink = !string.IsNullOrEmpty(document?.Image) ? $"{imageLinkBaseUrl}/{document?.Image}" : null;
             FileLink = !string.IsNullOrEmpty(document?.File) ? $"{fileLinkBaseUrl}/{document?.File}" : null;
             FileBase64 = !string.IsNullOrEmpty(document?.File) && !string.IsNullOrEmpty(mediaBasePath) ? Logics.Tools.OssFile.GetBase64(Path.Combine(mediaBasePath, document?.File)) : null;
+            LastPageNumberRead = lastPageNumberRead;
         }
 
         public DocumentModel(string code, IEnumerable<CategoryModel> categories, int? categoryId,

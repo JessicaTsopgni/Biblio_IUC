@@ -28,8 +28,8 @@ namespace BiblioIUC.Models
 
         public ProfileModel():base() {}
 
-        private ProfileModel(string account, string password,  string fullname, RoleOptions roleValue,
-            string imageLink) :this()
+        private ProfileModel(int id, string account, string password,  string fullname, RoleOptions roleValue,
+            string imageLink) :base(id, StatusOptions.Actived)
         {
             Account = account;
             Password = password;
@@ -40,13 +40,13 @@ namespace BiblioIUC.Models
         }
 
         public ProfileModel(User user, string imageLinkBaseUrl)
-            :this(user?.Account, user?.Password, user?.FullName, (RoleOptions)(user?.Role ?? 0),
+            :this(user?.Id ?? 0, user?.Account, user?.Password, user?.FullName, (RoleOptions)(user?.Role ?? 0),
                  !string.IsNullOrEmpty(user?.Image) ? $"{imageLinkBaseUrl}/{user.Image}" : null)
         {
         }
 
         public ProfileModel(UserModel userModel)
-           : this(userModel?.Account, userModel?.Password, userModel?.FullName, 
+           : this(userModel?.Id ?? 0, userModel?.Account, userModel?.Password, userModel?.FullName, 
                  userModel?.Role ?? RoleOptions.Admin, userModel?.ImageLink)
         {
         }

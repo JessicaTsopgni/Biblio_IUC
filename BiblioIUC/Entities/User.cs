@@ -5,6 +5,11 @@ namespace BiblioIUC.Entities
 {
     public partial class User
     {
+        public User()
+        {
+            UserDocuments = new HashSet<UserDocument>();
+        }
+
         public int Id { get; set; }
         public string Account { get; set; }
         public string Password { get; set; }
@@ -12,5 +17,7 @@ namespace BiblioIUC.Entities
         public short Role { get; set; }
         public string Image { get; set; }
         public short Status { get; set; }
+
+        public virtual ICollection<UserDocument> UserDocuments { get; set; }
     }
 }

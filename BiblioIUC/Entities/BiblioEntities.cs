@@ -18,6 +18,7 @@ namespace BiblioIUC.Entities
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Document> Documents { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserDocument> UserDocuments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -161,6 +162,8 @@ namespace BiblioIUC.Entities
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
+                entity.Property(e => e.ReadCount).HasColumnName("read_count");
+
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
                     .HasColumnType("smallint(6)");
@@ -231,6 +234,43 @@ namespace BiblioIUC.Entities
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
                     .HasColumnType("smallint(6)");
+            });
+
+            modelBuilder.Entity<UserDocument>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.DocumentId })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("user_document");
+
+                entity.HasIndex(e => e.DocumentId)
+                    .HasName("fk_user_document_document");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.DocumentId)
+                    .HasColumnName("document_id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.LastPageNumber)
+                    .HasColumnName("last_page_number")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.LastReadDate)
+                    .HasColumnName("last_read_date")
+                    .HasColumnType("datetime");
+
+                entity.HasOne(d => d.Document)
+                    .WithMany(p => p.UserDocuments)
+                    .HasForeignKey(d => d.DocumentId)
+                    .HasConstraintName("fk_user_document_document");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserDocuments)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_user_document_user");
             });
 
             OnModelCreatingPartial(modelBuilder);

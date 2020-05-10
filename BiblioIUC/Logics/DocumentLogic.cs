@@ -102,7 +102,7 @@ namespace BiblioIUC.Logics
                     await query.OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
                 ).Select
                 (
-                    x => GetDocumentModel(x, mediaFolderPath, null)
+                    x => GetDocumentModel(x, mediaFolderPath, null, 0)
                 ).ToArray();
             else if (orderByDescending != null)
                 return
@@ -110,7 +110,7 @@ namespace BiblioIUC.Logics
                     await query.OrderByDescending(orderByDescending).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
                 ).Select
                 (
-                    x => GetDocumentModel(x, mediaFolderPath, null)
+                    x => GetDocumentModel(x, mediaFolderPath, null, 0)
                 ).ToArray();
             else
                 return
@@ -118,7 +118,7 @@ namespace BiblioIUC.Logics
                     await query.OrderBy(x=> x.Title).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
                 ).Select
                 (
-                    x => GetDocumentModel(x, mediaFolderPath, null)
+                    x => GetDocumentModel(x, mediaFolderPath, null, 0)
                 ).ToArray();
         }
 
@@ -252,30 +252,38 @@ namespace BiblioIUC.Logics
             }
         }
 
-        private DocumentModel GetDocumentModel(Document document, string mediaFolderPath, string mediaBasePath)
+        private DocumentModel GetDocumentModel(Document document, string mediaFolderPath, string mediaBasePath, int lastPageNumberRead)
         {
             return document != null ? new DocumentModel
             (
                 document,
                 mediaFolderPath,
                 mediaFolderPath,
-                mediaBasePath
+                mediaBasePath,
+                lastPageNumberRead
             ) : null;
         }
 
-        public async Task<DocumentModel> GetAsync(int id, string mediaFolderPath)
+        public async Task<DocumentModel> GetAsync(int id, string mediaFolderPath, int userId)
         {
             var document = await biblioEntities.Documents.Include(x=> x.Category)
                 .SingleOrDefaultAsync(x=> x.Id == id);
             if (document != null)
             {
+                var userDocument = await biblioEntities.UserDocuments.FirstOrDefaultAsync
+                (
+                    x =>
+                    x.DocumentId == id &&
+                    x.UserId == userId
+                );
+                
                 var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
-                return GetDocumentModel(document, mediaFolderPath, mediaBasePath);
+                return GetDocumentModel(document, mediaFolderPath, mediaBasePath, userDocument?.LastPageNumber ?? 0);
             }
             return null;            
         }
 
-        public async Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath)
+        public async Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath, int userId)
         {
             var query = biblioEntities.Documents.Include(x => x.Category).Where(x => x.Code == code);
             if (role != RoleOptions.Admin)
@@ -284,8 +292,15 @@ namespace BiblioIUC.Logics
             var document = await query.SingleOrDefaultAsync();
             if (document != null)
             {
+                var userDocument = await biblioEntities.UserDocuments.FirstOrDefaultAsync
+                (
+                    x =>
+                    x.DocumentId == document.Id &&
+                    x.UserId == userId
+                );
+
                 var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
-                return GetDocumentModel(document, mediaFolderPath, mediaBasePath);
+                return GetDocumentModel(document, mediaFolderPath, mediaBasePath, userDocument?.LastPageNumber ?? 0);
             }
             return null;
         }
@@ -322,6 +337,69 @@ namespace BiblioIUC.Logics
                 throw ex;
             }
         }
+
+        public async Task IncrementCountReadAsync(string code)
+        {
+            try
+            {
+                code = code?.ToLower() ?? "";
+                Document currenDocument = await biblioEntities.Documents.SingleOrDefaultAsync(x => x.Code.ToLower() == code);
+                
+                if (currenDocument != null)
+                {
+                    currenDocument.ReadCount++;
+                    await biblioEntities.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task SaveLastReadAsync(string code, int userId, int lastPageNumber)
+        {
+            try
+            {
+                code = code?.ToLower() ?? "";
+                Document document = await biblioEntities.Documents.FirstOrDefaultAsync
+                (
+                    x =>
+                    x.Code.ToLower() == code
+                );
+                if (document != null)
+                {
+                    UserDocument currentUserDocument = await biblioEntities.UserDocuments.FirstOrDefaultAsync
+                    (
+                        x =>
+                        x.UserId == userId &&
+                        x.Document.Code.ToLower() == code
+                    );
+                    var newUserDocument = new UserDocument
+                    (
+                        userId,
+                        document.Id,
+                        lastPageNumber,
+                        DateTime.UtcNow
+                    );
+                    if (currentUserDocument == null)
+                    {
+                        biblioEntities.UserDocuments.Add(newUserDocument);
+                    }
+                    else
+                    {
+                        biblioEntities.Entry(currentUserDocument).CurrentValues.SetValues(newUserDocument);
+
+                    }
+                    await biblioEntities.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         public async Task<DocumentModel> AddAsync(DocumentModel documentModel,
             string mediaFolderPath, string mediaFolderTmpPath, string prefixDocumentImageName, string prefixDocumentFileName)
@@ -408,7 +486,7 @@ namespace BiblioIUC.Logics
 
                 biblioEntities.Documents.Add(newDocument);
                 await biblioEntities.SaveChangesAsync();
-                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null);
+                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null, 0);
             }
             catch (Exception ex)
             {
@@ -524,7 +602,7 @@ namespace BiblioIUC.Logics
                 if(deleteCurrentFile)
                     Tools.OssFile.DeleteFile(currentDocumentFile, mediaAbsoluteBasePath);
 
-                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null);
+                return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null, 0);
             }
             catch (Exception ex)
             {

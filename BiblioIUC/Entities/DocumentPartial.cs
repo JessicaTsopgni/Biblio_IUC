@@ -6,10 +6,6 @@ namespace BiblioIUC.Entities
 
     public partial class Document
     {
-        public Document()
-        {
-
-        }
 
         public Document(int id, string code, string title, string subtitle, string authors, string description,
             string language, DateTime? publishDate, string publisher, int numberOfPages,

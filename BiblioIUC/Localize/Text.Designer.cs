@@ -1051,6 +1051,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Utilisateurs.
+        /// </summary>
+        public static string Users {
+            get {
+                return ResourceManager.GetString("Users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Voir les documents.
         /// </summary>
         public static string View_documents {

@@ -95,11 +95,16 @@ namespace BiblioIUC.Controllers
         {
             try
             {
+                int userId = 0;
+                if (!string.IsNullOrEmpty(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value))
+                    userId = int.Parse(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value ?? "0");
+
                 var documentModel = await documentLogic.GetAsync
                 (
                     id,
                     (RoleOptions)Enum.Parse(typeof(RoleOptions), User.FindFirst(ClaimTypes.Role).Value),
-                    configuration["MediaFolderPath"]
+                    configuration["MediaFolderPath"],
+                    userId
                 );
                 if (documentModel == null)
                 {
@@ -110,11 +115,14 @@ namespace BiblioIUC.Controllers
                 }
                 else
                 {
-                    documentModel.SetCategoryModels
-                    (
-                        await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
-                        documentModel.CategoryId
-                    );
+                    //documentModel.SetCategoryModels
+                    //(
+                    //    await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
+                    //    documentModel.CategoryId
+                    //);
+
+                    await documentLogic.IncrementCountReadAsync(documentModel.Code);
+
                     var pageModel = new PageModel<DocumentModel>
                     (
                         documentModel,
@@ -130,6 +138,29 @@ namespace BiblioIUC.Controllers
                 TempData["Message"] = Text.An_error_occured;
             }
             return RedirectToAction("Index");
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> SaveLastRead(string id, int pageNumber)
+        {
+            try
+            {
+                int userId = 0;
+                if (!string.IsNullOrEmpty(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value))
+                    userId = int.Parse(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value ?? "0");
+                bool success = false;
+                if (userId != 0)
+                {
+                    await documentLogic.SaveLastReadAsync(id, userId, pageNumber);
+                    success = true;
+                }
+                return Json(success.ToString());
+            }
+            catch (Exception ex)
+            {
+                loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+                return Json(Text.An_error_occured);
+            }
         }
 
         [AllowAnonymous]
@@ -189,10 +220,15 @@ namespace BiblioIUC.Controllers
         {
             try
             {
+                int userId = 0;
+                if (!string.IsNullOrEmpty(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value))
+                    userId = int.Parse(User.Claims.FirstOrDefault(x => x.Type == "User.Id")?.Value ?? "0");
+
                 var documentModel = await documentLogic.GetAsync
                 (
                     id ?? 0,
-                    configuration["MediaFolderPath"]
+                    configuration["MediaFolderPath"],
+                    userId
                 );
                 if (documentModel == null)
                 {

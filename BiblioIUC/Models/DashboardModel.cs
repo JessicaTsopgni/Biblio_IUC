@@ -14,6 +14,7 @@ namespace BiblioIUC.Models
     {
         public DashboardModel():base()
         {
+           public  IEnumerable<CategoryModel> CategoryModels { get; set; }
 
         }
     }

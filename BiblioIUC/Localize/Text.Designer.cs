@@ -97,11 +97,20 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Avr.
         /// </summary>
-        public static string Aou {
+        public static string Apr {
             get {
-                return ResourceManager.GetString("Aou", resourceCulture);
+                return ResourceManager.GetString("Apr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aou.
+        /// </summary>
+        public static string Aug {
+            get {
+                return ResourceManager.GetString("Aug", resourceCulture);
             }
         }
         
@@ -111,15 +120,6 @@ namespace BiblioIUC.Localize {
         public static string Authors {
             get {
                 return ResourceManager.GetString("Authors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string Avr {
-            get {
-                return ResourceManager.GetString("Avr", resourceCulture);
             }
         }
         
@@ -286,7 +286,7 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Dec.
         /// </summary>
         public static string Dec {
             get {
@@ -592,11 +592,11 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Fev.
         /// </summary>
-        public static string Fev {
+        public static string Feb {
             get {
-                return ResourceManager.GetString("Fev", resourceCulture);
+                return ResourceManager.GetString("Feb", resourceCulture);
             }
         }
         
@@ -673,16 +673,16 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Jui.
         /// </summary>
-        public static string Jui {
+        public static string Jul {
             get {
-                return ResourceManager.GetString("Jui", resourceCulture);
+                return ResourceManager.GetString("Jul", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Jun.
         /// </summary>
         public static string Jun {
             get {
@@ -745,20 +745,20 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string Mai {
-            get {
-                return ResourceManager.GetString("Mai", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Mar.
         /// </summary>
         public static string Mar {
             get {
                 return ResourceManager.GetString("Mar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mai.
+        /// </summary>
+        public static string May {
+            get {
+                return ResourceManager.GetString("May", resourceCulture);
             }
         }
         
@@ -790,7 +790,7 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Nov.
         /// </summary>
         public static string Nov {
             get {
@@ -808,7 +808,7 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Oct.
         /// </summary>
         public static string Oct {
             get {
@@ -903,6 +903,15 @@ namespace BiblioIUC.Localize {
         public static string Readings {
             get {
                 return ResourceManager.GetString("Readings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aperçu des lectures.
+        /// </summary>
+        public static string Readings_overview {
+            get {
+                return ResourceManager.GetString("Readings_overview", resourceCulture);
             }
         }
         
@@ -1015,7 +1024,7 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Sep.
         /// </summary>
         public static string Sep {
             get {

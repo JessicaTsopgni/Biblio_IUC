@@ -17,24 +17,24 @@ namespace BiblioIUC.Controllers
     public class HomeController : BaseController
     {
         private readonly ICategoryLogic categoryLogic;
+        private readonly IDocumentLogic documentLogic;
 
         public HomeController(IConfiguration configuration, ILoggerFactory loggerFactory,
-            ICategoryLogic categoryLogic) : base(configuration, loggerFactory)
+            ICategoryLogic categoryLogic, IDocumentLogic documentLogic) : base(configuration, loggerFactory)
         {
             this.categoryLogic = categoryLogic;
+            this.documentLogic = documentLogic;
         }
         public async Task<IActionResult> Index()
         {
-            IEnumerable<CategoryModel> categoryModels = 
+            IEnumerable<CategoryModel> categoryModels = await categoryLogic.TopCategoriesByDocument
             (
-                await
-                categoryLogic.TopCategoriesByDocument
-                (
-                    short.Parse(configuration["DashbordCategoriesLimit"]), 
-                    configuration["MediaFolderPath"]
-                )
+                short.Parse(configuration["DashbordCategoriesLimit"]),
+                configuration["MediaFolderPath"]
             );
-            var dashboardModel = new DashboardModel(categoryModels);
+
+            IDictionary<string, long> readingOverview = await documentLogic.ReadingCountPerMonth();
+            var dashboardModel = new DashboardModel(categoryModels, readingOverview);
             var pageModel = new PageModel<DashboardModel>
             (
                 dashboardModel

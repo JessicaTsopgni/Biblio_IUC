@@ -419,31 +419,36 @@ namespace BiblioIUC.Logics
             string[] month =
             {
                 Text.Jan,
-                Text.Fev,
+                Text.Feb,
                 Text.Mar,
-                Text.Avr,
-                Text.Mai,
+                Text.Apr,
+                Text.May,
                 Text.Jun,
-                Text.Jui,
-                Text.Aou,
+                Text.Jul,
+                Text.Aug,
                 Text.Sep,
                 Text.Oct,
                 Text.Nov,
                 Text.Dec
             };
 
-            return await biblioEntities.UserDocuments.Where
+            var query =  biblioEntities.UserDocuments.Where
             (
                 x => x.ReadDate.Year == DateTime.UtcNow.Year
             ).
             GroupBy
             (
-                x => x.ReadDate.Month
+                x => new { x.ReadDate.Year, x.ReadDate.Month }
             )
-            .ToDictionaryAsync
+            .Select
             (
-                x => month[x.Key - 1],
-                x => x.LongCount()
+                x => new { Month = x.Key.Month, Count = x.LongCount() }
+            );
+
+            return await query.ToDictionaryAsync
+            (
+                x => month[x.Month - 1],
+                x => x.Count
             );
         }
 

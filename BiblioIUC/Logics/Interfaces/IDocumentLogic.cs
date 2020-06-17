@@ -26,5 +26,6 @@ namespace BiblioIUC.Logics.Interfaces
         Task<DocumentModel> ExtractMetadata(DocumentModel documentModel, string PrefixDocumentTmpFileName, string mediaFolderTmpPath, string libGostScriptPath, int userId);
         Task SaveLastReadAsync(string code, int userId, int? lastPageNumber);
         Task IncrementCountReadAsync(string code, int userId);
+        Task<IDictionary<string, long>> ReadingCountPerMonth();
     }
 }

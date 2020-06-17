@@ -34,7 +34,31 @@ namespace BiblioIUC.Controllers
             );
 
             IDictionary<string, long> readingOverview = await documentLogic.ReadingCountPerMonth();
-            var dashboardModel = new DashboardModel(categoryModels, readingOverview);
+
+            IDictionary<string, double> readingByCategoryOverview = new Dictionary<string, double>();
+            var rootCategories =
+            (
+                await categoryLogic.GetRootsAsync(configuration["MediaFolderPath"])
+            )
+            .Where(x => x.DocumentIds.Count > 0).ToArray();
+
+            foreach(var root in rootCategories)
+            {
+                readingByCategoryOverview.Add
+                (
+                    root.Name,
+                    await documentLogic.ReadCountAsync(root.DocumentIds)
+                );
+            }
+            var dashboardModel = new DashboardModel
+            (
+                categoryModels,
+                readingOverview,
+                readingByCategoryOverview
+                    .Where(x => x.Value > 0)
+                    .Take(short.Parse(configuration["DashbordCategoriesLimit"]))
+                    .ToDictionary(x => x.Key, x => x.Value)
+            );
             var pageModel = new PageModel<DashboardModel>
             (
                 dashboardModel

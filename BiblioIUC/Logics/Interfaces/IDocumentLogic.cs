@@ -27,5 +27,6 @@ namespace BiblioIUC.Logics.Interfaces
         Task SaveLastReadAsync(string code, int userId, int? lastPageNumber);
         Task IncrementCountReadAsync(string code, int userId);
         Task<IDictionary<string, long>> ReadingCountPerMonth();
+        Task<double> ReadCountAsync(IEnumerable<int> documentIds);
     }
 }

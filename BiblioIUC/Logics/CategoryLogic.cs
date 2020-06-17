@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -47,10 +48,7 @@ namespace BiblioIUC.Logics
             value = value?.ToLower() ?? string.Empty;
             pageIndex = pageIndex < DEFAULT_PAGE_INDEX ? DEFAULT_PAGE_INDEX : pageIndex;
             pageSize = pageSize < pageIndex ? DEFAULT_PAGE_SIZE : pageSize;
-            var query = biblioEntities.Categories
-            .Include(x => x.CategoryParent)
-            .Include(x => x.InverseCategoryParent)
-            .Include(x => x.Documents)
+            var query = GetCategoryQuery()
             .Where(x => true);
             if (id > 0)
             {
@@ -59,9 +57,9 @@ namespace BiblioIUC.Logics
             else if (categoryParentId > 0)
             {
                 var categoryOfParentParentId = (await biblioEntities.Categories.FindAsync(categoryParentId))?.CategoryParentId;
-                 query = query.Where(x => x.CategoryParentId == categoryOfParentParentId);
+                query = query.Where(x => x.CategoryParentId == categoryOfParentParentId);
             }
-            else if(string.IsNullOrWhiteSpace(value))
+            else if (string.IsNullOrWhiteSpace(value))
             {
                 query = query.Where
                 (
@@ -81,7 +79,7 @@ namespace BiblioIUC.Logics
             if (!withDisabled)
                 query = query.Where(x => x.Status == (short)StatusOptions.Actived);
 
-            return 
+            return
             (
                 await query.OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
             )
@@ -89,6 +87,14 @@ namespace BiblioIUC.Logics
             (
                 x => GetCategoryModel(x, mediaFolderPath)
             ).ToArray();
+        }
+
+        private IIncludableQueryable<Category, ICollection<Document>> GetCategoryQuery()
+        {
+            return biblioEntities.Categories
+                        .Include(x => x.CategoryParent)
+                        .Include(x => x.InverseCategoryParent)
+                        .Include(x => x.Documents);
         }
 
         private CategoryModel GetCategoryModel(Category category, string mediaFolderPath)
@@ -101,7 +107,24 @@ namespace BiblioIUC.Logics
             ) : null;
         }
 
-        public async Task<IEnumerable<CategoryModel>> LeafsAsync(string mediaFolderPath)
+        public async Task<IEnumerable<CategoryModel>> GetRootsAsync(string mediaFolderPath)
+        {
+            return
+            (
+                await GetCategoryQuery().Where
+                (
+                    x =>
+                    x.CategoryParentId == null &&
+                    x.Status == (short)StatusOptions.Actived
+                ).OrderBy(x => x.Name).ToArrayAsync()
+            )
+            .Select
+            (
+                x => GetCategoryModel(x, mediaFolderPath)
+            ).ToArray();
+        }
+
+        public async Task<IEnumerable<CategoryModel>> NoDocumentAsync(string mediaFolderPath)
         {
             return
             (
@@ -134,7 +157,6 @@ namespace BiblioIUC.Logics
                 x => GetCategoryModel(x, mediaFolderPath)
             ).ToArray();
         }
-
 
         public async Task<IEnumerable<CategoryModel>> TopCategoriesByDocument(int limit, string mediaFolderPath)
         {

@@ -10,7 +10,7 @@ namespace BiblioIUC.Logics.Interfaces
 {
     public interface ICategoryLogic
     {
-        Task<IEnumerable<CategoryModel>> LeafsAsync(string mediaFolderPath);
+        Task<IEnumerable<CategoryModel>> NoDocumentAsync(string mediaFolderPath);
         Task<IEnumerable<CategoryModel>> FindAsync(int id, int categoryParentId, string value, string mediaFolderPath,
             Expression<Func<Category, object>> orderBy, bool withDisabled = false, int pageIndex = 1, int pageSize = 10);
         Task<CategoryModel> GetAsync(int id, string mediaFolderPath);
@@ -23,5 +23,6 @@ namespace BiblioIUC.Logics.Interfaces
         List<int> DocumentIds(int categoryId);
         Task<IEnumerable<CategoryModel>> TopCategoriesByDocument(int limit, string mediaFolderPath);
         CategoryModel Get(int id, string mediaFolderPath);
+        Task<IEnumerable<CategoryModel>> GetRootsAsync(string mediaFolderPath);
     }
 }

@@ -452,6 +452,18 @@ namespace BiblioIUC.Logics
             );
         }
 
+        public async Task<double> ReadCountAsync(IEnumerable<int> documentIds)
+        {
+            if ((documentIds?.Count() ?? 0) == 0)
+                return 0;
+            return await biblioEntities.Documents.Where
+            (
+                x =>
+                documentIds.Contains(x.Id) &&
+                x.Status == (short)StatusOptions.Actived
+            ).SumAsync(x => x.ReadCount);
+        }
+
         public async Task<DocumentModel> AddAsync(DocumentModel documentModel,
             string mediaFolderPath, string mediaFolderTmpPath, string prefixDocumentImageName, string prefixDocumentFileName)
         {

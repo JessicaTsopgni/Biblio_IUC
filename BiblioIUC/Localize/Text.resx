@@ -399,6 +399,9 @@
   <data name="Readings" xml:space="preserve">
     <value>Lectures</value>
   </data>
+  <data name="Readings_by_category" xml:space="preserve">
+    <value>Lectures par catégorie</value>
+  </data>
   <data name="Readings_overview" xml:space="preserve">
     <value>Aperçu des lectures</value>
   </data>

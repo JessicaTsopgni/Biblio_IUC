@@ -907,6 +907,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lectures par catégorie.
+        /// </summary>
+        public static string Readings_by_category {
+            get {
+                return ResourceManager.GetString("Readings_by_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aperçu des lectures.
         /// </summary>
         public static string Readings_overview {

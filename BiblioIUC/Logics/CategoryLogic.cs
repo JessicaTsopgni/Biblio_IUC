@@ -36,9 +36,7 @@ namespace BiblioIUC.Logics
 
         public List<int> DocumentIds(int categoryId)
         {
-
             return biblioEntities.Documents.Where(x => x.CategoryId == categoryId).Select(x=> x.Id).ToList();
-
         }
 
         public async Task<IEnumerable<CategoryModel>> FindAsync(int id, int categoryParentId, string value, string mediaFolderPath,
@@ -110,13 +108,14 @@ namespace BiblioIUC.Logics
                 await biblioEntities.Categories.Where
                 (
                     x =>
-                    x.Documents.Count() == 0
+                    x.Documents.Count() == 0 &&
+                    x.Status == (short)StatusOptions.Actived
                 ).OrderBy(x => x.Name).ToArrayAsync()
             )
             .Select
             (
                 x => GetCategoryModel(x, mediaFolderPath)
-            );            
+            ).ToArray();            
         }
 
         public async Task<IEnumerable<CategoryModel>> NoChildAsync(string mediaFolderPath)
@@ -126,13 +125,48 @@ namespace BiblioIUC.Logics
                 await biblioEntities.Categories.Where
                 (
                     x =>
-                    x.InverseCategoryParent.Count() == 0
+                    x.InverseCategoryParent.Count() == 0 &&
+                    x.Status == (short)StatusOptions.Actived
                 ).OrderBy(x => x.Name).ToArrayAsync()
             )
             .Select
             (
                 x => GetCategoryModel(x, mediaFolderPath)
+            ).ToArray();
+        }
+
+
+        public async Task<IEnumerable<CategoryModel>> TopCategoriesByDocument(int limit, string mediaFolderPath)
+        {
+            return
+            (
+                (
+                    await biblioEntities.Documents.Where
+                    (
+                        x => 
+                        x.Status == (short)StatusOptions.Actived
+                    )
+                    .GroupBy(x => x.CategoryId).Select
+                    (
+                        x => 
+                        new 
+                        { 
+                            CategoryId = x.Key, 
+                            ReadCount = x.Sum(y => y.ReadCount) 
+                        }
+                    )
+                    .OrderByDescending(x => x.ReadCount).Take(limit).ToArrayAsync()
+                )
+                .Select(x => Get(x.CategoryId, mediaFolderPath))
             );
+        }
+
+        public CategoryModel Get(int id, string mediaFolderPath)
+        {
+            var category = biblioEntities.Categories.Find(id);
+            if (category != null)
+                return GetCategoryModel(category, mediaFolderPath);
+            return null;
         }
 
         public async Task<CategoryModel> GetAsync(int id, string mediaFolderPath)

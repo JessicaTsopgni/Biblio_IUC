@@ -21,5 +21,7 @@ namespace BiblioIUC.Logics.Interfaces
         Task RemoveAsync(int id, string mediaFolderPath);
         Task<IEnumerable<CategoryModel>> NoChildAsync(string mediaFolderPath);
         List<int> DocumentIds(int categoryId);
+        Task<IEnumerable<CategoryModel>> TopCategoriesByDocument(int limit, string mediaFolderPath);
+        CategoryModel Get(int id, string mediaFolderPath);
     }
 }

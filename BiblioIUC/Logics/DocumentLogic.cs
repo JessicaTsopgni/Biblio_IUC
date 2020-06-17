@@ -270,17 +270,22 @@ namespace BiblioIUC.Logics
                 .SingleOrDefaultAsync(x=> x.Id == id);
             if (document != null)
             {
-                var userDocument = await biblioEntities.UserDocuments.FirstOrDefaultAsync
-                (
-                    x =>
-                    x.DocumentId == id &&
-                    x.UserId == userId
-                );
-                
+                UserDocument userDocument = await GetLastUserDocument(id, userId);
+
                 var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
                 return GetDocumentModel(document, mediaFolderPath, mediaBasePath, userDocument?.LastPageNumber ?? 0);
             }
             return null;            
+        }
+
+        private async Task<UserDocument> GetLastUserDocument(int documentId, int userId)
+        {
+            return await biblioEntities.UserDocuments.OrderBy(x => x.ReadDate).LastOrDefaultAsync
+            (
+                x =>
+                x.DocumentId == documentId &&
+                x.UserId == userId
+            );
         }
 
         public async Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath, int userId)
@@ -292,12 +297,7 @@ namespace BiblioIUC.Logics
             var document = await query.SingleOrDefaultAsync();
             if (document != null)
             {
-                var userDocument = await biblioEntities.UserDocuments.FirstOrDefaultAsync
-                (
-                    x =>
-                    x.DocumentId == document.Id &&
-                    x.UserId == userId
-                );
+                var userDocument = await GetLastUserDocument(document.Id, userId);
 
                 var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
                 return GetDocumentModel(document, mediaFolderPath, mediaBasePath, userDocument?.LastPageNumber ?? 0);
@@ -338,16 +338,34 @@ namespace BiblioIUC.Logics
             }
         }
 
-        public async Task IncrementCountReadAsync(string code)
+        public async Task IncrementCountReadAsync(string code, int userId)
         {
             try
             {
+                //delete last year read
+                biblioEntities.UserDocuments.RemoveRange
+                (
+                    biblioEntities.UserDocuments.Where
+                    (
+                        x => x.ReadDate <= DateTime.UtcNow.AddYears(-1)
+                    )
+                );
                 code = code?.ToLower() ?? "";
                 Document currenDocument = await biblioEntities.Documents.SingleOrDefaultAsync(x => x.Code.ToLower() == code);
                 
                 if (currenDocument != null)
                 {
                     currenDocument.ReadCount++;
+                    UserDocument currentUserDocument = await GetLastUserDocument(currenDocument.Id, userId);
+                    var newUserDocument = new UserDocument
+                    (
+                        0,
+                        userId,
+                        currenDocument.Id,
+                        currentUserDocument?.LastPageNumber ?? 1,
+                        DateTime.UtcNow
+                    );
+                    biblioEntities.UserDocuments.Add(newUserDocument);
                     await biblioEntities.SaveChangesAsync();
                 }
             }
@@ -357,7 +375,7 @@ namespace BiblioIUC.Logics
             }
         }
 
-        public async Task SaveLastReadAsync(string code, int userId, int lastPageNumber)
+        public async Task SaveLastReadAsync(string code, int userId, int? lastPageNumber)
         {
             try
             {
@@ -369,18 +387,14 @@ namespace BiblioIUC.Logics
                 );
                 if (document != null)
                 {
-                    UserDocument currentUserDocument = await biblioEntities.UserDocuments.FirstOrDefaultAsync
-                    (
-                        x =>
-                        x.UserId == userId &&
-                        x.Document.Code.ToLower() == code
-                    );
+                    UserDocument currentUserDocument = await GetLastUserDocument(document.Id, userId);
                     var newUserDocument = new UserDocument
                     (
+                        currentUserDocument?.Id ?? 0,
                         userId,
                         document.Id,
-                        lastPageNumber,
-                        DateTime.UtcNow
+                        lastPageNumber ?? (currentUserDocument?.LastPageNumber ?? 1),
+                        currentUserDocument?.ReadDate ?? DateTime.UtcNow
                     );
                     if (currentUserDocument == null)
                     {
@@ -400,6 +414,38 @@ namespace BiblioIUC.Logics
             }
         }
 
+        public async Task<IDictionary<string, long>> ReadingCountPerMonth()
+        {
+            string[] month =
+            {
+                Text.Jan,
+                Text.Fev,
+                Text.Mar,
+                Text.Avr,
+                Text.Mai,
+                Text.Jun,
+                Text.Jui,
+                Text.Aou,
+                Text.Sep,
+                Text.Oct,
+                Text.Nov,
+                Text.Dec
+            };
+
+            return await biblioEntities.UserDocuments.Where
+            (
+                x => x.ReadDate.Year == DateTime.UtcNow.Year
+            ).
+            GroupBy
+            (
+                x => x.ReadDate.Month
+            )
+            .ToDictionaryAsync
+            (
+                x => month[x.Key - 1],
+                x => x.LongCount()
+            );
+        }
 
         public async Task<DocumentModel> AddAsync(DocumentModel documentModel,
             string mediaFolderPath, string mediaFolderTmpPath, string prefixDocumentImageName, string prefixDocumentFileName)

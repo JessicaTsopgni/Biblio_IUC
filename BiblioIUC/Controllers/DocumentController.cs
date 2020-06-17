@@ -121,7 +121,7 @@ namespace BiblioIUC.Controllers
                     //    documentModel.CategoryId
                     //);
 
-                    await documentLogic.IncrementCountReadAsync(documentModel.Code);
+                    await documentLogic.IncrementCountReadAsync(documentModel.Code, userId);
 
                     var pageModel = new PageModel<DocumentModel>
                     (

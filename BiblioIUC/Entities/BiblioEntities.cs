@@ -119,8 +119,7 @@ namespace BiblioIUC.Entities
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnName("create_date")
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
@@ -238,17 +237,17 @@ namespace BiblioIUC.Entities
 
             modelBuilder.Entity<UserDocument>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.DocumentId })
-                    .HasName("PRIMARY");
-
                 entity.ToTable("user_document");
 
                 entity.HasIndex(e => e.DocumentId)
                     .HasName("fk_user_document_document");
 
-                entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasColumnType("int(11)");
+                entity.HasIndex(e => e.UserId)
+                    .HasName("fk_user_document_user");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("bigint(20)");
 
                 entity.Property(e => e.DocumentId)
                     .HasColumnName("document_id")
@@ -258,9 +257,13 @@ namespace BiblioIUC.Entities
                     .HasColumnName("last_page_number")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.LastReadDate)
-                    .HasColumnName("last_read_date")
+                entity.Property(e => e.ReadDate)
+                    .HasColumnName("read_date")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Document)
                     .WithMany(p => p.UserDocuments)

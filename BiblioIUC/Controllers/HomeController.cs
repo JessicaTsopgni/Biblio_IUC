@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BiblioIUC.Entities;
 using BiblioIUC.Logics;
+using BiblioIUC.Logics.Interfaces;
 using BiblioIUC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,25 @@ namespace BiblioIUC.Controllers
     [Authorize]
     public class HomeController : BaseController
     {
-        public HomeController(IConfiguration configuration, ILoggerFactory loggerFactory) : base(configuration, loggerFactory)
-        {
+        private readonly ICategoryLogic categoryLogic;
 
-        }
-        public IActionResult Index()
+        public HomeController(IConfiguration configuration, ILoggerFactory loggerFactory,
+            ICategoryLogic categoryLogic) : base(configuration, loggerFactory)
         {
-            var dashboardModel = new DashboardModel();
+            this.categoryLogic = categoryLogic;
+        }
+        public async Task<IActionResult> Index()
+        {
+            IEnumerable<CategoryModel> categoryModels = 
+            (
+                await
+                categoryLogic.TopCategoriesByDocument
+                (
+                    short.Parse(configuration["DashbordCategoriesLimit"]), 
+                    configuration["MediaFolderPath"]
+                )
+            );
+            var dashboardModel = new DashboardModel(categoryModels);
             var pageModel = new PageModel<DashboardModel>
             (
                 dashboardModel

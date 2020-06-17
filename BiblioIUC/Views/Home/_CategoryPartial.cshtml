@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CategoryModel>
+@{
+    List<string> colors = new List<string> { "success", "danger", "primary", "warning", "info" };
+    Random randNum = new Random();
+    colors = colors.OrderBy(i => randNum.Next()).ToList();
+    colors.Add("dark");
+    int j = 0;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var category in Model)
+    {
+        if (j >= colors.Count - 1)
+        {
+            j = 0;
+        }
+        if (!category.State)
+        {
+            j = colors.Count - 1;
+        }
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-@colors[j] shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-10">
+                            <div class="text-xs font-weight-bold text-@colors[j] text-uppercase mb-2 truncate">
+                                @if (category.NumberOfSubCategories > 0)
+                                {
+                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'Id':'@category.Id', 'ReturnUrl': '@ViewBag.Url'})" class="text-@colors[j]">
+                                        @category.Name
+                                    </a>
+                                }
+                                else
+                                {
+                                    @category.Name
+                                }
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800" style="line-height: 0.6" title="@Text.Documents">
+                                @if (category.NumberOfDocuments > 0)
+                                {
+                                    <a class="font-weight-bold text-gray-800" asp-action="Index" asp-controller="Document" asp-route-categoryName="@category.Name" asp-route-documentIds="@string.Join( ",", category.DocumentIds)">
+                                        @category.NumberOfDocumentsFormated
+                                        <span style="font-size: 0.7rem">@(category.NumberOfDocuments > 0 ? Text.Documents : Text.Document)</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>0</span> <span style="font-size: 0.7rem">@Text.Document</span>
+                                }
+                            </div>
+                            <div class="truncate mt-1">
+                                @if (category.CategoryParentId != null)
+                                {
+                                    <a href="javascript:;" onclick="goto('@Url.Action("Index", "Category")', {'CategoryParentId':'@category.CategoryParentId', 'ReturnUrl': '@ViewBag.Url'})" class="text-gray-800">
+                                        <small>@category.CategoryParentName</small>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <small><i>@Text.No_parent</i></small>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-2 text-right">
+                            @if (!string.IsNullOrEmpty(category.ImageLink))
+                            {
+                                <img src="@Url.Content(category.ImageLink)" class="rounded-circle" style="width:50px" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-layer-group fa-2x text-gray-300"></i>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        j++;
+    }
+}

@@ -24,7 +24,7 @@ namespace BiblioIUC.Logics.Interfaces
         Task UpdateMetaData(string mediaFolderPath, string prefixDocumentFileName, DocumentModel documentModel);
         Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath, int userId);
         Task<DocumentModel> ExtractMetadata(DocumentModel documentModel, string PrefixDocumentTmpFileName, string mediaFolderTmpPath, string libGostScriptPath, int userId);
-        Task SaveLastReadAsync(string code, int userId, int lastPageNumber);
-        Task IncrementCountReadAsync(string documentId);
+        Task SaveLastReadAsync(string code, int userId, int? lastPageNumber);
+        Task IncrementCountReadAsync(string code, int userId);
     }
 }

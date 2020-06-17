@@ -138,8 +138,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer border-@colors[j]" style="text-align: end; background-color:transparent;">
-                    <a href="javascript:;" onclick="goto('@Url.Action("Read", "Document")', {'Id':'@document.Code', 'ReturnUrl': '@ViewBag.Url'})" class="btn btn-sm btn-@colors[j] shadow-sm"><i class="fas fa-eye fa-sm text-white-50"></i> @Text.Read</a>
+                <div class="card-footer border-@colors[j]" style="background-color:transparent;">
+                    <div class="row">
+                        <div class="col-md-6" style="text-align: start; ">
+                            <i class="fas fa-eye"></i> @document.ReadCount.ToString("N0")
+                        </div>
+                        <div class="col-md-6" style="text-align: end; ">
+                            <a href="javascript:;" onclick="goto('@Url.Action("Read", "Document")', {'Id':'@document.Code', 'ReturnUrl': '@ViewBag.Url'})" class="btn btn-sm btn-@colors[j] shadow-sm"><i class="fas fa-book-open fa-sm text-white-50"></i> @Text.Read</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>        

@@ -129,18 +129,18 @@ namespace BiblioIUC.Logics
             var libBaseGostScriptPath = Path.Combine(env.ContentRootPath, libGostScriptPath.Replace("~/", string.Empty));
             var prefixTmpThumb = "tmp_" + userId + "_";
 
-            Tools.OssFile.DeleteFileInFolder(prefixTmpThumb, mediaBaseTmpPath);
+            OssFile.DeleteFileInFolder(prefixTmpThumb, mediaBaseTmpPath);
 
             string newFileName = string.Empty;
-            if (Tools.OssFile.HasFile(documentModel.FileUploaded))
+            if (OssFile.HasFile(documentModel.FileUploaded))
             {
-                newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, prefixTmpThumb, mediaBaseTmpPath); ;
+                newFileName = await OssFile.SaveFile(documentModel.FileUploaded, prefixTmpThumb, mediaBaseTmpPath); ;
                 documentModel.FileUploadedName = documentModel.FileUploaded.FileName;
             }
 
             string coverFileName = prefixTmpThumb + Guid.NewGuid().ToString().ToLower() + ".png";
 
-            Tools.OssFile.ConvertPdfToImage
+            OssFile.ConvertPdfToImage
             (
                 libBaseGostScriptPath,
                 Path.Combine(mediaBaseTmpPath, newFileName),
@@ -315,8 +315,8 @@ namespace BiblioIUC.Logics
                 if(!string.IsNullOrEmpty(document.Image))
                 {
                     var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
-                    Tools.OssFile.DeleteFile(document.Image, mediaBasePath);
-                    Tools.OssFile.DeleteFile(document.File, mediaBasePath);
+                    OssFile.DeleteFile(document.Image, mediaBasePath);
+                    OssFile.DeleteFile(document.File, mediaBasePath);
                 }
             }
         }
@@ -464,9 +464,9 @@ namespace BiblioIUC.Logics
                 if (documentModel == null)
                     throw new ArgumentNullException("documentModel");
 
-                if (Tools.OssFile.HasImage(documentModel.ImageUploaded))
+                if (OssFile.HasImage(documentModel.ImageUploaded))
                 {
-                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, prefixDocumentImageName, mediaAbsoluteBasePath); ;
+                    newImageName = OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, prefixDocumentImageName, mediaAbsoluteBasePath); ;
                 }
                 else
                 {
@@ -475,7 +475,7 @@ namespace BiblioIUC.Logics
                         if (!string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) &&
                         File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)))
                         {
-                            newImageName = Tools.OssFile.GetNewFileName(documentModel.ImageUploadedTmpFileName, prefixDocumentImageName);
+                            newImageName = OssFile.GetNewFileName(documentModel.ImageUploadedTmpFileName, prefixDocumentImageName);
                             File.Move
                             (
                                 Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName),
@@ -496,16 +496,16 @@ namespace BiblioIUC.Logics
                     }
                 }
 
-                if (Tools.OssFile.HasFile(documentModel.FileUploaded))
+                if (OssFile.HasFile(documentModel.FileUploaded))
                 {
-                    newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, prefixDocumentFileName, mediaAbsoluteBasePath); ;
+                    newFileName = await OssFile.SaveFile(documentModel.FileUploaded, prefixDocumentFileName, mediaAbsoluteBasePath); ;
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(documentModel.FileUploadedTmpFileName) &&
                     File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName)))
                     {
-                        newFileName = Tools.OssFile.GetNewFileName(documentModel.FileUploadedTmpFileName, prefixDocumentFileName);
+                        newFileName = OssFile.GetNewFileName(documentModel.FileUploadedTmpFileName, prefixDocumentFileName);
                         File.Move
                         (
                             Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName),
@@ -541,10 +541,10 @@ namespace BiblioIUC.Logics
             }
             catch (Exception ex)
             {
-                if (Tools.OssFile.HasImage(documentModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
-                    Tools.OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
-                if (Tools.OssFile.HasFile(documentModel.FileUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
+                if (OssFile.HasImage(documentModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
+                    OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
+                if (OssFile.HasFile(documentModel.FileUploaded) && !string.IsNullOrEmpty(newFileName))
+                    OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }
@@ -568,9 +568,9 @@ namespace BiblioIUC.Logics
                 bool deleteCurrentIamge = false, deleteCurrentFile = false;
                 string currentDocumentImage = currentDocument.Image;
                 string currentDocumentFile = currentDocument.File;
-                if (Tools.OssFile.HasImage(documentModel.ImageUploaded))
+                if (OssFile.HasImage(documentModel.ImageUploaded))
                 {
-                    newImageName = Tools.OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, prefixDocumentImageName, mediaAbsoluteBasePath); ;
+                    newImageName = OssFile.SaveImage(documentModel.ImageUploaded, 400, 600, 100 * 1024, 300 * 1024, prefixDocumentImageName, mediaAbsoluteBasePath); ;
                     deleteCurrentIamge = true;
                 }
                 else if (string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) && !string.IsNullOrEmpty(currentDocument.Image) && documentModel.DeleteImage)
@@ -580,7 +580,7 @@ namespace BiblioIUC.Logics
                 else if (!documentModel.DeleteImage && !string.IsNullOrEmpty(documentModel.ImageUploadedTmpFileName) &&
                     File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName)))
                 {
-                    newImageName = Tools.OssFile.GetNewFileName(documentModel.ImageUploadedTmpFileName, prefixDocumentImageName);
+                    newImageName = OssFile.GetNewFileName(documentModel.ImageUploadedTmpFileName, prefixDocumentImageName);
                     File.Move
                     (
                         Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.ImageUploadedTmpFileName),
@@ -603,15 +603,15 @@ namespace BiblioIUC.Logics
                 }
 
 
-                if (Tools.OssFile.HasFile(documentModel.FileUploaded))
+                if (OssFile.HasFile(documentModel.FileUploaded))
                 {
-                    newFileName = await Tools.OssFile.SaveFile(documentModel.FileUploaded, prefixDocumentFileName, mediaAbsoluteBasePath); ;
+                    newFileName = await OssFile.SaveFile(documentModel.FileUploaded, prefixDocumentFileName, mediaAbsoluteBasePath); ;
                     deleteCurrentFile = true;
                 }
                 else if (!string.IsNullOrEmpty(documentModel.FileUploadedTmpFileName) &&
                     File.Exists(Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName)))
                 {
-                    newFileName = Tools.OssFile.GetNewFileName(documentModel.FileUploadedTmpFileName, prefixDocumentFileName);
+                    newFileName = OssFile.GetNewFileName(documentModel.FileUploadedTmpFileName, prefixDocumentFileName);
                     File.Move
                     (
                         Path.Combine(mediaAbsoluteBaseTmpPath, documentModel.FileUploadedTmpFileName),
@@ -649,18 +649,18 @@ namespace BiblioIUC.Logics
                 await biblioEntities.SaveChangesAsync();
 
                 if(deleteCurrentIamge)
-                    Tools.OssFile.DeleteFile(currentDocumentImage, mediaAbsoluteBasePath);
+                    OssFile.DeleteFile(currentDocumentImage, mediaAbsoluteBasePath);
                 if(deleteCurrentFile)
-                    Tools.OssFile.DeleteFile(currentDocumentFile, mediaAbsoluteBasePath);
+                    OssFile.DeleteFile(currentDocumentFile, mediaAbsoluteBasePath);
 
                 return new DocumentModel(newDocument, mediaFolderPath, mediaFolderPath, null, 0);
             }
             catch (Exception ex)
             {
-                if(Tools.OssFile.HasImage(documentModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
-                    Tools.OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
-                if (Tools.OssFile.HasFile(documentModel.FileUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
+                if(OssFile.HasImage(documentModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
+                    OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
+                if (OssFile.HasFile(documentModel.FileUploaded) && !string.IsNullOrEmpty(newFileName))
+                    OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }

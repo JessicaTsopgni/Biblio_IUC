@@ -907,15 +907,6 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lectures par catégorie.
-        /// </summary>
-        public static string Readings_by_category {
-            get {
-                return ResourceManager.GetString("Readings_by_category", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Aperçu des lectures.
         /// </summary>
         public static string Readings_overview {
@@ -1182,6 +1173,24 @@ namespace BiblioIUC.Localize {
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top {0} des lectures par catégorie.
+        /// </summary>
+        public static string Top_x_of_readings_by_category {
+            get {
+                return ResourceManager.GetString("Top_x_of_readings_by_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top {0} des lectures par sous-catégorie.
+        /// </summary>
+        public static string Top_x_of_readings_by_sub_category {
+            get {
+                return ResourceManager.GetString("Top_x_of_readings_by_sub_category", resourceCulture);
             }
         }
         

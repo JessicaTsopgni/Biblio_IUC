@@ -27,14 +27,22 @@ namespace BiblioIUC.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            IEnumerable<CategoryModel> categoryModels = await categoryLogic.TopCategoriesByDocument
+            var dashboardTopCategoryReadingsLimit = int.Parse(configuration["DashboardTopCategoryReadingsLimit"]);
+            var dashboardTopSubCategoryReadingsLimit = int.Parse(configuration["DashboardTopSubCategoryReadingsLimit"]);
+            var dashboardTopPercentSubCategoryReadingsLimit = int.Parse(configuration["DashboardTopPercentSubCategoryReadingsLimit"]);
+            var dashboardTopDocumentReadingsLimit = int.Parse(configuration["DashboardTopDocumentReadingsLimit"]);
+
+            //top sub categories reading
+            IDictionary<CategoryModel, double> topSubCategoriesReading = await categoryLogic.TopSubCategoriesReading
             (
-                short.Parse(configuration["DashbordCategoriesLimit"]),
+                dashboardTopSubCategoryReadingsLimit,
                 configuration["MediaFolderPath"]
             );
 
+            //reading per month
             IDictionary<string, long> readingOverview = await documentLogic.ReadingCountPerMonth();
 
+            //top categories readings
             IDictionary<string, double> readingByCategoryOverview = new Dictionary<string, double>();
             var rootCategories =
             (
@@ -50,15 +58,26 @@ namespace BiblioIUC.Controllers
                     await documentLogic.ReadCountAsync(root.DocumentIds)
                 );
             }
+
+            // top document reading limit 
+            var topDocumentReadings = await documentLogic.TopReading(dashboardTopDocumentReadingsLimit, configuration["MediaFolderPath"]);
+
+
             var dashboardModel = new DashboardModel
             (
-                categoryModels,
+                readingByCategoryOverview.Count < dashboardTopCategoryReadingsLimit ? readingByCategoryOverview.Count : dashboardTopCategoryReadingsLimit,
+                dashboardTopSubCategoryReadingsLimit,
+                topSubCategoriesReading.Count < dashboardTopPercentSubCategoryReadingsLimit ? topSubCategoriesReading.Count : dashboardTopPercentSubCategoryReadingsLimit,
+                topSubCategoriesReading,
                 readingOverview,
                 readingByCategoryOverview
                     .Where(x => x.Value > 0)
-                    .Take(short.Parse(configuration["DashbordCategoriesLimit"]))
-                    .ToDictionary(x => x.Key, x => x.Value)
+                    .OrderByDescending(x => x.Value)
+                    .Take(dashboardTopCategoryReadingsLimit)
+                    .ToDictionary(x => x.Key, x => x.Value),
+                topDocumentReadings
             );
+            
             var pageModel = new PageModel<DashboardModel>
             (
                 dashboardModel

@@ -270,7 +270,7 @@ namespace BiblioIUC.Logics
                 .SingleOrDefaultAsync(x=> x.Id == id);
             if (document != null)
             {
-                UserDocument userDocument = await GetLastUserDocument(id, userId);
+                UserDocument userDocument = GetLastUserDocument(id, userId);
 
                 var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
                 return GetDocumentModel(document, mediaFolderPath, mediaBasePath, userDocument?.LastPageNumber ?? 0);
@@ -278,9 +278,9 @@ namespace BiblioIUC.Logics
             return null;            
         }
 
-        private async Task<UserDocument> GetLastUserDocument(int documentId, int userId)
+        private UserDocument GetLastUserDocument(int documentId, int userId)
         {
-            return await biblioEntities.UserDocuments.OrderBy(x => x.ReadDate).LastOrDefaultAsync
+            return biblioEntities.UserDocuments.OrderBy(x => x.ReadDate).LastOrDefault
             (
                 x =>
                 x.DocumentId == documentId &&
@@ -297,7 +297,7 @@ namespace BiblioIUC.Logics
             var document = await query.SingleOrDefaultAsync();
             if (document != null)
             {
-                var userDocument = await GetLastUserDocument(document.Id, userId);
+                var userDocument = GetLastUserDocument(document.Id, userId);
 
                 var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
                 return GetDocumentModel(document, mediaFolderPath, mediaBasePath, userDocument?.LastPageNumber ?? 0);
@@ -356,7 +356,7 @@ namespace BiblioIUC.Logics
                 if (currenDocument != null)
                 {
                     currenDocument.ReadCount++;
-                    UserDocument currentUserDocument = await GetLastUserDocument(currenDocument.Id, userId);
+                    UserDocument currentUserDocument = GetLastUserDocument(currenDocument.Id, userId);
                     var newUserDocument = new UserDocument
                     (
                         0,
@@ -387,7 +387,7 @@ namespace BiblioIUC.Logics
                 );
                 if (document != null)
                 {
-                    UserDocument currentUserDocument = await GetLastUserDocument(document.Id, userId);
+                    UserDocument currentUserDocument = GetLastUserDocument(document.Id, userId);
                     var newUserDocument = new UserDocument
                     (
                         currentUserDocument?.Id ?? 0,
@@ -449,6 +449,28 @@ namespace BiblioIUC.Logics
             (
                 x => month[x.Month - 1],
                 x => x.Count
+            );
+        }
+
+
+        public async Task<IEnumerable<DocumentModel>> TopReading(int limit, string mediaFolderPath)
+        {
+
+            return
+            (
+                await biblioEntities.Documents.Where
+                (
+                    x => x.Status == (short)StatusOptions.Actived
+                ).
+                OrderByDescending
+                (
+                    x => x.ReadCount
+                )
+                .Take(limit).ToArrayAsync()
+            )
+            .Select
+            (
+                x => GetDocumentModel(x, mediaFolderPath, null, 0)
             );
         }
 

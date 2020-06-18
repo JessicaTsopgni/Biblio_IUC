@@ -87,6 +87,7 @@ namespace BiblioIUC.Models
 
         public DateTime CreateDate { get; set; }
         public int LastPageNumberRead { get; set; }
+        public double ReadCount { get; set; }
 
         public IEnumerable<SelectListItem> CategoryModels { get; set; }
 
@@ -103,8 +104,8 @@ namespace BiblioIUC.Models
 
         public DocumentModel(int id, string code, string title, string subtitle, string authors,
             string description, string language, DateTime? publishDate, string publisher,
-            int numberOfPages, string contributors, int categoryId, DateTime createDate,
-            StatusOptions status):this(id, status)
+            int numberOfPages, string contributors, int categoryId, DateTime createDate, 
+            double readCount, StatusOptions status):this(id, status)
         {
             Code = code;
             Title = title;
@@ -118,6 +119,7 @@ namespace BiblioIUC.Models
             Contributors = contributors;
             CategoryId = categoryId;
             CreateDate = createDate;
+            ReadCount = readCount;
         }
 
 
@@ -125,7 +127,7 @@ namespace BiblioIUC.Models
           : this(document?.Id ?? 0, document?.Code, document?.Title,document?.Subtitle, document?.Authors,
                 document?.Description, document?.Language, document?.PublishDate, document?.Publisher,
                 document?.NumberOfPages ?? 0, document?.Contributors, document?.CategoryId ?? 0,
-               document?.CreateDate?? DateTime.UtcNow, (StatusOptions)(document?.Status ?? 0))
+               document?.CreateDate?? DateTime.UtcNow, document?.ReadCount ?? 0, (StatusOptions)(document?.Status ?? 0))
         {
             CategoryName = document?.Category?.Name;
             ImageLink = !string.IsNullOrEmpty(document?.Image) ? $"{imageLinkBaseUrl}/{document?.Image}" : null;

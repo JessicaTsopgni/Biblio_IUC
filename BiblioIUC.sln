@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Db", "Db", "{8A90427C-FFE9-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{C56B904D-312D-44C4-9340-B7C0895A333A}"
 	ProjectSection(SolutionItems) = preProject
+		Docs\biblio.docx = Docs\biblio.docx
 		Docs\README.md = Docs\README.md
 	EndProjectSection
 EndProject

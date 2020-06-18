@@ -70,7 +70,7 @@ namespace BiblioIUC.Models
 
         private List<int> SetDocumentIds(Category category, CategoryLogic categoryLogic)
         {
-            List<int> ids = categoryLogic.DocumentIds(category.Id);
+            List<int> ids = categoryLogic.DocumentIds(category?.Id ?? 0);
             if (category == null || category.InverseCategoryParent.Count == 0) 
                 return ids;
             if (ids == null)

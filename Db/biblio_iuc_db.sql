@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  Dim 10 mai 2020 à 14:33
+-- Généré le :  mer. 17 juin 2020 à 18:59
 -- Version du serveur :  5.7.23
 -- Version de PHP :  7.2.10
 
@@ -114,13 +114,13 @@ CREATE TABLE IF NOT EXISTS `document` (
   `category_id` int(11) NOT NULL,
   `image` varchar(50) DEFAULT NULL,
   `file` varchar(500) NOT NULL,
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `create_date` datetime NOT NULL,
   `status` smallint(6) NOT NULL,
   `read_count` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ix_code` (`code`) USING BTREE,
   KEY `fk_document_category` (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `document`
@@ -128,9 +128,10 @@ CREATE TABLE IF NOT EXISTS `document` (
 
 INSERT INTO `document` (`id`, `code`, `title`, `subtitle`, `authors`, `description`, `language`, `publish_date`, `publisher`, `number_of_pages`, `contributors`, `category_id`, `image`, `file`, `create_date`, `status`, `read_count`) VALUES
 (1, 'DOC-20204160586', 'Linq to Object', NULL, 'Zeus', 'Très bel ouvrage', 'Français', '2020-01-15', NULL, 40, NULL, 42, 'dth_0bad9e54-d36e-42c3-a4b2-72a4e025cf83.png', 'doc_b4f918e9-cbca-49fa-a1e4-0b1a2d370282.pdf', '2020-05-04 09:37:16', 1, 1),
-(3, 'DOC-20205224797', 'CSharp', 'C#', 'J Martins, Kevin Clark, Rigobert Song', 'Ces critères sont dits \"In The Page\" c’est-à-dire qu’ils conservent le contenu de la page afin d’affiner leur classement, les robots utilisent également des critères \"Off The Page\" qui eux prennent en compte l’usage fait par les internautes de la page.\r\nLe robot analyse donc la pertinence des résultats qu’il fournit pour une requête donnée en calculant le temps passé par l’utilisateur sur la page proposée et son retour ou non en arrière vers le page des résultats.\r\nLes résultats proposés par le moteur sont donc issus d’une équation prenant en compte tous ces paramètres.\r\nCes critères sont dits \"In The Page\" c’est-à-dire qu’ils conservent le contenu de la page afin d’affiner leur classement, les robots utilisent également des critères \"Off The Page\" qui eux prennent en compte l’usage fait par les internautes de la page.\r\nLe robot analyse donc la pertinence des résultats qu’il fournit pour une requête donnée en calculant le temps passé par l’utilisateur sur la page proposée et son retour ou non en arrière vers le page des résultats.\r\nLes résultats proposés par le moteur sont donc issus d’une équation prenant en compte tous ces paramètres.\r\n', 'Français', '2020-02-04', 'IUC', 654, 'Jean Charles REMOND, COllins Martins, Alexandre SONG, Petit pays', 42, 'dth_4a08a8cd-47db-40ef-b662-57838d647fb0.jpg', 'doc_91df59d7-8578-4e99-b968-6db16c8b11b9.pdf', '2020-05-04 08:47:37', 1, 1),
-(4, 'DOC-20205431837', 'Programmation évènementielle avec les WinForms', NULL, 'Baptiste Pesquet', NULL, 'Français', NULL, 'calibre 2.57.1 [http://calibre-ebook.com]', 39, NULL, 37, 'dth_5eec333d-13cc-45be-954e-2c38baf6b67c.png', 'doc_96b67767-60db-4f23-9156-0193bcfd5861.pdf', '2020-05-08 11:06:43', 1, 87),
-(12, 'DOC-20205378865', 'corrige.dvi', 'corrige.dvi ss', 'corrige.dvi au', 'corrige.dvi desc', 'Français', '2020-05-08', 'dvips(k) 5.95a Copyright 2005 Radical Eye Software', 6, 'corrige.dvi co', 44, 'dth_913c9bfa-df35-4d83-a438-947f2ebe62b4.png', 'doc_9815f62f-35e1-452f-a7be-f564d553ce25.pdf', '2020-05-08 21:52:12', 1, 19);
+(3, 'DOC-20205224797', 'CSharp', 'C#', 'J Martins, Kevin Clark, Rigobert Song', 'Ces critères sont dits \"In The Page\" c’est-à-dire qu’ils conservent le contenu de la page afin d’affiner leur classement, les robots utilisent également des critères \"Off The Page\" qui eux prennent en compte l’usage fait par les internautes de la page.\r\nLe robot analyse donc la pertinence des résultats qu’il fournit pour une requête donnée en calculant le temps passé par l’utilisateur sur la page proposée et son retour ou non en arrière vers le page des résultats.\r\nLes résultats proposés par le moteur sont donc issus d’une équation prenant en compte tous ces paramètres.\r\nCes critères sont dits \"In The Page\" c’est-à-dire qu’ils conservent le contenu de la page afin d’affiner leur classement, les robots utilisent également des critères \"Off The Page\" qui eux prennent en compte l’usage fait par les internautes de la page.\r\nLe robot analyse donc la pertinence des résultats qu’il fournit pour une requête donnée en calculant le temps passé par l’utilisateur sur la page proposée et son retour ou non en arrière vers le page des résultats.\r\nLes résultats proposés par le moteur sont donc issus d’une équation prenant en compte tous ces paramètres.\r\n', 'Français', '2020-02-04', 'IUC', 654, 'Jean Charles REMOND, COllins Martins, Alexandre SONG, Petit pays', 42, 'dth_4a08a8cd-47db-40ef-b662-57838d647fb0.jpg', 'doc_91df59d7-8578-4e99-b968-6db16c8b11b9.pdf', '2020-05-04 08:47:37', 1, 2),
+(4, 'DOC-20205431837', 'Programmation évènementielle avec les WinForms', NULL, 'Baptiste Pesquet', NULL, 'Français', NULL, 'calibre 2.57.1 [http://calibre-ebook.com]', 39, NULL, 37, 'dth_5eec333d-13cc-45be-954e-2c38baf6b67c.png', 'doc_96b67767-60db-4f23-9156-0193bcfd5861.pdf', '2020-05-08 11:06:43', 1, 107),
+(12, 'DOC-20205378865', 'corrige.dvi', 'corrige.dvi ss', 'corrige.dvi au', 'corrige.dvi desc', 'Français', '2020-05-08', 'dvips(k) 5.95a Copyright 2005 Radical Eye Software', 6, 'corrige.dvi co', 44, 'dth_913c9bfa-df35-4d83-a438-947f2ebe62b4.png', 'doc_9815f62f-35e1-452f-a7be-f564d553ce25.pdf', '2020-05-08 21:52:12', 1, 22),
+(13, 'DOC-20206205159', 'Fiche d\'appressiation', NULL, 'Atonleu', NULL, 'Français', NULL, 'IUC', 1, NULL, 72, 'dth_2e75162b-5ed9-46a6-860d-79e24e275212.png', 'doc_62685a99-e34a-4369-96b5-a552882ef1e8.pdf', '2020-06-10 13:04:43', 1, 5);
 
 -- --------------------------------------------------------
 
@@ -168,22 +169,29 @@ INSERT INTO `user` (`id`, `account`, `password`, `full_name`, `role`, `image`, `
 
 DROP TABLE IF EXISTS `user_document`;
 CREATE TABLE IF NOT EXISTS `user_document` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `document_id` int(11) NOT NULL,
   `last_page_number` int(11) NOT NULL,
-  `last_read_date` datetime NOT NULL,
-  PRIMARY KEY (`user_id`,`document_id`),
+  `read_date` datetime NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `fk_user_document_user` (`user_id`),
   KEY `fk_user_document_document` (`document_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `user_document`
 --
 
-INSERT INTO `user_document` (`user_id`, `document_id`, `last_page_number`, `last_read_date`) VALUES
-(1, 3, 3, '2020-05-10 10:20:39'),
-(1, 4, 7, '2020-05-10 14:33:15'),
-(1, 12, 6, '2020-05-10 09:51:08');
+INSERT INTO `user_document` (`id`, `user_id`, `document_id`, `last_page_number`, `read_date`) VALUES
+(1, 1, 3, 2, '2020-05-10 10:20:39'),
+(2, 1, 4, 1, '2020-06-16 14:38:54'),
+(3, 1, 12, 1, '2020-06-16 14:14:04'),
+(4, 1, 13, 1, '2020-06-10 13:16:07'),
+(5, 1, 4, 3, '2020-06-17 15:47:24'),
+(6, 1, 13, 1, '2020-06-17 15:52:41'),
+(7, 3, 3, 1, '2020-04-16 00:00:00'),
+(8, 2, 13, 1, '2020-04-14 00:00:00');
 
 --
 -- Contraintes pour les tables déchargées
@@ -205,8 +213,8 @@ ALTER TABLE `document`
 -- Contraintes pour la table `user_document`
 --
 ALTER TABLE `user_document`
-  ADD CONSTRAINT `fk_user_document_document` FOREIGN KEY (`document_id`) REFERENCES `document` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_user_document_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_user_document_document` FOREIGN KEY (`document_id`) REFERENCES `document` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_user_document_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

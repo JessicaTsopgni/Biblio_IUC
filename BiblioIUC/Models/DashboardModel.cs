@@ -12,9 +12,17 @@ namespace BiblioIUC.Models
 {
     public class DashboardModel:BaseModel
     {
-        public DashboardModel():base()
-        {
+        public IEnumerable<CategoryModel> CategoryModels { get; set; }
+        public IDictionary<string, long> ReadingsOverview { get; set; }
+        public IDictionary<string, double> ReadingsByCategoryOverview { get; set; }
 
+        public DashboardModel(IEnumerable<CategoryModel> categoryModels,
+            IDictionary<string, long> readingsOverview,
+            IDictionary<string, double> readingsByCategoryOverview) :base()
+        {
+            CategoryModels = categoryModels;
+            ReadingsOverview = readingsOverview;
+            ReadingsByCategoryOverview = readingsByCategoryOverview;
         }
     }
 }

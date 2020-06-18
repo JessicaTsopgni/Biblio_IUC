@@ -21,7 +21,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
         <a asp-action="Index" asp-controller="Category" asp-route-Id="@null" class=" text-gray-800">
-            @ViewBag.Title
+            <i class="fas fa-layer-group"></i> @ViewBag.Title
         </a>
     </h1>
     @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())

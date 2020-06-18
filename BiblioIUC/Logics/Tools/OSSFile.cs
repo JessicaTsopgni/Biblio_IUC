@@ -1,7 +1,6 @@
 ﻿using Ghostscript.NET;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using NUglify.JavaScript.Syntax;
 using System;
 using System.Collections.Generic;
 using System.IO;

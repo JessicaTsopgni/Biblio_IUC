@@ -11,12 +11,13 @@ namespace BiblioIUC.Entities
 
         }
 
-        public UserDocument(int userId, int documentId, int lastPageNumber, DateTime lastReadDate):this()
+        public UserDocument(long id, int userId, int documentId, int lastPageNumber, DateTime readDate):this()
         {
+            Id = id;
             UserId = userId;
             DocumentId = documentId;
             LastPageNumber = lastPageNumber;
-            LastReadDate = lastReadDate;
+            ReadDate = readDate;
         }
     }
 }

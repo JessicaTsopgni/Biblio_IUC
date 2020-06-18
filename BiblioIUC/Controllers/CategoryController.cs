@@ -75,7 +75,7 @@ namespace BiblioIUC.Controllers
             {
                 CategoryModel categoryModel = new CategoryModel
                 (
-                    await categoryLogic.LeafsAsync(configuration["MediaFolderPath"]),
+                    await categoryLogic.NoDocumentAsync(configuration["MediaFolderPath"]),
                     null,
                     StatusOptions.Actived
                 );
@@ -118,7 +118,7 @@ namespace BiblioIUC.Controllers
                 {
                     categoryModel.SetCategoryParentModels
                     (
-                        await categoryLogic.LeafsAsync(configuration["MediaFolderPath"]),
+                        await categoryLogic.NoDocumentAsync(configuration["MediaFolderPath"]),
                         categoryModel.CategoryParentId
                     );
                     var pageModel = new PageModel<CategoryModel>
@@ -177,7 +177,7 @@ namespace BiblioIUC.Controllers
                 {
                     pageModel.DataModel.SetCategoryParentModels
                     (
-                        await categoryLogic.LeafsAsync(configuration["MediaFolderPath"]),
+                        await categoryLogic.NoDocumentAsync(configuration["MediaFolderPath"]),
                         pageModel.DataModel.CategoryParentId
                     );
                     TempData["MessageType"] = MessageOptions.Warning;

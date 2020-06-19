@@ -142,54 +142,81 @@
 
         <!-- Color System -->
         <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-primary text-white shadow">
-                    <div class="card-body">
-                        Primary
-                        <div class="text-white-50 small">#4e73df</div>
+            @if (Model.DataModel.TopDocumentReadings.Count() > 0)
+            {
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-primary text-white shadow">
+                        <div class="card-body">
+                            <div class="truncate">
+                                <a class="text-white"
+                                   asp-action="Index"
+                                   asp-controller="Document"
+                                   asp-route-documentIds="@Model.DataModel.TopDocumentReadings.ElementAt(0).Id"
+                                   title="@Model.DataModel.TopDocumentReadings.ElementAt(0).Title">
+                                    @Model.DataModel.TopDocumentReadings.ElementAt(0).Title
+                                </a>
+                            </div>
+                            <div class="text-white-50 small">
+                                <i class="fas fa-eye"></i> @Model.DataModel.TopDocumentReadings.ElementAt(0).ReadCount
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-success text-white shadow">
-                    <div class="card-body">
-                        Success
-                        <div class="text-white-50 small">#1cc88a</div>
+                @if (Model.DataModel.TopDocumentReadings.Count() > 1)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                <div class="truncate">
+                                    <a class="text-white"
+                                       asp-action="Index"
+                                       asp-controller="Document"
+                                       asp-route-documentIds="@Model.DataModel.TopDocumentReadings.ElementAt(1).Id"
+                                       title="@Model.DataModel.TopDocumentReadings.ElementAt(1).Title">
+                                        @Model.DataModel.TopDocumentReadings.ElementAt(1).Title
+                                    </a>
+                                </div>
+                                <div class="text-white-50 small">
+                                    <i class="fas fa-eye"></i> @Model.DataModel.TopDocumentReadings.ElementAt(1).ReadCount
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-info text-white shadow">
+                        <div class="card-body">
+                            Info
+                            <div class="text-white-50 small">#36b9cc</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-info text-white shadow">
-                    <div class="card-body">
-                        Info
-                        <div class="text-white-50 small">#36b9cc</div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-warning text-white shadow">
+                        <div class="card-body">
+                            Warning
+                            <div class="text-white-50 small">#f6c23e</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-warning text-white shadow">
-                    <div class="card-body">
-                        Warning
-                        <div class="text-white-50 small">#f6c23e</div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-danger text-white shadow">
+                        <div class="card-body">
+                            Danger
+                            <div class="text-white-50 small">#e74a3b</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-danger text-white shadow">
-                    <div class="card-body">
-                        Danger
-                        <div class="text-white-50 small">#e74a3b</div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card bg-secondary text-white shadow">
+                        <div class="card-body">
+                            Secondary
+                            <div class="text-white-50 small">#858796</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card bg-secondary text-white shadow">
-                    <div class="card-body">
-                        Secondary
-                        <div class="text-white-50 small">#858796</div>
-                    </div>
-                </div>
-            </div>
+
+            }
         </div>
 
     </div>

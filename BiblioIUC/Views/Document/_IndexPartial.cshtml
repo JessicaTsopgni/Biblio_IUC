@@ -40,8 +40,8 @@
                             <a class="dropdown-item" href="javascript:;">
                                 <i class="fas fa-share" style="font-size:95%"></i> @Text.Share
                             </a>
-                            @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())
-                            {                               
+                            @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Librarian.ToString() || User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Teacher.ToString())
+                            {
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-primary" href="javascript:;" onclick="goto('@Url.Action("Edit", "Document")', {'Id':'@document.Id', 'ReturnUrl': '@ViewBag.Url'})">
                                     <i class="fas fa-edit"></i> @Text.Edit

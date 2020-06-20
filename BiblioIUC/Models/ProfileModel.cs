@@ -47,7 +47,7 @@ namespace BiblioIUC.Models
 
         public ProfileModel(UserModel userModel)
            : this(userModel?.Id ?? 0, userModel?.Account, userModel?.Password, userModel?.FullName, 
-                 userModel?.Role ?? RoleOptions.Admin, userModel?.ImageLink)
+                 userModel?.Role ?? RoleOptions.Librarian, userModel?.ImageLink)
         {
         }
     }

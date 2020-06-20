@@ -103,7 +103,7 @@
                                             <i class="fas fa-sitemap" style="font-size:95%"></i> @Text.View_sub_categories
                                         </a>
                                     }
-                                    @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString())
+                                    @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Librarian.ToString())
                                     {
                                         if (category.NumberOfDocuments > 0 || category.NumberOfSubCategories > 0)
                                         {

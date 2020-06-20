@@ -1,5 +1,9 @@
-﻿using BiblioIUC.Models;
+﻿using BiblioIUC.Entities;
+using BiblioIUC.Models;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace BiblioIUC.Logics.Interfaces
@@ -15,5 +19,8 @@ namespace BiblioIUC.Logics.Interfaces
             string mediaFolderPath, string prefixPhotoProfileName);
         Task<ProfileModel> LoginAsync(LoginModel loginModel, HttpContext httpContext, string mediaFolderPath);
         Task<bool> AccountAlreadyExistsAsync(string account, int id);
+        Task<UserModel> SetAsync(UserModel userModel, string mediaFolderPath, string prefixPhotoProfileName);
+        Task<UserModel> AddAsync(UserModel userModel, string mediaFolderPath, string prefixPhotoProfileName);
+        Task<IEnumerable<UserModel>> FindAsync(string value, string mediaFolderPath, Expression<Func<User, object>> orderBy, bool withDisabled = false, int pageIndex = 1, int pageSize = 10);
     }
 }

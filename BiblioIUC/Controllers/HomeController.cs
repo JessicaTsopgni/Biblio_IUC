@@ -18,27 +18,14 @@ namespace BiblioIUC.Controllers
     {
         private readonly ICategoryLogic categoryLogic;
         private readonly IDocumentLogic documentLogic;
-        private readonly ILDAPAuthenticationService _authService;
 
         public HomeController(IConfiguration configuration, ILoggerFactory loggerFactory,
-            ICategoryLogic categoryLogic, IDocumentLogic documentLogic, 
-            ILDAPAuthenticationService lDAPAuthenticationService) : base(configuration, loggerFactory)
+            ICategoryLogic categoryLogic, IDocumentLogic documentLogic) : base(configuration, loggerFactory)
         {
             this.categoryLogic = categoryLogic;
             this.documentLogic = documentLogic;
-            _authService = lDAPAuthenticationService;
         }
 
-        public string Test()
-        {
-
-        var user = _authService.Login("jessica", "Jessica@2020");
-            if (user != null)
-            {
-                return user.DisplayName;
-            }
-            return "Not Connect";
-        }
         public async Task<IActionResult> Index()
         {
             var dashboardTopCategoryReadingsLimit = int.Parse(configuration["DashboardTopCategoryReadingsLimit"]);

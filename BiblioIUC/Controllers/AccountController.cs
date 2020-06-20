@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Novell.Directory.Ldap;
 
 namespace BiblioIUC.Controllers
 {
@@ -20,11 +21,24 @@ namespace BiblioIUC.Controllers
     public class AccountController : BaseController
     {
         private readonly IUserLogic userLogic;
+        private readonly ILDAPAuthenticationService authService;
 
         public AccountController(IUserLogic userLogic, 
-            IConfiguration configuration, ILoggerFactory loggerFactory):base(configuration, loggerFactory)
+            IConfiguration configuration, ILoggerFactory loggerFactory,
+            ILDAPAuthenticationService lDAPAuthenticationService) :base(configuration, loggerFactory)
         {
             this.userLogic = userLogic;
+            authService = lDAPAuthenticationService;
+        }
+
+        public string Test()
+        {
+            var user = authService.Login("patriciaa", "Patricia@2020");
+            if (user != null)
+            {
+                return user.DisplayName + " " + user.Role;
+            }
+            return "Not Connect";
         }
 
         public IActionResult Index()
@@ -41,8 +55,8 @@ namespace BiblioIUC.Controllers
 
             var loginModel = new LoginModel
             (
-                "admin",
-                "admin12345"
+                "jessica",
+                "Jessica@2020"
             );
             var pageModel = new PageModel<LoginModel>
             (
@@ -59,12 +73,39 @@ namespace BiblioIUC.Controllers
         {
             try
             {
-                var profileModel = await userLogic.LoginAsync
-                (
-                    pageModel.DataModel,
-                    Request.HttpContext,
-                    configuration["MediaFolderPath"]
-                );
+                //log in with ldap
+                try
+                {
+                    var ldapUser = authService.Login(pageModel.DataModel.Account, pageModel.DataModel.Password);
+                    ProfileModel profileModel = new ProfileModel
+                    (
+                        ldapUser,
+                        1,
+                        pageModel.DataModel.Password,
+                        null,
+                        configuration["MediaFolderPath"]
+                    );
+                    userLogic.SignIn
+                    (
+                        profileModel,
+                        Request.HttpContext
+                    );
+                }
+                catch (LdapException ex)
+                {
+                    if(ex.ResultCode == 49)
+                        throw new MemberAccessException(Text.Account_or_password_is_incorrect);
+                }
+                catch(Exception ex)
+                {
+                    loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
+                    var profileModel = await userLogic.LoginAsync
+                    (
+                        pageModel.DataModel,
+                        Request.HttpContext,
+                        configuration["MediaFolderPath"]
+                    );
+                }
                 if (!string.IsNullOrEmpty(pageModel.ReturnUrl))
                     return Redirect(pageModel.ReturnUrl);
                 return RedirectToAction("Index", "Home");
@@ -102,6 +143,7 @@ namespace BiblioIUC.Controllers
         {
             try
             {
+                
                 var userModel = await userLogic.GetAsync
                 (
                     HttpContext,

@@ -78,6 +78,10 @@ namespace BiblioIUC.Logics
                     }
                 }
             }
+            catch (LdapException ex)
+            {
+                throw ex;
+            }
             catch (Exception ex)
             {
                 throw ex;
@@ -89,6 +93,8 @@ namespace BiblioIUC.Logics
             return null;
         }
     }
+
+
     public class LdapConfig
     {
         public string Url { get; set; }

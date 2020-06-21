@@ -19,7 +19,7 @@ namespace BiblioIUC.Logics.Interfaces
             string mediaFolderPath, string prefixPhotoProfileName);
         Task<ProfileModel> LoginAsync(LoginModel loginModel, HttpContext httpContext, string mediaFolderPath);
         Task<bool> AccountAlreadyExistsAsync(string account, int id);
-        Task<UserModel> SetAsync(UserModel userModel, string mediaFolderPath, string prefixPhotoProfileName);
+        Task<UserModel> SetAsync(UserModel userModel, string mediaFolderPath, string prefixPhotoProfileName, bool forLDAP);
         Task<UserModel> AddAsync(UserModel userModel, string mediaFolderPath, string prefixPhotoProfileName);
         Task<IEnumerable<UserModel>> FindAsync(string value, string mediaFolderPath, Expression<Func<User, object>> orderBy, bool withDisabled = false, int pageIndex = 1, int pageSize = 10);
     }

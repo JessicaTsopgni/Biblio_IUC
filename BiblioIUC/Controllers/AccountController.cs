@@ -7,6 +7,7 @@ using BiblioIUC.Entities;
 using BiblioIUC.Localize;
 using BiblioIUC.Logics;
 using BiblioIUC.Logics.Interfaces;
+using BiblioIUC.Logics.Tools;
 using BiblioIUC.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -31,14 +32,9 @@ namespace BiblioIUC.Controllers
             authService = lDAPAuthenticationService;
         }
 
-        public string Test()
+        public string Test(string id)
         {
-            var user = authService.Login("patriciaa", "Patricia@2020");
-            if (user != null)
-            {
-                return user.DisplayName + " " + user.Role;
-            }
-            return "Not Connect";
+            return Logics.Tools.MD5.Hash(id);
         }
 
         public IActionResult Index()
@@ -93,13 +89,15 @@ namespace BiblioIUC.Controllers
                     else
                     {
                         //le role et status reste ce qui a été défini dans biblio
+                        userModel.Id = user.Id;
                         userModel.Status = user.Status;
                         userModel.Role = user.Role;
                         userModel = await userLogic.SetAsync
                        (
                            userModel,
                            configuration["MediaFolderPath"],
-                           configuration["PrefixPhotoProfileName"]
+                           configuration["PrefixPhotoProfileName"],
+                           true
                        );
                     }
 

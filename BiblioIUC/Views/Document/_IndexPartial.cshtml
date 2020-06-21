@@ -6,7 +6,7 @@
     colors = colors.OrderBy(i => randNum.Next()).ToList();
     colors.Add("dark");
     int j = 0;
-    int maxLength = 120;
+    int maxLength = 100;
 }
 @if (Model != null && Model.Count() > 0)
 {
@@ -20,7 +20,7 @@
         {
             j = colors.Count - 1;
         }
-        <div class="col-md-6">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
             <div class="card shadow mb-4 border-left-@colors[j] border-bottom-@colors[j]">
                 <div class="card-header py-3 d-flex flex-row justify-content-between border-@colors[j]" style="background-color:transparent;">
                     <h6 class="m-0 font-weight-bold text-@colors[j] truncate">@document.Title.ToUpper()</h6>

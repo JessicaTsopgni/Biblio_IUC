@@ -158,31 +158,29 @@ namespace BiblioIUC.Logics
             ).ToArray();
         }
 
-        public async Task<IEnumerable<CategoryModel>> TopCategoriesByDocument(int limit, string mediaFolderPath)
+        public async Task<IDictionary<CategoryModel, double>> TopSubCategoriesReading(int limit, string mediaFolderPath)
         {
+            var sumReadCount = await biblioEntities.Documents.SumAsync(x => x.ReadCount);
             return
             (
                 (
-                    await biblioEntities.Documents.Where
-                    (
-                        x => 
-                        x.Status == (short)StatusOptions.Actived
-                    )
+                    await biblioEntities.Documents
                     .GroupBy(x => x.CategoryId).Select
                     (
-                        x => 
-                        new 
-                        { 
-                            CategoryId = x.Key, 
-                            ReadCount = x.Sum(y => y.ReadCount) 
+                        x =>
+                        new
+                        {
+                            CategoryId = x.Key,
+                            Percent = Math.Ceiling(x.Sum(y => y.ReadCount) * 100 / sumReadCount)
                         }
                     )
-                    .OrderByDescending(x => x.ReadCount).Take(limit).ToArrayAsync()
+                    .OrderByDescending(x => x.Percent).Take(limit).ToArrayAsync()
                 )
-                .Select(x => Get(x.CategoryId, mediaFolderPath))
+                .Select(x => new { Category = Get(x.CategoryId, mediaFolderPath), Percent = x.Percent })
+                .ToDictionary(x => x.Category, x => x.Percent)
             );
         }
-
+       
         public CategoryModel Get(int id, string mediaFolderPath)
         {
             var category = biblioEntities.Categories.Find(id);

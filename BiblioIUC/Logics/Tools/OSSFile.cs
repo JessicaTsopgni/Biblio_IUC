@@ -11,6 +11,7 @@ using System.Web;
 
 namespace BiblioIUC.Logics.Tools
 {
+
     public static class OssFile
     {
         public static string GetBase64(string filePafth)

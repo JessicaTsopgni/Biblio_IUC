@@ -60,8 +60,11 @@ namespace BiblioIUC.Logics
 
         private string GetPassword(string oldPassword, string newPassword)
         {
-            //TO DO: encrypt password
-            return string.IsNullOrEmpty(newPassword)? oldPassword : newPassword;
+            if (string.IsNullOrEmpty(newPassword))
+                return oldPassword;
+
+            var password = Tools.MD5.Hash(newPassword);
+            return (oldPassword?.Equals(newPassword) ?? false) ? oldPassword : password;
         }
 
         public async Task<ProfileModel> LoginAsync(LoginModel loginModel, 
@@ -69,11 +72,12 @@ namespace BiblioIUC.Logics
         {
             if (loginModel == null)
                 throw new ArgumentNullException(nameof(loginModel));
+            var password = GetPassword(null, loginModel.Password);
             var user = await biblioEntities.Users.SingleOrDefaultAsync
             (
                 x =>
                 x.Account.Equals(loginModel.Account, StringComparison.OrdinalIgnoreCase) &&
-                x.Password.Equals(loginModel.Password, StringComparison.Ordinal)
+                x.Password.Equals(password, StringComparison.Ordinal)
             );
             if(user == null)
                 throw new MemberAccessException(Text.Account_or_password_is_incorrect);
@@ -153,12 +157,13 @@ namespace BiblioIUC.Logics
                 {
                     newImageName = currentUser.Image;
                 }
-                profileModel.Password = GetPassword(currentUser.Password, profileModel.Password);
+
+                var newPassword = GetPassword(currentUser.Password, profileModel.Password);
                 User newUser = new User
                 (
                     currentUser.Id,
                     currentUser.Account,
-                    profileModel.Password,
+                    newPassword,
                     currentUser.FullName,
                     currentUser.Role,
                     newImageName,
@@ -223,11 +228,12 @@ namespace BiblioIUC.Logics
                     newImageName = Tools.OssFile.SaveImage(userModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaAbsoluteBasePath); ;
                 }
 
+                var newPassword = GetPassword(null, userModel.Password);
                 User newUser = new User
                 (
                     userModel.Id,
                     userModel.Account,
-                    userModel.Password,
+                    newPassword,
                     userModel.FullName,
                     (short)userModel.Role,
                     newImageName,
@@ -248,7 +254,7 @@ namespace BiblioIUC.Logics
 
 
         public async Task<UserModel> SetAsync(UserModel userModel,
-            string mediaFolderPath, string prefixPhotoProfileName)
+            string mediaFolderPath, string prefixPhotoProfileName, bool forLDAP)
         {
             string newImageName = null;
             var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
@@ -258,7 +264,7 @@ namespace BiblioIUC.Logics
                 if (userModel == null)
                     throw new ArgumentNullException("userModel");
                 bool deleteCurrentImage = false;
-                var currentUser = await biblioEntities.Categories.FindAsync(userModel.Id);
+                var currentUser = await biblioEntities.Users.FindAsync(userModel.Id);
                 if (currentUser == null)
                     throw new KeyNotFoundException("User");
 
@@ -277,11 +283,13 @@ namespace BiblioIUC.Logics
                 {
                     newImageName = currentUser.Image;
                 }
+
+                var newPassword = GetPassword(forLDAP ? null : currentUser.Password, userModel.Password);
                 User newUser = new User
                 (
                     userModel.Id,
                     userModel.Account,
-                    userModel.Password,
+                    newPassword,
                     userModel.FullName,
                     (short)userModel.Role,
                     newImageName,

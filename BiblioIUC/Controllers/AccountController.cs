@@ -77,14 +77,37 @@ namespace BiblioIUC.Controllers
                 try
                 {
                     var ldapUser = authService.Login(pageModel.DataModel.Account, pageModel.DataModel.Password);
+                    UserModel userModel = new UserModel(ldapUser);
+                    
+                    var user = await userLogic.GetAsync(pageModel.DataModel.Account, configuration["MediaFolderPath"]);
+                    
+                    if(user == null)
+                    {
+                        userModel = await userLogic.AddAsync
+                        (
+                            userModel,
+                            configuration["MediaFolderPath"],
+                            configuration["PrefixPhotoProfileName"]
+                        );
+                    }
+                    else
+                    {
+                        //le role et status reste ce qui a été défini dans biblio
+                        userModel.Status = user.Status;
+                        userModel.Role = user.Role;
+                        userModel = await userLogic.SetAsync
+                       (
+                           userModel,
+                           configuration["MediaFolderPath"],
+                           configuration["PrefixPhotoProfileName"]
+                       );
+                    }
+
                     ProfileModel profileModel = new ProfileModel
                     (
-                        ldapUser,
-                        1,
-                        pageModel.DataModel.Password,
-                        null,
-                        configuration["MediaFolderPath"]
+                        userModel
                     );
+
                     userLogic.SignIn
                     (
                         profileModel,
@@ -95,6 +118,7 @@ namespace BiblioIUC.Controllers
                 {
                     if(ex.ResultCode == 49)
                         throw new MemberAccessException(Text.Account_or_password_is_incorrect);
+                    throw ex;
                 }
                 catch(Exception ex)
                 {
@@ -142,8 +166,7 @@ namespace BiblioIUC.Controllers
         public async Task<IActionResult> Profile(LayoutModel layoutModel)
         {
             try
-            {
-                
+            {                
                 var userModel = await userLogic.GetAsync
                 (
                     HttpContext,

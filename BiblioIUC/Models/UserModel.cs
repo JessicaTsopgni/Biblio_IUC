@@ -60,5 +60,12 @@ namespace BiblioIUC.Models
         {
             ImageLink = !string.IsNullOrEmpty(user?.Image) ? $"{imageLinkBaseUrl}/{user.Image}" : null;
         }
+
+
+        public UserModel(UserLDAPModel userLDAPModel)
+            : this(0, userLDAPModel?.Username, userLDAPModel?.Password, userLDAPModel?.FullName,
+                 userLDAPModel != null ? userLDAPModel.Role : RoleOptions.Student, StatusOptions.Actived)
+        {
+        }
     }
 }

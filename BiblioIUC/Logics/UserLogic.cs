@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ namespace BiblioIUC.Logics
 {
     public class UserLogic:IUserLogic
     {
+        public const int DEFAULT_PAGE_INDEX = 1;
+        public const int DEFAULT_PAGE_SIZE = 10;
+
         private readonly BiblioEntities biblioEntities;
         private readonly IWebHostEnvironment env;
 
@@ -122,10 +126,11 @@ namespace BiblioIUC.Logics
         public async Task<ProfileModel> EditProfilAsync(ProfileModel profileModel,
             HttpRequest request, string mediaFolderPath, string prefixPhotoProfileName)
         {
-            string newFileName = null;
+            string newImageName = null;
             var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
             try
             {
+                string oldImageName = null;
                 var currentUser = await biblioEntities.Users.SingleOrDefaultAsync
                 (
                     x => x.Account.Equals(request.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value, StringComparison.OrdinalIgnoreCase)
@@ -134,9 +139,10 @@ namespace BiblioIUC.Logics
                     throw new KeyNotFoundException("Profile");
 
                 bool deleteCurrentImage = false;
+                oldImageName = currentUser.Image;
                 if (Tools.OssFile.HasImage(profileModel.ImageUploaded))
                 {
-                    newFileName = Tools.OssFile.SaveImage(profileModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaAbsoluteBasePath); ;
+                    newImageName = Tools.OssFile.SaveImage(profileModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaAbsoluteBasePath); ;
                     deleteCurrentImage = true;
                 }
                 else if (!string.IsNullOrEmpty(currentUser.Image) && profileModel.DeleteImage)
@@ -145,7 +151,7 @@ namespace BiblioIUC.Logics
                 }
                 else
                 {
-                    newFileName = currentUser.Image;
+                    newImageName = currentUser.Image;
                 }
                 profileModel.Password = GetPassword(currentUser.Password, profileModel.Password);
                 User newUser = new User
@@ -155,7 +161,7 @@ namespace BiblioIUC.Logics
                     profileModel.Password,
                     currentUser.FullName,
                     currentUser.Role,
-                    newFileName,
+                    newImageName,
                     currentUser.Status
                 );
 
@@ -163,15 +169,15 @@ namespace BiblioIUC.Logics
                 await biblioEntities.SaveChangesAsync();
 
                 if (deleteCurrentImage)
-                    Tools.OssFile.DeleteFile(currentUser.Image, mediaAbsoluteBasePath);
+                    Tools.OssFile.DeleteFile(oldImageName, mediaAbsoluteBasePath);
 
                 profileModel = new ProfileModel(newUser, mediaFolderPath);
                 return profileModel;
             }
             catch (Exception ex)
             {
-                if (Tools.OssFile.HasImage(profileModel.ImageUploaded) && !string.IsNullOrEmpty(newFileName))
-                    Tools.OssFile.DeleteFile(newFileName, mediaAbsoluteBasePath);
+                if (Tools.OssFile.HasImage(profileModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
+                    Tools.OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
                 throw ex;
             }
         }
@@ -199,5 +205,137 @@ namespace BiblioIUC.Logics
                 mediaFolderPath
             ) : null;
         }
+
+
+        public async Task<UserModel> AddAsync(UserModel userModel,
+            string mediaFolderPath, string prefixPhotoProfileName)
+        {
+            var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+            string newImageName = null;
+            try
+            {
+                if (userModel == null)
+                    throw new ArgumentNullException("userModel");
+
+
+                if (Tools.OssFile.HasImage(userModel.ImageUploaded))
+                {
+                    newImageName = Tools.OssFile.SaveImage(userModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaAbsoluteBasePath); ;
+                }
+
+                User newUser = new User
+                (
+                    userModel.Id,
+                    userModel.Account,
+                    userModel.Password,
+                    userModel.FullName,
+                    (short)userModel.Role,
+                    newImageName,
+                    (short)userModel.Status
+                );
+
+                biblioEntities.Users.Add(newUser);
+                await biblioEntities.SaveChangesAsync();
+                return new UserModel(newUser, mediaFolderPath);
+            }
+            catch (Exception ex)
+            {
+                if (Tools.OssFile.HasImage(userModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
+                    Tools.OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
+                throw ex;
+            }
+        }
+
+
+        public async Task<UserModel> SetAsync(UserModel userModel,
+            string mediaFolderPath, string prefixPhotoProfileName)
+        {
+            string newImageName = null;
+            var mediaAbsoluteBasePath = Path.Combine(env.WebRootPath, mediaFolderPath?.Replace("~/", string.Empty));
+            try
+            {
+                string oldImageName = null;
+                if (userModel == null)
+                    throw new ArgumentNullException("userModel");
+                bool deleteCurrentImage = false;
+                var currentUser = await biblioEntities.Categories.FindAsync(userModel.Id);
+                if (currentUser == null)
+                    throw new KeyNotFoundException("User");
+
+
+                oldImageName = currentUser.Image;
+                if (Tools.OssFile.HasImage(userModel.ImageUploaded))
+                {
+                    newImageName = Tools.OssFile.SaveImage(userModel.ImageUploaded, 300, 300, 100 * 1024, 200 * 1024, prefixPhotoProfileName, mediaAbsoluteBasePath); ;
+                    deleteCurrentImage = true;
+                }
+                else if (!string.IsNullOrEmpty(currentUser.Image) && userModel.DeleteImage)
+                {
+                    deleteCurrentImage = true;
+                }
+                else
+                {
+                    newImageName = currentUser.Image;
+                }
+                User newUser = new User
+                (
+                    userModel.Id,
+                    userModel.Account,
+                    userModel.Password,
+                    userModel.FullName,
+                    (short)userModel.Role,
+                    newImageName,
+                    (short)userModel.Status
+                );
+
+                biblioEntities.Entry(currentUser).CurrentValues.SetValues(newUser);
+                await biblioEntities.SaveChangesAsync();
+
+                if (deleteCurrentImage)
+                    Tools.OssFile.DeleteFile(oldImageName, mediaAbsoluteBasePath);
+
+                return new UserModel(newUser, mediaFolderPath);
+            }
+            catch (Exception ex)
+            {
+                if (Tools.OssFile.HasImage(userModel.ImageUploaded) && !string.IsNullOrEmpty(newImageName))
+                    Tools.OssFile.DeleteFile(newImageName, mediaAbsoluteBasePath);
+                throw ex;
+            }
+        }
+
+        public async Task<IEnumerable<UserModel>> FindAsync(string value, string mediaFolderPath,
+            Expression<Func<User, object>> orderBy,
+            bool withDisabled = false, int pageIndex = DEFAULT_PAGE_INDEX,
+            int pageSize = DEFAULT_PAGE_SIZE)
+        {
+            value = value?.ToLower() ?? string.Empty;
+            pageIndex = pageIndex < DEFAULT_PAGE_INDEX ? DEFAULT_PAGE_INDEX : pageIndex;
+            pageSize = pageSize < pageIndex ? DEFAULT_PAGE_SIZE : pageSize;
+            var query = biblioEntities.Users
+            .Where(x => true);
+            if (!string.IsNullOrWhiteSpace(value))            
+            {
+                query = query.Where
+                (
+                    x =>
+                    (x.Account.ToLower().Contains(value) || value.Contains(x.Account)) ||
+                    (x.FullName != null && (x.FullName.ToLower().Contains(value) || value.Contains(x.FullName)))
+                );
+            }
+
+            if (!withDisabled)
+                query = query.Where(x => x.Status == (short)StatusOptions.Actived);
+
+            return
+            (
+                await query.OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToArrayAsync()
+            )
+            .Select
+            (
+                x => GetUserModel(x, mediaFolderPath)
+            ).ToArray();
+        }
+
     }
 }

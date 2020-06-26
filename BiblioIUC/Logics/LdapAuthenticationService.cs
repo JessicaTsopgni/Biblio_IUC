@@ -72,6 +72,7 @@ namespace BiblioIUC.Logics
                             user.GetAttribute(_config.MapFullNameAttribute).StringValue,
                             user.GetAttribute(_config.MapDisplayNameAttribute).StringValue,
                             user.GetAttribute(_config.MapUIDAttribute).StringValue,
+                            password,
                             role == RoleOptions.Admin ? RoleOptions.Librarian : role
                         );
 

@@ -10,6 +10,7 @@ namespace BiblioIUC.Models
         public string FullName { get; set; }
         public string DisplayName { get; set; }
         public string Username { get; set; }
+        public string Password { get; set; }
         public RoleOptions Role { get; set; }
 
         public UserLDAPModel()
@@ -17,11 +18,13 @@ namespace BiblioIUC.Models
 
         }
 
-        public UserLDAPModel(string fullName, string displayName, string username, RoleOptions role)
+        public UserLDAPModel(string fullName, string displayName, string username, 
+            string password, RoleOptions role)
         {
             FullName = fullName;
             DisplayName = displayName;
             Username = username;
+            Password = password;
             Role = role;
         }
     }

@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using static BiblioIUC.Logics.LdapAuthenticationService;
+
 namespace BiblioIUC
 {
     public class Startup
@@ -38,11 +40,13 @@ namespace BiblioIUC
             //Authentocation
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(o => o.LoginPath = new PathString("/account/login"));
+            services.Configure<LdapConfig>(Configuration.GetSection("LDAP"));
 
             //Dependencies
             services.AddTransient<IUserLogic, UserLogic>();
             services.AddTransient<ICategoryLogic, CategoryLogic>();
             services.AddTransient<IDocumentLogic, DocumentLogic>();
+            services.AddTransient<ILDAPAuthenticationService, LdapAuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

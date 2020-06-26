@@ -25,7 +25,8 @@ namespace BiblioIUC.Models
 
     public enum RoleOptions
     {
-        Admin = 0,
+        Admin = -1,
+        Librarian = 0,
         Student = 1,
         Teacher = 2
     }

@@ -62,7 +62,7 @@ namespace BiblioIUC.Controllers
                     documentIds: documentIds?.Split(',').Where(x=> int.TryParse(x, out _)).Select(x => int.Parse(x)).ToArray(),
                     value: layoutModel.SearchValue,
                     mediaFolderPath: configuration["MediaFolderPath"],
-                    withDisabled: User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString(),
+                    withDisabled: User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Librarian.ToString(),
                     orderBy: null,
                     orderByDescending: x => x.CreateDate,
                     pageIndex: layoutModel.PageIndex,
@@ -177,7 +177,7 @@ namespace BiblioIUC.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian, Teacher")]
         public async Task<IActionResult> Create(LayoutModel layoutModel)
         {
             try
@@ -215,7 +215,7 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian, Teacher")]
         public async Task<IActionResult> Edit(int? id, LayoutModel layoutModel)
         {
             try
@@ -274,7 +274,7 @@ namespace BiblioIUC.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 1073741824)]
         [RequestSizeLimit(1073741824)]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian, Teacher")]
         public async Task<IActionResult> Edit(PageModel<DocumentModel> pageModel)
         {
             try
@@ -409,7 +409,7 @@ namespace BiblioIUC.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian, Teacher")]
         public async Task<IActionResult> Delete(int? id, string returnUrl = null)
         {
             try

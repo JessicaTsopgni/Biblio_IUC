@@ -25,6 +25,7 @@ namespace BiblioIUC.Controllers
             this.categoryLogic = categoryLogic;
             this.documentLogic = documentLogic;
         }
+
         public async Task<IActionResult> Index()
         {
             var dashboardTopCategoryReadingsLimit = int.Parse(configuration["DashboardTopCategoryReadingsLimit"]);

@@ -45,9 +45,17 @@ namespace BiblioIUC.Models
         {
         }
 
+        public ProfileModel(UserLDAPModel userLDAPModel, int id, string password, string image, string imageLinkBaseUrl)
+            : this(id, userLDAPModel?.Username, password, 
+                  !string.IsNullOrEmpty(userLDAPModel?.FullName) ? userLDAPModel.FullName : userLDAPModel?.DisplayName, 
+                  userLDAPModel != null ? userLDAPModel.Role : RoleOptions.Student,
+                  !string.IsNullOrEmpty(image) ? $"{imageLinkBaseUrl}/{image}" : null)
+        {
+        }
+
         public ProfileModel(UserModel userModel)
            : this(userModel?.Id ?? 0, userModel?.Account, userModel?.Password, userModel?.FullName, 
-                 userModel?.Role ?? RoleOptions.Admin, userModel?.ImageLink)
+                 userModel?.Role ?? RoleOptions.Librarian, userModel?.ImageLink)
         {
         }
     }

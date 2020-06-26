@@ -37,7 +37,7 @@ namespace BiblioIUC.Controllers
                     categoryParentId: CategoryParentId ?? 0,
                     value: layoutModel.SearchValue,
                     mediaFolderPath: configuration["MediaFolderPath"],
-                    withDisabled: User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString(),
+                    withDisabled: User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Librarian.ToString(),
                     orderBy: x => x.Name,
                     pageIndex: layoutModel.PageIndex,
                     pageSize: layoutModel.PageSize
@@ -68,7 +68,7 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian")]
         public async Task<IActionResult> Create(LayoutModel layoutModel)
         {
             try
@@ -97,7 +97,7 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian")]
         public async Task<IActionResult> Edit(int? id, LayoutModel layoutModel)
         {
             try
@@ -141,7 +141,7 @@ namespace BiblioIUC.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian")]
         public async Task<IActionResult> Edit(PageModel<CategoryModel> pageModel)
         {
             try
@@ -206,7 +206,7 @@ namespace BiblioIUC.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Librarian")]
         public async Task<IActionResult> Delete(int? id, string returnUrl = null)
         {
             try

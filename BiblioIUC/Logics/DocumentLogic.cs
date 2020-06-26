@@ -291,7 +291,7 @@ namespace BiblioIUC.Logics
         public async Task<DocumentModel> GetAsync(string code, RoleOptions role, string mediaFolderPath, int userId)
         {
             var query = biblioEntities.Documents.Include(x => x.Category).Where(x => x.Code == code);
-            if (role != RoleOptions.Admin)
+            if (role != RoleOptions.Librarian)
                 query = query.Where(x => x.Status == (short)StatusOptions.Actived);
 
             var document = await query.SingleOrDefaultAsync();

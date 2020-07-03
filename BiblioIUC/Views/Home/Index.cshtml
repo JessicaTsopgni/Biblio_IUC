@@ -183,39 +183,90 @@
                         </div>
                     </div>
                 }
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-info text-white shadow">
-                        <div class="card-body">
-                            Info
-                            <div class="text-white-50 small">#36b9cc</div>
+                @if (Model.DataModel.TopDocumentReadings.Count() > 2)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-info text-white shadow">
+                            <div class="card-body">
+                                <div class="truncate">
+                                    <a class="text-white"
+                                       asp-action="Index"
+                                       asp-controller="Document"
+                                       asp-route-documentIds="@Model.DataModel.TopDocumentReadings.ElementAt(2).Id"
+                                       title="@Model.DataModel.TopDocumentReadings.ElementAt(2).Title">
+                                        @Model.DataModel.TopDocumentReadings.ElementAt(2).Title
+                                    </a>
+                                </div>
+                                <div class="text-white-50 small">
+                                    <i class="fas fa-eye"></i> @Model.DataModel.TopDocumentReadings.ElementAt(2).ReadCount
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-warning text-white shadow">
-                        <div class="card-body">
-                            Warning
-                            <div class="text-white-50 small">#f6c23e</div>
+                }
+                @if (Model.DataModel.TopDocumentReadings.Count() > 3)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-warning text-white shadow">
+                            <div class="card-body">
+                                <div class="truncate">
+                                    <a class="text-white"
+                                       asp-action="Index"
+                                       asp-controller="Document"
+                                       asp-route-documentIds="@Model.DataModel.TopDocumentReadings.ElementAt(3).Id"
+                                       title="@Model.DataModel.TopDocumentReadings.ElementAt(3).Title">
+                                        @Model.DataModel.TopDocumentReadings.ElementAt(3).Title
+                                    </a>
+                                </div>
+                                <div class="text-white-50 small">
+                                    <i class="fas fa-eye"></i> @Model.DataModel.TopDocumentReadings.ElementAt(3).ReadCount
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-danger text-white shadow">
-                        <div class="card-body">
-                            Danger
-                            <div class="text-white-50 small">#e74a3b</div>
+                }
+                @if (Model.DataModel.TopDocumentReadings.Count() > 4)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-danger text-white shadow">
+                            <div class="card-body">
+                                <div class="truncate">
+                                    <a class="text-white"
+                                       asp-action="Index"
+                                       asp-controller="Document"
+                                       asp-route-documentIds="@Model.DataModel.TopDocumentReadings.ElementAt(4).Id"
+                                       title="@Model.DataModel.TopDocumentReadings.ElementAt(4).Title">
+                                        @Model.DataModel.TopDocumentReadings.ElementAt(4).Title
+                                    </a>
+                                </div>
+                                <div class="text-white-50 small">
+                                    <i class="fas fa-eye"></i> @Model.DataModel.TopDocumentReadings.ElementAt(4).ReadCount
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-secondary text-white shadow">
-                        <div class="card-body">
-                            Secondary
-                            <div class="text-white-50 small">#858796</div>
+                }
+                @if (Model.DataModel.TopDocumentReadings.Count() > 5)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-secondary text-white shadow">
+                            <div class="card-body">
+                                <div class="truncate">
+                                    <a class="text-white"
+                                       asp-action="Index"
+                                       asp-controller="Document"
+                                       asp-route-documentIds="@Model.DataModel.TopDocumentReadings.ElementAt(5).Id"
+                                       title="@Model.DataModel.TopDocumentReadings.ElementAt(5).Title">
+                                        @Model.DataModel.TopDocumentReadings.ElementAt(5).Title
+                                    </a>
+                                </div>
+                                <div class="text-white-50 small">
+                                    <i class="fas fa-eye"></i> @Model.DataModel.TopDocumentReadings.ElementAt(5).ReadCount
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                }
             }
         </div>
 
@@ -232,8 +283,8 @@
                 <div class="text-center">
                     <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="img/undraw_posting_photo.svg" alt="">
                 </div>
-                <p>Add some quality, svg illustrations to your project courtesy of <a target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a constantly updated collection of beautiful svg images that you can use completely free and without attribution!</p>
-                <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on unDraw &rarr;</a>
+                <p>Add some quality, svg illustrations to your project courtesy of <a target="_blank" rel="nofollow" href="http://myiuc.com/">unDraw</a>, a constantly updated collection of beautiful svg images that you can use completely free and without attribution!</p>
+                <a target="_blank" rel="nofollow" href="http://myiuc.com/">Browse Illustrations on unDraw &rarr;</a>
             </div>
         </div>
 

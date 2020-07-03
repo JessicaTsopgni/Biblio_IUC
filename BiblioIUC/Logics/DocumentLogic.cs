@@ -431,6 +431,11 @@ namespace BiblioIUC.Logics
                 Text.Nov,
                 Text.Dec
             };
+            var data = new Dictionary<string, long>();
+            for (int i = 0; i < DateTime.UtcNow.Month; i++)
+            {
+                data.Add(month[i], 0);
+            }
 
             var query =  biblioEntities.UserDocuments.Where
             (
@@ -445,11 +450,18 @@ namespace BiblioIUC.Logics
                 x => new { Month = x.Key.Month, Count = x.LongCount() }
             );
 
-            return await query.ToDictionaryAsync
+            var data2 = await query.ToDictionaryAsync
             (
                 x => month[x.Month - 1],
                 x => x.Count
             );
+
+            foreach(var d in data2)
+            {
+                data[d.Key] = d.Value; 
+            }            
+
+            return data;
         }
 
 

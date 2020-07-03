@@ -345,5 +345,21 @@ namespace BiblioIUC.Logics
             ).ToArray();
         }
 
+        public async Task RemoveAsync(int id, string mediaFolderPath)
+        {
+            var user = await biblioEntities.Users.FindAsync(id);
+            if (user != null)
+            {
+                biblioEntities.Users.Remove(user);
+                await biblioEntities.SaveChangesAsync();
+                if (!string.IsNullOrEmpty(user.Image))
+                {
+                    var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+                    Tools.OssFile.DeleteFile(user.Image, mediaBasePath);
+                }
+            }
+        }
+
+
     }
 }

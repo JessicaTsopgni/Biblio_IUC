@@ -2,6 +2,7 @@
 using BiblioIUC.Localize;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,18 +11,18 @@ using System.Threading.Tasks;
 
 namespace BiblioIUC.Models
 {
-    public class UserModel:BaseModel
+    public class UserModel : BaseModel
     {
 
         [Display(Name = "Account", ResourceType = typeof(Text))]
-        [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
-        [MaxLength(50, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
+        //[Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
+        //[MaxLength(50, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         [Remote("AccountExists", "Account", AdditionalFields = "Id", ErrorMessageResourceName = "x_already_existant", ErrorMessageResourceType = typeof(Text))]
         public string Account { get; set; }
 
-        [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
-        [MinLength(8, ErrorMessageResourceName = "The_field_x_must_have_at_least_y_characters", ErrorMessageResourceType = typeof(Text))]
-        [MaxLength(50, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
+        //[Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
+        //[MinLength(8, ErrorMessageResourceName = "The_field_x_must_have_at_least_y_characters", ErrorMessageResourceType = typeof(Text))]
+        //[MaxLength(50, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         [Display(Name = "Password", ResourceType = typeof(Text))]
         public string Password { get; set; }
 
@@ -30,11 +31,19 @@ namespace BiblioIUC.Models
         public string ConfirmPassword { get; set; }
 
         [Display(Name = "Your_full_name", ResourceType = typeof(Text))]
-        [MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
-        [Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
+        //[MaxLength(100, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
+        //[Required(ErrorMessageResourceName = "The_fields_x_is_required", ErrorMessageResourceType = typeof(Text))]
         public string FullName { get; set; }
 
         public RoleOptions Role { get; set; }
+
+        public IEnumerable<SelectListItem> Roles =>
+            Enum.GetValues(typeof(RoleOptions)).Cast<RoleOptions>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString(),
+                Selected = Role.ToString() == v.ToString()
+            }).ToList();
 
         public UserModel():base()
         {
@@ -45,13 +54,18 @@ namespace BiblioIUC.Models
 
         }
         private UserModel(int id, string account, string password, string fullName, 
-            RoleOptions role, StatusOptions status) :this(0, status)
+            RoleOptions role, StatusOptions status) :this(id, status)
         {
-            Id = id;
+            Init(account, password, password, fullName);
+            Role = role;
+        }
+
+        private void Init(string account, string password, string confirmPassword, string fullName)
+        {
             Account = account;
             Password = password;
+            ConfirmPassword = confirmPassword;
             FullName = fullName;
-            Role = role;
         }
 
         public UserModel(User user, string imageLinkBaseUrl)
@@ -66,6 +80,17 @@ namespace BiblioIUC.Models
             : this(0, userLDAPModel?.Username, userLDAPModel?.Password, userLDAPModel?.FullName,
                  userLDAPModel != null ? userLDAPModel.Role : RoleOptions.Student, StatusOptions.Actived)
         {
+        }
+
+        internal void Copy(UserModel userModel)
+        {
+            Init
+            (
+                userModel?.Account,
+                userModel?.Password,
+                userModel?.ConfirmPassword,
+                userModel?.FullName
+            );
         }
     }
 }

@@ -61,6 +61,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A propos de {0}.
+        /// </summary>
+        public static string About_x {
+            get {
+                return ResourceManager.GetString("About_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compte.
         /// </summary>
         public static string Account {
@@ -646,6 +655,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comment lire un document ?.
+        /// </summary>
+        public static string How_to_read_a_document {
+            get {
+                return ResourceManager.GetString("How_to_read_a_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image illustrative.
         /// </summary>
         public static string Illustrative_image {
@@ -903,6 +921,15 @@ namespace BiblioIUC.Localize {
         public static string Read {
             get {
                 return ResourceManager.GetString("Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lire un livre.
+        /// </summary>
+        public static string Read_a_book {
+            get {
+                return ResourceManager.GetString("Read_a_book", resourceCulture);
             }
         }
         

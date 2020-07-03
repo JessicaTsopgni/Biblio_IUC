@@ -6,10 +6,11 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     
     <h1 class="h3 mb-0 text-gray-800">
-        <a href="@Model.ReturnUrl" class="text-gray-800">
+        <a href="@Model.ReturnUrl" class="text-gray-800" style="text-decoration:none">
             <i class="fas fa-chevron-circle-left"></i>
         </a>
-        @ViewBag.Title</h1>
+        @ViewBag.Title
+    </h1>
 </div>
 
 <form id="formEdit" method="post" asp-action="Edit" asp-controller="Document" enctype="multipart/form-data">

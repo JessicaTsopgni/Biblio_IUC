@@ -22,5 +22,6 @@ namespace BiblioIUC.Logics.Interfaces
         Task<UserModel> SetAsync(UserModel userModel, string mediaFolderPath, string prefixPhotoProfileName, bool forLDAP);
         Task<UserModel> AddAsync(UserModel userModel, string mediaFolderPath, string prefixPhotoProfileName);
         Task<IEnumerable<UserModel>> FindAsync(string value, string mediaFolderPath, Expression<Func<User, object>> orderBy, bool withDisabled = false, int pageIndex = 1, int pageSize = 10);
+        Task RemoveAsync(int id, string mediaFolderPath);
     }
 }

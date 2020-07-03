@@ -5,10 +5,11 @@
 <!--Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
-         <a href="@Model.ReturnUrl" class="btn btn-secondary">
-                <i class="fas fa-chevron-circle-left"></i>
-            </a>
-            @ViewBag.Title</h1>
+         <a href="@Model.ReturnUrl" class="btn btn-secondary" style="text-decoration:none">
+            <i class="fas fa-chevron-circle-left"></i>
+         </a>
+         @ViewBag.Title
+    </h1>
 </div>
 
 <form id="formEdit" method="post" asp-action="Edit" asp-controller="Category" enctype="multipart/form-data">

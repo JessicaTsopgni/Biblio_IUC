@@ -1,0 +1,91 @@
+﻿@model PageListModel<UserModel>
+@{
+    if (string.IsNullOrEmpty(Model?.SearchValue))
+    {
+        ViewBag.Title = Text.The_users; 
+    }
+    else
+    {
+        ViewBag.Title = string.Format(Text.Search_user_results_of_x, Model?.SearchValue);
+    }
+}
+
+<!--Page Heading -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <a asp-action="Index" asp-controller="User" asp-route-Id="@null" class=" text-gray-800">
+            <i class="fas fa-user"></i> @ViewBag.Title
+        </a>
+    </h1>
+    @*<a href="javascript:;" onclick="goto('@Url.Action("Create", "User")')" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> @Text.Create_a_user</a>
+    <a href="javascript:;" onclick="goto('@Url.Action("Create", "User")')" class="d-block d-sm-none btn btn-success btn-circle shadow-sm">
+        <i class="fas fa-plus"></i>
+    </a>*@
+</div>
+<div class="row" id="data_loaded">
+    @if (Model != null && Model.DataModels != null && Model.DataModels.Count() > 0)
+    {
+        <partial name="_IndexPartial" model="Model.DataModels" />
+    }
+    else
+    {
+        <div class="col-md-12 mx-auto text-center">
+            <i class="fas fa-info-circle"></i> <i>@Text.User_not_found</i>
+        </div>
+    }
+</div>
+<div class="row d-none" id="loader">
+    <div class="col-md-12 mx-auto text-center">
+        <div class="spinner-border text-success" role="status">
+            <span class="sr-only">@Text.Loading</span>
+        </div>
+    </div>
+</div>
+<partial name="_Modal" />
+@section scripts{
+    <script>
+        var pageIndex = 1;
+        var scrollLoad = true;
+        $(window).scroll(function () {
+            if (scrollLoad && ($(document).height() - $(this).height() - 100) < $(this).scrollTop()) {
+                scrollLoad = false;
+                loadData();
+            }
+        });
+
+        function hasScroll() {
+            return $(document).height() > $(window).height();
+        }
+
+        function loadData() {
+            pageIndex++;
+            $.ajax({
+                type: 'GET',
+                url: @Html.Raw(ViewBag.InfiniteScrollUrl.ToString().Contains("?") ? "'" + ViewBag.InfiniteScrollUrl + "&PageIndex=' + pageIndex" : "'" + ViewBag.InfiniteScrollUrl + "?PageIndex=' + pageIndex"),
+                beforeSend: function () {
+                    $('#loader').removeClass('d-none');
+                },
+                success: function (msg) {
+                    scrollLoad = false;
+                    if (msg) {
+                        $("#data_loaded").append(msg);
+                        if (!hasScroll())
+                            loadData();
+                        scrollLoad = true;
+                    }
+                },
+                error: function (req, status, error) {
+                    $("#data_loaded").append(
+                        '<div class="col-md-12 mx-auto text-center text-danger"><i class="fas fa-exclamation-circle"></i> @Text.An_error_occured</div>'
+                    );
+                },
+                    complete: function () {
+                        $('#loader').addClass('d-none');
+                }
+            });
+        }
+
+        loadData();
+
+    </script>   
+}

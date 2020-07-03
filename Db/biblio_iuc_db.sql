@@ -3,14 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  lun. 22 juin 2020 à 07:47
+-- Généré le :  ven. 03 juil. 2020 à 11:27
 -- Version du serveur :  5.7.23
 -- Version de PHP :  7.2.10
 
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -158,9 +156,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `account`, `password`, `full_name`, `role`, `image`, `status`) VALUES
-(1, 'admin', 'admin12345', 'Administrator', 0, 'pp_3bcd4182-b72a-49eb-a6c1-b48beeb3f6bd.png', 1),
+(1, 'admin', '06D1108043AD13AEBDCA098C7E6BFE64', 'Administrator', -1, 'pp_3bcd4182-b72a-49eb-a6c1-b48beeb3f6bd.png', 0),
 (2, 'etudiant', '123456789', 'Toto jean de Dieu', 1, NULL, 1),
-(3, 'enseignant', '123456789', 'Kankan Michel', 2, NULL, 1),
+(3, 'enseignant', '123456789', 'Kankan Michel', 2, '8ac57df7-0ece-4265-9571-63c965838a9e.jpg', 1),
 (4, 'jessica', '74C76450B58BA4E34F9F7054F4FD653E', 'Jessica Audrey Angèle TSOPGNI', 0, 'pp_a4c300bf-b1a4-4144-9cd1-211014d174c0.png', 1);
 
 -- --------------------------------------------------------
@@ -218,7 +216,6 @@ ALTER TABLE `user_document`
   ADD CONSTRAINT `fk_user_document_document` FOREIGN KEY (`document_id`) REFERENCES `document` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_user_document_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 SET FOREIGN_KEY_CHECKS=1;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -259,6 +259,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Créer un utilisateur.
+        /// </summary>
+        public static string Create_a_user {
+            get {
+                return ResourceManager.GetString("Create_a_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Critique.
         /// </summary>
         public static string Danger {
@@ -543,6 +552,15 @@ namespace BiblioIUC.Localize {
         public static string Edit_a_document {
             get {
                 return ResourceManager.GetString("Edit_a_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editer un utilisateur.
+        /// </summary>
+        public static string Edit_a_user {
+            get {
+                return ResourceManager.GetString("Edit_a_user", resourceCulture);
             }
         }
         
@@ -1006,6 +1024,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Résultat de la recherche de l&apos;utilisateur {0}.
+        /// </summary>
+        public static string Search_user_results_of_x {
+            get {
+                return ResourceManager.GetString("Search_user_results_of_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rechercher une catégorie....
         /// </summary>
         public static string Searh_a_category {
@@ -1020,6 +1047,15 @@ namespace BiblioIUC.Localize {
         public static string Searh_a_document {
             get {
                 return ResourceManager.GetString("Searh_a_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rechercher un utilisateur....
+        /// </summary>
+        public static string Searh_a_user {
+            get {
+                return ResourceManager.GetString("Searh_a_user", resourceCulture);
             }
         }
         
@@ -1168,6 +1204,24 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Les utilisateurs.
+        /// </summary>
+        public static string The_users {
+            get {
+                return ResourceManager.GetString("The_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ce compte a été désactivé !.
+        /// </summary>
+        public static string This_account_has_been_disabled {
+            get {
+                return ResourceManager.GetString("This_account_has_been_disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Titre.
         /// </summary>
         public static string Title {
@@ -1200,6 +1254,15 @@ namespace BiblioIUC.Localize {
         public static string Upload_the_document {
             get {
                 return ResourceManager.GetString("Upload_the_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aucun utilisateur trouvé !.
+        /// </summary>
+        public static string User_not_found {
+            get {
+                return ResourceManager.GetString("User_not_found", resourceCulture);
             }
         }
         

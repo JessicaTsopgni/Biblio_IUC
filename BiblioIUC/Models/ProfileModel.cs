@@ -13,8 +13,8 @@ namespace BiblioIUC.Models
     {
         public string Account { get; }
 
-        [MinLength(8, ErrorMessageResourceName = "The_field_x_must_have_at_least_y_characters", ErrorMessageResourceType = typeof(Text))]
-        [MaxLength(50, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
+        //[MinLength(8, ErrorMessageResourceName = "The_field_x_must_have_at_least_y_characters", ErrorMessageResourceType = typeof(Text))]
+        //[MaxLength(50, ErrorMessageResourceName = "The_field_x_must_have_most_y_characters", ErrorMessageResourceType = typeof(Text))]
         [Display(Name = "Your_password", ResourceType = typeof(Text))]
         public string Password { get; set; }
 

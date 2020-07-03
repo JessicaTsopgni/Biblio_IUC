@@ -1,0 +1,69 @@
+﻿@model IEnumerable<UserModel>
+@{
+    List<string> colors = new List<string>{ "success", "danger", "primary", "warning", "info" };
+    Random randNum = new Random();
+    colors = colors.OrderBy(i => randNum.Next()).ToList();
+    colors.Add("dark");
+    int j = 0;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var user in Model)
+    {
+        if (j >= colors.Count - 1)
+        {
+            j = 0;
+        }
+        if(!user.State)
+        {
+            j = colors.Count - 1;
+        }
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-bottom-@colors[j] shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-12 text-center">
+                            @if (!string.IsNullOrEmpty(user.ImageLink))
+                            {
+                                <img src="@Url.Content(user.ImageLink)" class="rounded-circle" style="width:100px" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-user text-gray-300" style="font-size:600%"></i>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer border-@colors[j]" style="background-color:transparent">
+                    <div class="row">
+                        <div class="col-10 text-@colors[j] truncate" title="@user.FullName">                           
+                            <a href="javascript:;" onclick="goto('@Url.Action("Edit", "User")', {'Id':'@user.Id', 'ReturnUrl': '@ViewBag.Url'})" class="text-@colors[j]">
+                                @user.FullName
+                            </a>                           
+                        </div>
+                        <div class="col-2 text-danger">
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink@(user.Id)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink@(user.Id)">
+                                    <a class="dropdown-item text-primary" href="javascript:;" onclick="goto('@Url.Action("Edit", "User")', {'Id':'@user.Id', 'ReturnUrl': '@ViewBag.Url'})">
+                                        <i class="fas fa-edit"></i> @Text.Edit
+                                    </a>
+                                    @if (User.FindFirst(ClaimTypes.NameIdentifier).Value != user.Account)
+                                    {
+                                        <a class="dropdown-item text-danger" href="javascript:;" onclick="init_model('@Text.Warning', '@HttpUtility.JavaScriptStringEncode(string.Format(Text.Do_you_really_want_to_delete_x, "[ " +user.FullName+" ]"))', 'bg-warning', 'text-dark',
+                                            '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "User", new { Id = user.Id, ReturnUrl = ViewBag.Url })')">
+                                            <i class="fas fa-trash"></i> &nbsp;@Text.Delete
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        j++;
+    }
+}

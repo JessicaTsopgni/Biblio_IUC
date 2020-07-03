@@ -73,6 +73,9 @@ namespace BiblioIUC.Controllers
                 try
                 {
                     var ldapUser = authService.Login(pageModel.DataModel.Account, pageModel.DataModel.Password);
+                    if(ldapUser == null)
+                        throw new MemberAccessException(Text.Account_or_password_is_incorrect);
+
                     UserModel userModel = new UserModel(ldapUser);
                     
                     var user = await userLogic.GetAsync(pageModel.DataModel.Account, configuration["MediaFolderPath"]);
@@ -88,7 +91,11 @@ namespace BiblioIUC.Controllers
                     }
                     else
                     {
-                        //le role et status reste ce qui a été défini dans biblio
+                        if(user.Status != StatusOptions.Actived)
+                        {
+                            throw new UnauthorizedAccessException(Text.This_account_has_been_disabled);
+                        }
+                        //le role et le status reste ce qui a été défini dans biblio
                         userModel.Id = user.Id;
                         userModel.Status = user.Status;
                         userModel.Role = user.Role;
@@ -118,7 +125,11 @@ namespace BiblioIUC.Controllers
                         throw new MemberAccessException(Text.Account_or_password_is_incorrect);
                     throw ex;
                 }
-                catch(Exception ex)
+                catch (UnauthorizedAccessException ex)
+                {
+                     throw ex;
+                }
+                catch (Exception ex)
                 {
                     loggerFactory.CreateLogger(ex.GetType()).LogError($"{ex}\n\n");
                     var profileModel = await userLogic.LoginAsync
@@ -133,6 +144,11 @@ namespace BiblioIUC.Controllers
                 return RedirectToAction("Index", "Home");
             }
             catch (MemberAccessException ex)
+            {
+                TempData["MessageType"] = MessageOptions.Warning;
+                TempData["Message"] = ex.Message;
+            }
+            catch (UnauthorizedAccessException ex)
             {
                 TempData["MessageType"] = MessageOptions.Warning;
                 TempData["Message"] = ex.Message;
@@ -176,6 +192,7 @@ namespace BiblioIUC.Controllers
                     profileModel,
                     layoutModel
                 );
+                ViewBag.Account = pageModel.DataModel.Account;
                 return View(pageModel);
             }
             catch (Exception ex)

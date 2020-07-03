@@ -16,47 +16,45 @@ using Microsoft.Extensions.Logging;
 
 namespace BiblioIUC.Controllers
 {
-    [Authorize]
-    public class CategoryController : BaseController
+    [Authorize(Roles = "Admin, Librarian")]
+    public class UserController : BaseController
     {
-        private readonly ICategoryLogic categoryLogic;
+        private readonly IUserLogic userLogic;
 
-        public CategoryController(ICategoryLogic categoryLogic, 
+        public UserController(IUserLogic userLogic, 
             IConfiguration configuration, ILoggerFactory loggerFactory):base(configuration, loggerFactory)
         {
-            this.categoryLogic = categoryLogic;
+            this.userLogic = userLogic;
         }
 
-        public async Task<IActionResult> Index(int? id, int? CategoryParentId, LayoutModel layoutModel)
+        public async Task<IActionResult> Index(int? id, int? UserParentId, LayoutModel layoutModel)
         {
             try
             {
-                var categoryModels = await categoryLogic.FindAsync
-                (
-                    id: id ?? 0,
-                    categoryParentId: CategoryParentId ?? 0,
+                var userModels = await userLogic.FindAsync
+                (                   
                     value: layoutModel.SearchValue,
                     mediaFolderPath: configuration["MediaFolderPath"],
                     withDisabled: User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Librarian.ToString(),
-                    orderBy: x => x.Name,
+                    orderBy: x => x.FullName,
                     pageIndex: layoutModel.PageIndex,
                     pageSize: layoutModel.PageSize
                 );
 
-                var pageListModel = new PageListModel<CategoryModel>
+                var pageListModel = new PageListModel<UserModel>
                 (
-                    categoryModels,
+                    userModels,
                     layoutModel.ReturnUrl ?? currentUrl,
                     layoutModel.SearchValue,
                     layoutModel.PageIndex,
                     layoutModel.PageSize,
-                    Text.Searh_a_category,
+                    Text.Searh_a_user,
                     "Index",
-                    "Category"
+                    "User"
                 );
 
                 if (IsAjax)
-                    return PartialView("_IndexPartial", categoryModels);
+                    return PartialView("_IndexPartial", userModels);
                 return View(pageListModel);
             }
             catch (Exception ex)
@@ -68,20 +66,22 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> Create(LayoutModel layoutModel)
+        public IActionResult Create(LayoutModel layoutModel)
         {
             try
             {
-                CategoryModel categoryModel = new CategoryModel
+                UserModel userModel = new UserModel
                 (
-                    await categoryLogic.NoDocumentAsync(configuration["MediaFolderPath"]),
-                    null,
-                    StatusOptions.Actived
+                    new User
+                    {
+                        Status = (short)StatusOptions.Actived,
+                        Role = (short)RoleOptions.Student
+                    },
+                    configuration["MediaFolderPath"]
                 );
-                var pageModel = new PageModel<CategoryModel>
+                var pageModel = new PageModel<UserModel>
                 (
-                    categoryModel,
+                    userModel,
                     layoutModel
                 );
                 return View("Edit", pageModel);
@@ -97,33 +97,27 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "Librarian")]
         public async Task<IActionResult> Edit(int? id, LayoutModel layoutModel)
         {
             try
             {
-                var categoryModel = await categoryLogic.GetAsync
+                var userModel = await userLogic.GetAsync
                 (
                     id ?? 0,
                     configuration["MediaFolderPath"]
                 );
-                if (categoryModel == null)
+                if (userModel == null)
                 {
                     TempData["MessageType"] = MessageOptions.Warning;
-                    TempData["Message"] = Text.Category_not_found;
+                    TempData["Message"] = Text.User_not_found;
                     if (!string.IsNullOrEmpty(layoutModel.ReturnUrl))
                         return Redirect(layoutModel.ReturnUrl);
                 }
                 else
-                {
-                    categoryModel.SetCategoryParentModels
+                {                    
+                    var pageModel = new PageModel<UserModel>
                     (
-                        await categoryLogic.NoDocumentAsync(configuration["MediaFolderPath"]),
-                        categoryModel.CategoryParentId
-                    );
-                    var pageModel = new PageModel<CategoryModel>
-                    (
-                        categoryModel,
+                        userModel,
                         layoutModel
                     );
                     return View(pageModel);
@@ -141,45 +135,52 @@ namespace BiblioIUC.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Librarian")]
-        public async Task<IActionResult> Edit(PageModel<CategoryModel> pageModel)
+        public async Task<IActionResult> Edit(PageModel<UserModel> pageModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    CategoryModel newCategoryModel = null;
+                    UserModel newUserModel = null;
 
                     TempData["MessageType"] = MessageOptions.Success;
                     TempData["Message"] = Text.Save_done;
 
                     if (pageModel.DataModel.Id == 0)
                     {
-                        newCategoryModel = await categoryLogic.AddAsync
+                        newUserModel = await userLogic.AddAsync
                         (
                             pageModel.DataModel,
                             configuration["MediaFolderPath"],
-                            configuration["PrefixCategoryImageName"]
+                            configuration["PrefixUserImageName"]
                         );
-                        return RedirectToAction("Create", new { pageModel.ReturnUrl });
+                        return RedirectToAction("Index", new { pageModel.ReturnUrl });
                     }
                     else
                     {
-                        newCategoryModel = await categoryLogic.SetAsync
+                        var userModel = await userLogic.GetAsync
+                        (
+                            pageModel.DataModel.Id,
+                            configuration["MediaFolderPath"]
+                        );
+                        if (userModel == null)
+                        {
+                            TempData["MessageType"] = MessageOptions.Warning;
+                            TempData["Message"] = Text.User_not_found;
+                            return RedirectToAction("Index", new { pageModel.ReturnUrl });
+                        }
+                        pageModel.DataModel.Copy(userModel);
+                        newUserModel = await userLogic.SetAsync
                         (
                             pageModel.DataModel,
                             configuration["MediaFolderPath"],
-                            configuration["PrefixCategoryImageName"]
+                            configuration["PrefixUserImageName"],
+                            false
                         );
                     }
                 }
                 else
                 {
-                    pageModel.DataModel.SetCategoryParentModels
-                    (
-                        await categoryLogic.NoDocumentAsync(configuration["MediaFolderPath"]),
-                        pageModel.DataModel.CategoryParentId
-                    );
                     TempData["MessageType"] = MessageOptions.Warning;
                     TempData["Message"] = "<ul>";
                     foreach (var v in ModelState.Values)
@@ -206,12 +207,11 @@ namespace BiblioIUC.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Librarian")]
         public async Task<IActionResult> Delete(int? id, string returnUrl = null)
         {
             try
             {
-                await categoryLogic.RemoveAsync
+                await userLogic.RemoveAsync
                 (
                     id ?? 0,
                     configuration["MediaFolderPath"]
@@ -232,9 +232,9 @@ namespace BiblioIUC.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<JsonResult> NameExists(PageModel<CategoryModel> pageModel)
+        public async Task<JsonResult> AccountExists(PageModel<UserModel> pageModel)
         {
-            bool b = await categoryLogic.NameAlreadyExistsAsync(pageModel.DataModel.Name, pageModel.DataModel.Id);
+            bool b = await userLogic.AccountAlreadyExistsAsync(pageModel.DataModel.Account, pageModel.DataModel.Id);
             return new JsonResult(!b);
         }
     }

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About_x" xml:space="preserve">
+    <value>A propos de {0}</value>
+  </data>
   <data name="Account" xml:space="preserve">
     <value>Compte</value>
   </data>
@@ -312,6 +315,9 @@
   <data name="Generate" xml:space="preserve">
     <value>Générer</value>
   </data>
+  <data name="How_to_read_a_document" xml:space="preserve">
+    <value>Comment lire un document ?</value>
+  </data>
   <data name="Illustrative_image" xml:space="preserve">
     <value>Image illustrative</value>
   </data>
@@ -407,6 +413,9 @@
   </data>
   <data name="Readings_overview" xml:space="preserve">
     <value>Aperçu des lectures</value>
+  </data>
+  <data name="Read_a_book" xml:space="preserve">
+    <value>Lire un livre</value>
   </data>
   <data name="Repeat_password" xml:space="preserve">
     <value>Répéter le mot de passe</value>

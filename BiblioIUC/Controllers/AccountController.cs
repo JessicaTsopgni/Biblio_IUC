@@ -22,13 +22,15 @@ namespace BiblioIUC.Controllers
     public class AccountController : BaseController
     {
         private readonly IUserLogic userLogic;
+        private readonly ISuggestionLogic suggestionLogic;
         private readonly ILDAPAuthenticationService authService;
 
-        public AccountController(IUserLogic userLogic, 
+        public AccountController(IUserLogic userLogic, ISuggestionLogic suggestionLogic,
             IConfiguration configuration, ILoggerFactory loggerFactory,
             ILDAPAuthenticationService lDAPAuthenticationService) :base(configuration, loggerFactory)
         {
             this.userLogic = userLogic;
+            this.suggestionLogic = suggestionLogic;
             authService = lDAPAuthenticationService;
         }
 
@@ -44,7 +46,7 @@ namespace BiblioIUC.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Login(LayoutModel layoutModel)
+        public async Task<IActionResult> Login(LayoutModel layoutModel)
         {
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
@@ -54,6 +56,7 @@ namespace BiblioIUC.Controllers
                 "jessica",
                 "Jessica@2020"
             );
+            await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
             var pageModel = new PageModel<LoginModel>
             (
                 loginModel,
@@ -187,6 +190,7 @@ namespace BiblioIUC.Controllers
                     configuration["MediaFolderPath"]
                 );
                 var profileModel = new ProfileModel(userModel);
+                await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                 var pageModel = new PageModel<ProfileModel>
                 (
                     profileModel,

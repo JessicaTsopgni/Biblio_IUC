@@ -14,6 +14,7 @@ namespace BiblioIUC.Models
         public int Id { get; set; }
 
         public string ImageLink { get; set; }
+        public string ImageName { get; set; }
 
         [JsonIgnore]
         public IFormFile ImageUploaded { get; set; }

@@ -53,23 +53,24 @@ namespace BiblioIUC.Models
         {
 
         }
-        private UserModel(int id, string account, string password, string fullName, 
+        private UserModel(int id, string account, string password, string fullName, string imageName, 
             RoleOptions role, StatusOptions status) :this(id, status)
         {
-            Init(account, password, password, fullName);
+            Init(account, password, password, fullName, imageName);
             Role = role;
         }
 
-        private void Init(string account, string password, string confirmPassword, string fullName)
+        private void Init(string account, string password, string confirmPassword, string fullName, string imageName)
         {
             Account = account;
             Password = password;
             ConfirmPassword = confirmPassword;
             FullName = fullName;
+            ImageName = imageName;
         }
 
         public UserModel(User user, string imageLinkBaseUrl)
-            : this(user?.Id ?? 0, user?.Account, user?.Password, user?.FullName,
+            : this(user?.Id ?? 0, user?.Account, user?.Password, user?.FullName, user?.Image,
                   (RoleOptions)(user?.Role ?? 0), (StatusOptions)(user?.Status ?? 0))
         {
             ImageLink = !string.IsNullOrEmpty(user?.Image) ? $"{imageLinkBaseUrl}/{user.Image}" : null;
@@ -77,7 +78,7 @@ namespace BiblioIUC.Models
 
 
         public UserModel(UserLDAPModel userLDAPModel)
-            : this(0, userLDAPModel?.Username, userLDAPModel?.Password, userLDAPModel?.FullName,
+            : this(0, userLDAPModel?.Username, userLDAPModel?.Password, userLDAPModel?.FullName, null,
                  userLDAPModel != null ? userLDAPModel.Role : RoleOptions.Student, StatusOptions.Actived)
         {
         }
@@ -89,7 +90,8 @@ namespace BiblioIUC.Models
                 userModel?.Account,
                 userModel?.Password,
                 userModel?.ConfirmPassword,
-                userModel?.FullName
+                userModel?.FullName,
+                userModel?.ImageName
             );
         }
     }

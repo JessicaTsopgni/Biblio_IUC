@@ -18,12 +18,14 @@ namespace BiblioIUC.Controllers
     {
         private readonly ICategoryLogic categoryLogic;
         private readonly IDocumentLogic documentLogic;
+        private readonly ISuggestionLogic suggestionLogic;
 
         public HomeController(IConfiguration configuration, ILoggerFactory loggerFactory,
-            ICategoryLogic categoryLogic, IDocumentLogic documentLogic) : base(configuration, loggerFactory)
+            ICategoryLogic categoryLogic, IDocumentLogic documentLogic, ISuggestionLogic suggestionLogic) : base(configuration, loggerFactory)
         {
             this.categoryLogic = categoryLogic;
             this.documentLogic = documentLogic;
+            this.suggestionLogic = suggestionLogic;
         }
 
         public async Task<IActionResult> Index()
@@ -78,10 +80,13 @@ namespace BiblioIUC.Controllers
                     .ToDictionary(x => x.Key, x => x.Value),
                 topDocumentReadings
             );
-            
+            var layoutModel = new LayoutModel();
+            await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
+
             var pageModel = new PageModel<DashboardModel>
             (
-                dashboardModel
+                dashboardModel,
+                layoutModel
             );
             return View(pageModel);
         }

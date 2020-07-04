@@ -115,6 +115,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Joindre un fichier.
+        /// </summary>
+        public static string Attached_file {
+            get {
+                return ResourceManager.GetString("Attached_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aou.
         /// </summary>
         public static string Aug {
@@ -304,6 +313,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string Date {
+            get {
+                return ResourceManager.GetString("Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dec.
         /// </summary>
         public static string Dec {
@@ -372,6 +390,15 @@ namespace BiblioIUC.Localize {
         public static string Description_Resume {
             get {
                 return ResourceManager.GetString("Description_Resume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Détails.
+        /// </summary>
+        public static string Details {
+            get {
+                return ResourceManager.GetString("Details", resourceCulture);
             }
         }
         
@@ -538,6 +565,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Télécharger le fichier joint.
+        /// </summary>
+        public static string Download_attached_file {
+            get {
+                return ResourceManager.GetString("Download_attached_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modifier.
         /// </summary>
         public static string Edit {
@@ -579,6 +615,15 @@ namespace BiblioIUC.Localize {
         public static string Edit_your_profile {
             get {
                 return ResourceManager.GetString("Edit_your_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modifer votre suggestion.
+        /// </summary>
+        public static string Edit_your_suggestion {
+            get {
+                return ResourceManager.GetString("Edit_your_suggestion", resourceCulture);
             }
         }
         
@@ -655,6 +700,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Groupe.
+        /// </summary>
+        public static string Group {
+            get {
+                return ResourceManager.GetString("Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comment lire un document ?.
         /// </summary>
         public static string How_to_read_a_document {
@@ -687,6 +741,24 @@ namespace BiblioIUC.Localize {
         public static string InProcess {
             get {
                 return ResourceManager.GetString("InProcess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Est lu.
+        /// </summary>
+        public static string Is_readed {
+            get {
+                return ResourceManager.GetString("Is_readed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Est résolu.
+        /// </summary>
+        public static string Is_solved {
+            get {
+                return ResourceManager.GetString("Is_solved", resourceCulture);
             }
         }
         
@@ -781,6 +853,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Faire une suggestion.
+        /// </summary>
+        public static string Make_a_suggestion {
+            get {
+                return ResourceManager.GetString("Make_a_suggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mar.
         /// </summary>
         public static string Mar {
@@ -799,11 +880,38 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        public static string Message {
+            get {
+                return ResourceManager.GetString("Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to L&apos;objet du message.
+        /// </summary>
+        public static string Message_subject {
+            get {
+                return ResourceManager.GetString("Message_subject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nom.
         /// </summary>
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non.
+        /// </summary>
+        public static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
             }
         }
         
@@ -925,11 +1033,20 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lire un livre.
+        ///   Looks up a localized string similar to Lire un document.
         /// </summary>
-        public static string Read_a_book {
+        public static string Read_a_document {
             get {
-                return ResourceManager.GetString("Read_a_book", resourceCulture);
+                return ResourceManager.GetString("Read_a_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voir plus de suggestions.
+        /// </summary>
+        public static string Read_more_suggestions {
+            get {
+                return ResourceManager.GetString("Read_more_suggestions", resourceCulture);
             }
         }
         
@@ -1051,6 +1168,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Résultat de la recherche de la suggestion {0}.
+        /// </summary>
+        public static string Search_suggestion_results_of_x {
+            get {
+                return ResourceManager.GetString("Search_suggestion_results_of_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Résultat de la recherche de l&apos;utilisateur {0}.
         /// </summary>
         public static string Search_user_results_of_x {
@@ -1074,6 +1200,15 @@ namespace BiblioIUC.Localize {
         public static string Searh_a_document {
             get {
                 return ResourceManager.GetString("Searh_a_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rechercher une suggestion....
+        /// </summary>
+        public static string Searh_a_suggestion {
+            get {
+                return ResourceManager.GetString("Searh_a_suggestion", resourceCulture);
             }
         }
         
@@ -1159,6 +1294,15 @@ namespace BiblioIUC.Localize {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Objet.
+        /// </summary>
+        public static string Subject {
+            get {
+                return ResourceManager.GetString("Subject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
         public static string Success {
@@ -1173,6 +1317,33 @@ namespace BiblioIUC.Localize {
         public static string Suggestion {
             get {
                 return ResourceManager.GetString("Suggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Détails de la suggestion.
+        /// </summary>
+        public static string Suggestion_details {
+            get {
+                return ResourceManager.GetString("Suggestion_details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aucune suggestion trouvé !.
+        /// </summary>
+        public static string Suggestion_not_found {
+            get {
+                return ResourceManager.GetString("Suggestion_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestions.
+        /// </summary>
+        public static string Suggestions {
+            get {
+                return ResourceManager.GetString("Suggestions", resourceCulture);
             }
         }
         
@@ -1272,6 +1443,24 @@ namespace BiblioIUC.Localize {
         public static string Top_x_of_readings_by_sub_category {
             get {
                 return ResourceManager.GetString("Top_x_of_readings_by_sub_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestions non lues.
+        /// </summary>
+        public static string Unreaded_suggestions {
+            get {
+                return ResourceManager.GetString("Unreaded_suggestions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Charger un fichier.
+        /// </summary>
+        public static string Upload_a_file {
+            get {
+                return ResourceManager.GetString("Upload_a_file", resourceCulture);
             }
         }
         
@@ -1407,6 +1596,15 @@ namespace BiblioIUC.Localize {
         public static string Your_full_name {
             get {
                 return ResourceManager.GetString("Your_full_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Votre message.
+        /// </summary>
+        public static string Your_message {
+            get {
+                return ResourceManager.GetString("Your_message", resourceCulture);
             }
         }
         

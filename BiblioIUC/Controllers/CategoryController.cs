@@ -20,11 +20,13 @@ namespace BiblioIUC.Controllers
     public class CategoryController : BaseController
     {
         private readonly ICategoryLogic categoryLogic;
+        private readonly ISuggestionLogic suggestionLogic;
 
-        public CategoryController(ICategoryLogic categoryLogic, 
+        public CategoryController(ICategoryLogic categoryLogic, ISuggestionLogic suggestionLogic,
             IConfiguration configuration, ILoggerFactory loggerFactory):base(configuration, loggerFactory)
         {
             this.categoryLogic = categoryLogic;
+            this.suggestionLogic = suggestionLogic;
         }
 
         public async Task<IActionResult> Index(int? id, int? CategoryParentId, LayoutModel layoutModel)
@@ -50,6 +52,8 @@ namespace BiblioIUC.Controllers
                     layoutModel.SearchValue,
                     layoutModel.PageIndex,
                     layoutModel.PageSize,
+                    await suggestionLogic.UnReadCountAsync(),
+                    await suggestionLogic.TopSuggestions(int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]), 
                     Text.Searh_a_category,
                     "Index",
                     "Category"
@@ -79,6 +83,7 @@ namespace BiblioIUC.Controllers
                     null,
                     StatusOptions.Actived
                 );
+                await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                 var pageModel = new PageModel<CategoryModel>
                 (
                     categoryModel,
@@ -121,6 +126,7 @@ namespace BiblioIUC.Controllers
                         await categoryLogic.NoDocumentAsync(configuration["MediaFolderPath"]),
                         categoryModel.CategoryParentId
                     );
+                    await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                     var pageModel = new PageModel<CategoryModel>
                     (
                         categoryModel,

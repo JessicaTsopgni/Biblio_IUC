@@ -113,6 +113,11 @@ namespace BiblioIUC.Logics.Tools
         {
             string newFileName = GetNewFileName(file, filePrefixName);
             var filePath = Path.Combine(relativeFolderPath, newFileName);
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Directory.Exists)
+            {
+                fileInfo.Directory.Create();
+            }
             using (var stream = File.Create(filePath))
             {
                 await file.CopyToAsync(stream);

@@ -25,13 +25,15 @@ namespace BiblioIUC.Controllers
     {
         private readonly IDocumentLogic documentLogic;
         private readonly ICategoryLogic categoryLogic;
+        private readonly ISuggestionLogic suggestionLogic;
         private readonly IWebHostEnvironment env;
 
-        public DocumentController(IDocumentLogic documentLogic, ICategoryLogic categoryLogic,
+        public DocumentController(IDocumentLogic documentLogic, ICategoryLogic categoryLogic, ISuggestionLogic suggestionLogic,
             IConfiguration configuration, ILoggerFactory loggerFactory, IWebHostEnvironment env) : base(configuration, loggerFactory)
         {
             this.documentLogic = documentLogic;
             this.categoryLogic = categoryLogic;
+            this.suggestionLogic = suggestionLogic;
             this.env = env;
         }
         
@@ -75,7 +77,9 @@ namespace BiblioIUC.Controllers
                     layoutModel.ReturnUrl ?? currentUrl,
                     layoutModel.SearchValue,
                     layoutModel.PageIndex,
-                    layoutModel.PageSize
+                    layoutModel.PageSize,
+                    await suggestionLogic.UnReadCountAsync(),
+                    await suggestionLogic.TopSuggestions(int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"])
                 );
 
                 if (IsAjax)
@@ -122,7 +126,7 @@ namespace BiblioIUC.Controllers
                     //);
 
                     await documentLogic.IncrementCountReadAsync(documentModel.Code, userId);
-
+                    await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                     var pageModel = new PageModel<DocumentModel>
                     (
                         documentModel,
@@ -177,7 +181,7 @@ namespace BiblioIUC.Controllers
             }
         }
 
-        [Authorize(Roles = "Librarian, Teacher")]
+        [Authorize(Roles = "Admin, Librarian, Teacher")]
         public async Task<IActionResult> Create(LayoutModel layoutModel)
         {
             try
@@ -196,6 +200,7 @@ namespace BiblioIUC.Controllers
                         null,
                         StatusOptions.Actived
                     );
+                    await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                     pageModel = new PageModel<DocumentModel>
                     (
                         documentModel,
@@ -215,7 +220,7 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "Librarian, Teacher")]
+        [Authorize(Roles = "Admin, Librarian, Teacher")]
         public async Task<IActionResult> Edit(int? id, LayoutModel layoutModel)
         {
             try
@@ -251,6 +256,7 @@ namespace BiblioIUC.Controllers
                             await categoryLogic.NoChildAsync(configuration["MediaFolderPath"]),
                             documentModel.CategoryId
                         );
+                        await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                         pageModel = new PageModel<DocumentModel>
                         (
                             documentModel,
@@ -274,7 +280,7 @@ namespace BiblioIUC.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 1073741824)]
         [RequestSizeLimit(1073741824)]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Librarian, Teacher")]
+        [Authorize(Roles = "Admin, Librarian, Teacher")]
         public async Task<IActionResult> Edit(PageModel<DocumentModel> pageModel)
         {
             try
@@ -409,7 +415,7 @@ namespace BiblioIUC.Controllers
         }
 
 
-        [Authorize(Roles = "Librarian, Teacher")]
+        [Authorize(Roles = "Admin, Librarian, Teacher")]
         public async Task<IActionResult> Delete(int? id, string returnUrl = null)
         {
             try

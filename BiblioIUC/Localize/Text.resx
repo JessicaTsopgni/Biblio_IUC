@@ -135,6 +135,9 @@
   <data name="Apr" xml:space="preserve">
     <value>Avr</value>
   </data>
+  <data name="Attached_file" xml:space="preserve">
+    <value>Joindre un fichier</value>
+  </data>
   <data name="Aug" xml:space="preserve">
     <value>Aou</value>
   </data>
@@ -198,6 +201,9 @@
   <data name="Data_not_exists_or_deleted" xml:space="preserve">
     <value>Donnée inexistante ou supprimée !</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
   <data name="Dec" xml:space="preserve">
     <value>Dec</value>
   </data>
@@ -221,6 +227,9 @@
   </data>
   <data name="Description_Resume" xml:space="preserve">
     <value>Description/Résumé</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Détails</value>
   </data>
   <data name="Disabled" xml:space="preserve">
     <value>Désactivé</value>
@@ -273,6 +282,9 @@
   <data name="Document_title" xml:space="preserve">
     <value>Titre du document</value>
   </data>
+  <data name="Download_attached_file" xml:space="preserve">
+    <value>Télécharger le fichier joint</value>
+  </data>
   <data name="Do_you_really_want_to_delete_x" xml:space="preserve">
     <value>Voulez-vous vraiment supprimer {0} ?</value>
   </data>
@@ -290,6 +302,9 @@
   </data>
   <data name="Edit_your_profile" xml:space="preserve">
     <value>Editer votre profil</value>
+  </data>
+  <data name="Edit_your_suggestion" xml:space="preserve">
+    <value>Modifer votre suggestion</value>
   </data>
   <data name="Enabled" xml:space="preserve">
     <value>Activé</value>
@@ -315,6 +330,9 @@
   <data name="Generate" xml:space="preserve">
     <value>Générer</value>
   </data>
+  <data name="Group" xml:space="preserve">
+    <value>Groupe</value>
+  </data>
   <data name="How_to_read_a_document" xml:space="preserve">
     <value>Comment lire un document ?</value>
   </data>
@@ -329,6 +347,12 @@
   </data>
   <data name="ISBN" xml:space="preserve">
     <value>ISBN</value>
+  </data>
+  <data name="Is_readed" xml:space="preserve">
+    <value>Est lu</value>
+  </data>
+  <data name="Is_solved" xml:space="preserve">
+    <value>Est résolu</value>
   </data>
   <data name="Jan" xml:space="preserve">
     <value>Jan</value>
@@ -357,14 +381,26 @@
   <data name="Logout" xml:space="preserve">
     <value>Déconnexion</value>
   </data>
+  <data name="Make_a_suggestion" xml:space="preserve">
+    <value>Faire une suggestion</value>
+  </data>
   <data name="Mar" xml:space="preserve">
     <value>Mar</value>
   </data>
   <data name="May" xml:space="preserve">
     <value>Mai</value>
   </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Message_subject" xml:space="preserve">
+    <value>L'objet du message</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Nom</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Non</value>
   </data>
   <data name="None" xml:space="preserve">
     <value>Aucun</value>
@@ -414,8 +450,11 @@
   <data name="Readings_overview" xml:space="preserve">
     <value>Aperçu des lectures</value>
   </data>
-  <data name="Read_a_book" xml:space="preserve">
-    <value>Lire un livre</value>
+  <data name="Read_a_document" xml:space="preserve">
+    <value>Lire un document</value>
+  </data>
+  <data name="Read_more_suggestions" xml:space="preserve">
+    <value>Voir plus de suggestions</value>
   </data>
   <data name="Repeat_password" xml:space="preserve">
     <value>Répéter le mot de passe</value>
@@ -447,6 +486,9 @@
   <data name="Search_document_results_of_x" xml:space="preserve">
     <value>Résultat de la recherche du document: {0}</value>
   </data>
+  <data name="Search_suggestion_results_of_x" xml:space="preserve">
+    <value>Résultat de la recherche de la suggestion {0}</value>
+  </data>
   <data name="Search_user_results_of_x" xml:space="preserve">
     <value>Résultat de la recherche de l'utilisateur {0}</value>
   </data>
@@ -455,6 +497,9 @@
   </data>
   <data name="Searh_a_document" xml:space="preserve">
     <value>Rechercher un document...</value>
+  </data>
+  <data name="Searh_a_suggestion" xml:space="preserve">
+    <value>Rechercher une suggestion...</value>
   </data>
   <data name="Searh_a_user" xml:space="preserve">
     <value>Rechercher un utilisateur...</value>
@@ -474,6 +519,9 @@
   <data name="Status" xml:space="preserve">
     <value>Statut</value>
   </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Objet</value>
+  </data>
   <data name="Sub_categories" xml:space="preserve">
     <value>Sous catégories</value>
   </data>
@@ -488,6 +536,15 @@
   </data>
   <data name="Suggestion" xml:space="preserve">
     <value>Suggestion</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>Suggestions</value>
+  </data>
+  <data name="Suggestion_details" xml:space="preserve">
+    <value>Détails de la suggestion</value>
+  </data>
+  <data name="Suggestion_not_found" xml:space="preserve">
+    <value>Aucune suggestion trouvé !</value>
   </data>
   <data name="Switch_view" xml:space="preserve">
     <value>Changer de vue</value>
@@ -521,6 +578,12 @@
   </data>
   <data name="Top_x_of_readings_by_sub_category" xml:space="preserve">
     <value>Top {0} des lectures par sous-catégorie</value>
+  </data>
+  <data name="Unreaded_suggestions" xml:space="preserve">
+    <value>Suggestions non lues</value>
+  </data>
+  <data name="Upload_a_file" xml:space="preserve">
+    <value>Charger un fichier</value>
   </data>
   <data name="Upload_the_document" xml:space="preserve">
     <value>Charger le document</value>
@@ -566,6 +629,9 @@
   </data>
   <data name="Your_full_name" xml:space="preserve">
     <value>Votre nom complet</value>
+  </data>
+  <data name="Your_message" xml:space="preserve">
+    <value>Votre message</value>
   </data>
   <data name="Your_password" xml:space="preserve">
     <value>Votre mot de passe</value>

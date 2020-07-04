@@ -47,6 +47,7 @@ namespace BiblioIUC
             services.AddTransient<ICategoryLogic, CategoryLogic>();
             services.AddTransient<IDocumentLogic, DocumentLogic>();
             services.AddTransient<ILDAPAuthenticationService, LdapAuthenticationService>();
+            services.AddTransient<ISuggestionLogic, SuggestionLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

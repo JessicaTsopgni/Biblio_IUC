@@ -1,37 +1,25 @@
-﻿@model PageListModel<DocumentModel>
+﻿@model PageListModel<SuggestionModel>
 @{
     if (string.IsNullOrEmpty(Model?.SearchValue))
     {
-        if (string.IsNullOrEmpty(ViewBag.SearchCategoryName))
-        {
-            ViewBag.Title = Text.The_documents;
-        }
-        else
-        {
-            ViewBag.Title = string.Format(Text.Documents_x, ViewBag.SearchCategoryName);
-        }
+       ViewBag.Title = Text.Suggestions;
     }
     else
     {
-        ViewBag.Title = string.Format(Text.Search_document_results_of_x, Model?.SearchValue);
+        ViewBag.Title = string.Format(Text.Search_suggestion_results_of_x, Model?.SearchValue);
     }
 }
 <!--Page Heading -->
 <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
-        <a asp-action="Index" asp-controller="Document" asp-route-Id="@null" class=" text-gray-800">
-            <i class="fas fa-book"></i> @ViewBag.Title
+        <a asp-action="Index" asp-controller="Suggestion" asp-route-Id="@null" class=" text-gray-800">
+            <i class="fas fa-envelope-open-text"></i> @ViewBag.Title
         </a>
     </h1>
-    @if (User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString() || 
-    User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Librarian.ToString() || 
-    User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Teacher.ToString())
-    {
-        <a asp-action="Create" asp-controller="Document" asp-route-ReturnUrl="@ViewBag.Url" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> @Text.Create_a_document</a>
-        <a asp-action="Create" asp-controller="Document" asp-route-ReturnUrl="@ViewBag.Url" class="d-block d-sm-none btn btn-success btn-circle shadow-sm">
-            <i class="fas fa-plus"></i>
-        </a>
-    }
+    <a asp-action="Create" asp-controller="Suggestion" asp-route-ReturnUrl="@ViewBag.Url" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> @Text.Make_a_suggestion</a>
+    <a asp-action="Create" asp-controller="Suggestion" asp-route-ReturnUrl="@ViewBag.Url" class="d-block d-sm-none btn btn-success btn-circle shadow-sm">
+        <i class="fas fa-plus"></i>
+    </a>
 </div>
 <div class="row" id="data_loaded">
     @if (Model != null && Model.DataModels != null && Model.DataModels.Count() > 0)
@@ -41,7 +29,7 @@
     else
     {
         <div class="col-md-12 mx-auto text-center">
-            <i class="fas fa-info-circle"></i> <i>@Text.Document_not_found</i>
+            <i class="fas fa-info-circle"></i> <i>@Text.Suggestion_not_found</i>
         </div>
     }
 </div>
@@ -58,14 +46,14 @@
         var pageIndex = 1;
         var scrollLoad = true;
         $(window).scroll(function () {
-            if (scrollLoad && ($(document).height() - $(this).height() - 100) < $(this).scrollTop()) {
+            if (scrollLoad && ($(suggestion).height() - $(this).height() - 100) < $(this).scrollTop()) {
                 scrollLoad = false;
                 loadData();
             }
         });
 
         function hasScroll() {
-            return $(document).height() > $(window).height();
+            return $(suggestion).height() > $(window).height();
         }
 
         function loadData() {

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<SuggestionModel>
+@{
+    List<string> colors = new List<string> { "success", "danger", "primary", "warning", "info" };
+    Random randNum = new Random();
+    colors = colors.OrderBy(i => randNum.Next()).ToList();
+    colors.Add("dark");
+    int j = 0;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var suggestion in Model)
+    {
+        if (j >= colors.Count - 1)
+        {
+            j = 0;
+        }
+        if (suggestion.IsRead)
+        {
+            j = colors.Count - 1;
+        }
+        <div class="col-xl-6 col-md-12 mb-4">
+            <div class="card border-left-@colors[j] shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-2 text-center">
+                            @if (!string.IsNullOrEmpty(suggestion.UserModel.ImageLink))
+                            {
+                                <img src="@Url.Content(suggestion.UserModel.ImageLink)" class="rounded-circle" style="width:70px" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-user text-gray-300" style="font-size:400%"></i>
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <div class="truncate">
+                                <strong>@suggestion.UserModel.FullName</strong> <small><i>(@suggestion.UserModel.Role.ToString())</i></small>
+                            </div>
+                            <div class="truncate">
+                                <a href="javascript:;" onclick="goto('@Url.Action("Details", "Suggestion")', {'Id':'@suggestion.Id', 'ReturnUrl': '@ViewBag.Url'})" class="text-@colors[j]">
+                                    @suggestion.Subject
+                                </a>
+                            </div>
+                            <div class="truncate">
+                                <span style="font-size:10px"><i>@suggestion.Date.ToString() GMT</i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-danger text-right">
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink@(suggestion.Id)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink@(suggestion.Id)">
+                                    <a class="dropdown-item text-info" href="javascript:;" onclick="goto('@Url.Action("Details", "Suggestion")', {'Id':'@suggestion.Id', 'ReturnUrl': '@ViewBag.Url'})">
+                                        <i class="fas fa-list"></i> @Text.Details
+                                    </a>
+                                    @if (User.FindFirst(ClaimTypes.NameIdentifier).Value == suggestion.UserModel.Account)
+                                    {
+                                        <a class="dropdown-item text-primary" href="javascript:;" onclick="goto('@Url.Action("Edit", "Suggestion")', {'Id':'@suggestion.Id', 'ReturnUrl': '@ViewBag.Url'})">
+                                            <i class="fas fa-edit"></i> @Text.Edit
+                                        </a>
+                                    }
+                                    @if (User.FindFirst(ClaimTypes.NameIdentifier).Value == suggestion.UserModel.Account ||
+                                      User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Admin.ToString() ||
+                                      User.FindFirst(ClaimTypes.Role).Value == RoleOptions.Teacher.ToString())
+                                    {
+                                        <a class="dropdown-item text-danger" href="javascript:;" onclick="init_model('@Text.Warning', '@HttpUtility.JavaScriptStringEncode(string.Format(Text.Do_you_really_want_to_delete_x, "[ " +suggestion.Subject+" ]"))', 'bg-warning', 'text-dark',
+                                        '@Text.Cancel', 'btn-outline-light', '@Text.Yes', 'btn-outline-danger', '@Url.Action("Delete", "Suggestion", new { Id = suggestion.Id, ReturnUrl = ViewBag.Url })')">
+                                            <i class="fas fa-trash"></i> &nbsp;@Text.Delete
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        j++;
+    }
+}

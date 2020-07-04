@@ -17,6 +17,7 @@ namespace BiblioIUC.Entities
 
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Document> Documents { get; set; }
+        public virtual DbSet<Suggestion> Suggestions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserDocument> UserDocuments { get; set; }
 
@@ -185,6 +186,55 @@ namespace BiblioIUC.Entities
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_document_category");
+            });
+
+            modelBuilder.Entity<Suggestion>(entity =>
+            {
+                entity.ToTable("suggestion");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("fk_suggestion_user");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(20)");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.File)
+                    .HasColumnName("file")
+                    .HasColumnType("varchar(50)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.IsReaded).HasColumnName("is_readed");
+
+                entity.Property(e => e.IsSolved).HasColumnName("is_solved");
+
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasColumnName("message")
+                    .HasColumnType("text")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Subject)
+                    .IsRequired()
+                    .HasColumnName("subject")
+                    .HasColumnType("varchar(100)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Suggestions)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("fk_suggestion_user");
             });
 
             modelBuilder.Entity<User>(entity =>

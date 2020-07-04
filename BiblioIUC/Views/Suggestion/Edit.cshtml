@@ -1,0 +1,113 @@
+﻿@model PageModel<SuggestionModel>
+@{
+    ViewBag.Title = (Model?.DataModel?.Id ?? 0) == 0 ? Text.Make_a_suggestion : Text.Edit_your_suggestion;
+}
+<!--Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    
+    <h1 class="h3 mb-0 text-gray-800">
+        <a href="@Model.ReturnUrl" class="text-gray-800" style="text-decoration:none">
+            <i class="fas fa-chevron-circle-left"></i>
+        </a>
+        @ViewBag.Title
+    </h1>
+</div>
+
+<form id="formEdit" method="post" asp-action="Edit" asp-controller="Suggestion" enctype="multipart/form-data">
+    <partial name="_LayoutInput" model="Model" />
+    <input type="hidden" asp-for="DataModel.Id" />
+    <input type="hidden" asp-for="DataModel.ImageLink" />
+    <input type="hidden" asp-for="DataModel.UserModel.Id" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DataModel.UserModel.FullName"></label>
+                <input asp-for="DataModel.UserModel.FullName" type="text" disabled class="form-control" />
+                <span class="text-danger" asp-validation-for="DataModel.UserModel.FullName"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.UserModel.Role"></label>
+                <input asp-for="DataModel.UserModel.Role" type="text" disabled class="form-control" />
+                <span class="text-danger" asp-validation-for="DataModel.UserModel.Role"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.Subject"></label>
+                <input asp-for="DataModel.Subject" type="text" class="form-control" placeholder="@Text.Message_subject" />
+                <span class="text-danger" asp-validation-for="DataModel.Subject"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DataModel.Message"></label>
+                <textarea style="height:124px" asp-for="DataModel.Message" class="form-control" placeholder="@Text.Your_message"></textarea>
+                <span class="text-danger" asp-validation-for="DataModel.Message"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataModel.FileUploaded">@Text.Attached_file</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" asp-for="DataModel.FileUploaded">
+                    <label class="custom-file-label truncate" data-asterix="false" asp-for="DataModel.FileUploaded">@Text.Upload_a_file <i class="fas fa-file-pdf text-danger"></i></label>
+                    <span class="text-danger" asp-validation-for="DataModel.FileUploaded"></span>
+                </div>
+            </div>
+            @*@if (User.FindFirst(ClaimTypes.NameIdentifier).Value != Model?.DataModel.UserModel.Account)
+                {*@
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>@Text.Is_readed</label>
+                        <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
+                            <input asp-for="DataModel.IsRead" type="checkbox" class="custom-control-input" onchange="$(this).val($(this).is(':checked') ? 'true' : 'false');$('#is_readed_label').html($(this).is(':checked') ? '@Text.Yes' : '@Text.No')">
+                            <label asp-for="DataModel.IsRead" id="is_readed_label" class="custom-control-label">@Model.DataModel.IsReadedName</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>@Text.Is_solved</label>
+                        <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
+                            <input asp-for="DataModel.IsSolved" type="checkbox" class="custom-control-input" onchange="$(this).val($(this).is(':checked') ? 'true' : 'false');$('#is_solved_label').html($(this).is(':checked') ? '@Text.Yes' : '@Text.No')">
+                            <label asp-for="DataModel.IsSolved" id="is_solved_label" class="custom-control-label">@Model.DataModel.IsSolvedName</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*}*@
+        </div>
+
+    </div>
+    <div class="row flex-row-reverse">
+        <div class="col-md-6 mb-3">
+            <button type="submit" class="btn btn-success btn-block">
+                <i class="fas fa-check"></i>
+                @Text.Save
+            </button>
+        </div>
+        <div class="col-md-6">
+            <a href="@Model.ReturnUrl" class="btn btn-secondary btn-block">
+                <i class="fas fa-undo"></i>
+                @Text.Cancel
+            </a>
+            <small><i>* @Text.Required_fields</i></small>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script src="~/vendor/jquery/jquery.validate.min.js"></script>
+    <script src="~/vendor/jquery/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+    var inputFileDegaultText = $('#@Html.IdFor(x=>x.DataModel.FileUploaded)').siblings(".custom-file-label").html();
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            if (!fileName) {
+                fileName = inputFileDegaultText;
+                $(this).removeClass("valid");
+            } else {
+                $(this).addClass("valid");
+            }
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+}

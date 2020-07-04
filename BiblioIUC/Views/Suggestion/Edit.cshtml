@@ -50,29 +50,16 @@
                     <span class="text-danger" asp-validation-for="DataModel.FileUploaded"></span>
                 </div>
             </div>
-            @*@if (User.FindFirst(ClaimTypes.NameIdentifier).Value != Model?.DataModel.UserModel.Account)
-                {*@
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>@Text.Is_readed</label>
-                        <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
-                            <input asp-for="DataModel.IsRead" type="checkbox" class="custom-control-input" onchange="$(this).val($(this).is(':checked') ? 'true' : 'false');$('#is_readed_label').html($(this).is(':checked') ? '@Text.Yes' : '@Text.No')">
-                            <label asp-for="DataModel.IsRead" id="is_readed_label" class="custom-control-label">@Model.DataModel.IsReadedName</label>
-                        </div>
+            @if (User.FindFirst(ClaimTypes.NameIdentifier).Value != Model?.DataModel.UserModel.Account)
+            {
+                <div class="form-group">
+                    <label>@Text.Is_solved</label>
+                    <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
+                        <input asp-for="DataModel.IsSolved" type="checkbox" class="custom-control-input" onchange="$(this).val($(this).is(':checked') ? 'true' : 'false');$('#is_solved_label').html($(this).is(':checked') ? '@Text.Yes' : '@Text.No')">
+                        <label asp-for="DataModel.IsSolved" id="is_solved_label" class="custom-control-label">@Model.DataModel.IsSolvedName</label>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>@Text.Is_solved</label>
-                        <div class="custom-control custom-switch custom-switch-lg justify-content-center align-items-center">
-                            <input asp-for="DataModel.IsSolved" type="checkbox" class="custom-control-input" onchange="$(this).val($(this).is(':checked') ? 'true' : 'false');$('#is_solved_label').html($(this).is(':checked') ? '@Text.Yes' : '@Text.No')">
-                            <label asp-for="DataModel.IsSolved" id="is_solved_label" class="custom-control-label">@Model.DataModel.IsSolvedName</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @*}*@
+            }
         </div>
 
     </div>

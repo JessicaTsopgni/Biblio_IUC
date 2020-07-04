@@ -134,7 +134,21 @@ namespace BiblioIUC.Logics
             return null;            
         }
 
-     
+        public async Task<SuggestionModel> GetAndSetAsReadAsync(int id, string mediaFolderPath)
+        {
+            var suggestion = await biblioEntities.Suggestions.Include(x => x.User)
+                .SingleOrDefaultAsync(x => x.Id == id);
+            if (suggestion != null)
+            {
+                suggestion.IsReaded = true;
+                await biblioEntities.SaveChangesAsync();
+                var mediaBasePath = Path.Combine(env.WebRootPath, mediaFolderPath.Replace("~/", string.Empty));
+                return GetSuggestionModel(suggestion, mediaFolderPath);
+            }
+            return null;
+        }
+
+
 
         public async Task RemoveAsync(int id, string mediaFolderPath)
         {

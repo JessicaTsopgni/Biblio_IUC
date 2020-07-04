@@ -150,7 +150,7 @@ namespace BiblioIUC.Controllers
             try
             {
 
-                var suggestionModel = await suggestionLogic.GetAsync
+                var suggestionModel = await suggestionLogic.GetAndSetAsReadAsync
                 (
                     id ?? 0,
                     configuration["MediaFolderPath"]

@@ -21,5 +21,6 @@ namespace BiblioIUC.Logics.Interfaces
         Task RemoveAsync(int id, string mediaFolderPath);
         Task<int> UnReadCountAsync();
         Task<IEnumerable<SuggestionModel>> TopSuggestions(int limit, string mediaFolderPath);
+        Task<SuggestionModel> GetAndSetAsReadAsync(int id, string mediaFolderPath);
     }
 }

@@ -20,14 +20,16 @@ namespace BiblioIUC.Controllers
     public class UserController : BaseController
     {
         private readonly IUserLogic userLogic;
+        private readonly ISuggestionLogic suggestionLogic;
 
-        public UserController(IUserLogic userLogic, 
+        public UserController(IUserLogic userLogic, ISuggestionLogic suggestionLogic,
             IConfiguration configuration, ILoggerFactory loggerFactory):base(configuration, loggerFactory)
         {
             this.userLogic = userLogic;
+            this.suggestionLogic = suggestionLogic;
         }
 
-        public async Task<IActionResult> Index(int? id, int? UserParentId, LayoutModel layoutModel)
+        public async Task<IActionResult> Index(LayoutModel layoutModel)
         {
             try
             {
@@ -48,6 +50,8 @@ namespace BiblioIUC.Controllers
                     layoutModel.SearchValue,
                     layoutModel.PageIndex,
                     layoutModel.PageSize,
+                    await suggestionLogic.UnReadCountAsync(),
+                    await suggestionLogic.TopSuggestions(int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]),
                     Text.Searh_a_user,
                     "Index",
                     "User"
@@ -66,7 +70,7 @@ namespace BiblioIUC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Create(LayoutModel layoutModel)
+        public async Task<IActionResult> Create(LayoutModel layoutModel)
         {
             try
             {
@@ -79,6 +83,7 @@ namespace BiblioIUC.Controllers
                     },
                     configuration["MediaFolderPath"]
                 );
+                await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                 var pageModel = new PageModel<UserModel>
                 (
                     userModel,
@@ -114,7 +119,8 @@ namespace BiblioIUC.Controllers
                         return Redirect(layoutModel.ReturnUrl);
                 }
                 else
-                {                    
+                {
+                    await layoutModel.Refresh(suggestionLogic, int.Parse(configuration["DashboardTopSuggestionLimit"]), configuration["MediaFolderPath"]);
                     var pageModel = new PageModel<UserModel>
                     (
                         userModel,

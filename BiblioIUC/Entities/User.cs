@@ -7,6 +7,7 @@ namespace BiblioIUC.Entities
     {
         public User()
         {
+            Suggestions = new HashSet<Suggestion>();
             UserDocuments = new HashSet<UserDocument>();
         }
 
@@ -18,6 +19,7 @@ namespace BiblioIUC.Entities
         public string Image { get; set; }
         public short Status { get; set; }
 
+        public virtual ICollection<Suggestion> Suggestions { get; set; }
         public virtual ICollection<UserDocument> UserDocuments { get; set; }
     }
 }

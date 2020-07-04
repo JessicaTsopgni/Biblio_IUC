@@ -1,0 +1,50 @@
+﻿@model PageModel<SuggestionModel>
+@{
+    ViewBag.Title = Text.Suggestion_details;
+}
+<!--Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+
+    <h1 class="h3 mb-0 text-gray-800">
+        <a href="@Model.ReturnUrl" class="text-gray-800" style="text-decoration:none">
+            <i class="fas fa-chevron-circle-left"></i>
+        </a>
+        @ViewBag.Title
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>@Text.Name</label> : <strong>@Html.DisplayFor(x => x.DataModel.UserModel.FullName)</strong> <span>(</span>@Html.DisplayFor(x => x.DataModel.UserModel.Role)<span>)</span>
+        </div>
+        <div class="form-group">
+            <label>@Text.Subject</label> : <strong>@Html.DisplayFor(x => x.DataModel.Subject)</strong>
+        </div>
+        <div class="form-group">
+            <label>@Text.Message</label> :<br />
+            <strong>@Html.DisplayFor(x => x.DataModel.Message)</strong>
+        </div>
+        <div class="form-group">
+            <label>@Text.Date</label> : <strong><i>@Html.DisplayFor(x => x.DataModel.Date) GMT</i></strong>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.DataModel.FileLink))
+        {
+            <div class="form-group">
+                <a href="@Url.Content(Model.DataModel.FileLink)">@Text.Download_attached_file</a>
+            </div>
+        }
+        <div class="form-group">
+            <label>@Text.Is_readed</label> : <strong>@Model.DataModel.IsReadedName</strong>
+        </div>
+        <div class="form-group">
+            <label>@Text.Is_solved</label> : <strong>@Model.DataModel.IsSolvedName</strong>
+        </div>
+        <div class="form-group">
+            <a asp-action="Edit" asp-controller="Suggestion" asp-route-Id="@Model.DataModel.Id" class="btn btn-success btn-block">
+                <i class="fas fa-check"></i>
+                @Text.Edit
+            </a>
+        </div>
+    </div>
+</div>
